@@ -1,0 +1,25 @@
+#!/usr/bin/expect
+
+set tp_ip [ lindex $argv 0]
+
+send_user "\n---------------Disable Threate Protection auto rule-----------------\n";
+
+spawn ssh -o StrictHostKeyChecking=no admin\@$tp_ip
+#spawn ssh admin\@10.36.0.157
+        expect {
+                ".*" {
+                        send "infoblox\r";
+                        send "\r";
+	        	send "set maintenancemode\r";
+                        send "set adp-debug auto-rule 130900300 off\r";
+   			send "set adp-debug auto-rule 130900300 off\r";
+   			send "set adp-debug auto-rule 130900300 off\r";
+   			send "set adp-debug auto-rule 130900300 off\r";
+   			send "set adp-debug auto-rule 130900300 off\r";
+                        send "exit\r";
+                        exp_continue;
+
+                }
+                  
+             }
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="../model/xgridMsgModel.xsd"/>
+	<xs:element name="getObjectClassCountRequest" type="ObjectClassCountRequest"/>
+	<xs:complexType name="ObjectClassCountRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="objectClass" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="getObjectClassCountResponse" type="ObjectClassCountResponse"/>
+	<xs:complexType name="ObjectClassCountResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="unbounded">
+					<xs:element name="objectClass" type="xs:string"/>
+					<xs:element name="count" type="xs:unsignedLong"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="getObjectClassRequest" type="ObjectClassRequest"/>
+	<xs:complexType name="ObjectClassRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="objectClass" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="getObjectClassResponse" type="ObjectClassResponse"/>
+	<xs:complexType name="ObjectClassResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence minOccurs="1" maxOccurs="unbounded">
+					<xs:element name="object" type="BaseObject"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

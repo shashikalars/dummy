@@ -1,0 +1,2 @@
+header-responsepolicynaptrrecord,fqdn*,_new_fqdn,order*,_new_order,preference*,_new_preference,replacement*,_new_replacement,comment,disabled,flags,_new_flags,parent_zone,regexp,_new_regexp,services,_new_services,ttl,view
+responsepolicynaptrrecord,,,10,,10,,abc.com,,,FALSE,U,,com.zone,,,http+E2U,,,default

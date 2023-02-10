@@ -1,0 +1,14 @@
+admin@10.36.136.15's password: 
+
+Name:		DataCollector
+Version:	2.0.0-343289
+
+Infoblox Data Collection Virtual Machine
+ > data_input_scp
+Error: No command matches the input.
+Available commands:
+===================
+add     data     exit   import   print     set    stats  
+admin   delete   help   info     request   show   wizard 
+
+ > 

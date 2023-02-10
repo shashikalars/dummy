@@ -1,0 +1,22 @@
+Packet-Type=4
+Packet-Dst-Port=1813
+Acct-Session-Id = "9999732d-34590e08"
+#Acct-Status-Type = Stop
+Acct-Status-Type = Start
+Acct-Authentic = RADIUS
+User-Name = "Guru Ramesh Ajay Pratibha Phani Bangalore CA ASM Rachanna"
+NAS-Port = 1813
+NAS-IP-Address = 10.36.1.255 
+Called-Station-Id = 6406201992
+Calling-Station-Id = 9956182386
+Framed-IP-Address = 10.120.20.93
+NAS-Port-Type = Wireless-802.11
+Connect-Info = "CONNECT 48Mbps 802.11b"
+Acct-Session-Time = 45
+Acct-Terminate-Cause = User-Request
+3GPP-IMSI=500
+3GPP-IMEISV=201238908747520
+Infoblox-Proxy-All=1
+Infoblox-Parental-Control-Policy=0x00000000000000000000000000020040
+#Infoblox-Subscriber-Secure-Policy=0X0180
+

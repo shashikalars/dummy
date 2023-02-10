@@ -1,0 +1,147 @@
+"""
+ Copyright (c) Infoblox Inc., 2016
+
+ ReportName          : DNS Replies Trend (Detailed)
+ ReportCategory      : DNS Query 
+ Number of Test cases: 1
+ Execution time      : 408.28 seconds
+ Execution Group     : Minute Group (MG)
+ Description         : Validating Query Replies like 'NXDOMAIN', 'nxrrset', 'failure', 'sucess' & 'refferel' and this report will update immidately. 
+
+ Author   : Raghavendra MN
+ History  : 05/23/2016 (Created)
+ Reviewer : Raghavendra MN
+"""
+import config
+import json
+import os
+import pytest
+import pexpect
+import re
+import sys
+import subprocess
+import unittest
+import time 
+import ib_utils.ib_NIOS as ib_NIOS
+import ib_utils.ib_get as ib_get
+from logger import logger
+from ib_utils.ib_system import search_dump as search_dump
+from ib_utils.ib_validaiton import compare_results as compare_results
+
+"""
+TEST Steps:
+      1.  Input/Preparation  : 
+                          a. Add zone say 'dns_rt1.com' & 'dns_rt2.com' with Grid master as primary. (through CSV)
+                          b. Add RR's A:240, AAAA:240, CNAME:180, MX:180, TXT:120, SRV:120, DNAME:120, PTR:60 and  Host:60 under both the zones. (through CSV)
+                          c. Created input files for Query perf for added A RR's(for sucess) + non existing RR's(for NXDOMAIN) + existing RR's with Differnt type(for nxrrset) & Non Exists domains(failuers)
+                          d. Enabled 'Recurssion' in 'Grid Member' (For refferral)
+			  f. Next executed queryperf with input file and server as 'GM' & 'Member1')
+                          g. Next validate NXDOMAIN, nxrrset, failure, sucess & refferel.
+                                    
+      2.  Search     : Performing Search operaion with default/custom filter
+      3.  Validation : comparing Search results with Reterived 'DNS Top Replies Trend' report with delta 5).
+"""
+
+class DNSRepliesTrend(unittest.TestCase):
+    @classmethod
+    def setup_class(cls):
+        logger.info('-'*15+"START:DNS Replies Trend"+'-'*15)
+        cw=os.getcwd()
+        logger.info('Generating CSV files under %s directory',cw)
+        os.chdir('ib_data/DNS_Query/DNS_Replies_Trend/')
+        os.system("perl generate_csv.pl  "+config.grid_fqdn+" zones.csv")
+        logger.info('CSV Import operation to Add zones & Resource Records')
+        os.system("perl import_CSV.pl "+config.grid_vip+" zones.csv")
+        logger.info("Waiting for 120 sec., to complete CSV import operation")
+        time.sleep(120) 
+        logger.info('Enabling Recurssion on %s member',config.grid_member1_fqdn)
+        member_dns =  ib_NIOS.wapi_request('GET', object_type="member:dns?host_name~="+config.grid_member1_fqdn)
+        ref = json.loads(member_dns)[0]['_ref']
+        enable_recursion={"allow_recursive_query":True}
+        response = ib_NIOS.wapi_request('PUT', object_type=ref, fields=json.dumps(enable_recursion))
+
+        logger.info('Performing Service Restart operation')
+        grid =  ib_NIOS.wapi_request('GET', object_type="grid")
+        ref = json.loads(grid)[0]['_ref']
+        request_restart = ib_NIOS.wapi_request('POST', object_type = ref + "?_function=requestrestartservicestatus")
+        restart = ib_NIOS.wapi_request('POST', object_type = ref + "?_function=restartservices")
+        logger.info('Waiting for 60 sec., to complete restart operation')
+        time.sleep(60) #wait for 30 sec, for Member Restar
+
+        logger.info('Generating Query files under %s directory',cw)
+        os.system("perl generate_query.pl");
+       
+        epoch=int(ib_get.indexer_epoch_time(config.indexer_ip))
+        sleep_sec = 60-int(time.strftime('%S', time.gmtime(epoch)))
+        logger.info("Waiting for %d sec., to for QueryPerf execution",sleep_sec)
+        time.sleep(sleep_sec)
+
+        fin=os.popen("/usr/bin/queryperf -s "+config.grid_member1_vip+" -d input.txt -R")
+        output =''.join(fin.readlines())
+        logger.info('Executing Queryperf for Referral\n %s',output)
+
+        fin=os.popen("/usr/bin/queryperf -s "+config.grid_vip+" -d input.txt")
+        output =''.join(fin.readlines())
+        logger.info('Executing Queryperf for Sucess, NXDOMAIN, nxrrset & Failure Count\n %s',output)
+        os.chdir(cw)
+
+        cls.test1=[]
+        temp={}
+        new_time = time.strftime('%Y-%m-%dT%H:%M', time.gmtime(epoch+sleep_sec))
+        temp["_time"]= new_time+":00.000+00:00"  #ib_get.indexer_date(config.indexer_ip)
+        temp["failure"]="192.000000"
+        temp["nxdomain"]="48.000000"
+        temp["nxrrset"]="48.000000"
+        temp["other"]="0.000000"
+        temp["success"]="288.000000"
+        temp["referral"]="576.000000"     
+        cls.test1.append(temp)
+        logger.info ("Input Json for validation")
+        logger.info(json.dumps(cls.test1, sort_keys=True, indent=4, separators=(',', ': ')))
+        logger.info ("Waiting for 3 min., for updating reports")
+        time.sleep(180) #wait till reports gets udpated
+
+    def test_1_dns_replies_trend_default_filter_to_validate_failure_nxdomain_nxrrset_success_referral_count(self):
+        logger.info("TestCase:"+sys._getframe().f_code.co_name)
+        search_str=r"search sourcetype=ib:dns:stats index=ib_dns | eval MEMBER=if(isnull(MEMBER), host, MEMBER) | bucket span=1m _time | stats sum(COUNT) as COUNT by _time,TYPE | timechart bins=1000 avg(COUNT) by TYPE"
+        cmd = config.search_py + " \"" + search_str + "\" --output_mode=json"
+        logger.info (cmd)
+        os.system(cmd)
+        try:
+            retrived_data=open(config.json_file).read()
+        except Exception, e:
+            logger.error('search operation failed due to %s',e)
+            raise Exception("Looks like reporting service not started please check the GRID")
+        output_data = json.loads(retrived_data)
+        results_list = output_data['results']
+        results_dist= results_list[-240::1]
+        search_dump(sys._getframe().f_code.co_name+"_search_output.txt",self.test1,results_dist)  
+	logger.info("compare_resutls with 'delta' value as 15")
+        result = compare_results(self.test1,results_list,15)
+        if result == 0:
+            logger.info("Search validation result: %s (PASS)",result)
+        else:
+            logger.error("Search validation result: %s (FAIL)",result)
+        msg = 'Validation is not matching for object which is retrieved from DB %s', result
+        assert result == 0, msg
+
+    #Clean up
+    @classmethod
+    def teardown_class(cls):
+        #deleting zones
+        logger.info("Cleanup: Releting Zones and Resource Records whcih are added through CSV")
+        del_zone = ib_NIOS.wapi_request('GET', object_type="zone_auth?fqdn~=dns_rt1.com")
+        ref = json.loads(del_zone)[0]['_ref']
+        del_status = ib_NIOS.wapi_request('DELETE', object_type = ref)
+
+        del_zone = ib_NIOS.wapi_request('GET', object_type="zone_auth?fqdn~=dns_rt2.com")
+        ref = json.loads(del_zone)[0]['_ref']
+        del_status = ib_NIOS.wapi_request('DELETE', object_type = ref)
+
+        #Disable Recursion in 'Member' level.
+        logger.info("Cleanup: Disable Recurssion which was enabled in preparation step")
+        member_dns =  ib_NIOS.wapi_request('GET', object_type="member:dns?host_name~="+config.grid_member1_fqdn)
+        ref = json.loads(member_dns)[0]['_ref']
+        enable_recursion={"use_recursive_query_setting":False}
+        response = ib_NIOS.wapi_request('PUT', object_type=ref, fields=json.dumps(enable_recursion))
+        logger.info('-'*15+"END:DNS Replies Trend"+'-'*15)

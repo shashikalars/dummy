@@ -1,0 +1,293 @@
+2016-02-17 00:39:30,737:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:30,747:DEBUG:Operation took 0:00:00.010454
+2016-02-17 00:39:30,853:DEBUG:POST request to https://10.34.180.3:8089/services/messages/ (body: {'name': 'restart_required', 'value': 'Restart requested by adminvia the Splunk SDK for Python'})
+2016-02-17 00:39:30,895:DEBUG:Operation took 0:00:00.042250
+2016-02-17 00:39:30,898:DEBUG:POST request to https://10.34.180.3:8089/services/server/control/restart (body: {})
+2016-02-17 00:39:30,907:DEBUG:Operation took 0:00:00.009276
+2016-02-17 00:39:30,963:DEBUG:GET request to https://10.34.180.3:8089/services/messages (body: {})
+2016-02-17 00:39:30,972:DEBUG:Operation took 0:00:00.009336
+2016-02-17 00:39:31,023:DEBUG:GET request to https://10.34.180.3:8089/services/messages (body: {})
+2016-02-17 00:39:31,033:DEBUG:Operation took 0:00:00.009972
+2016-02-17 00:39:31,091:DEBUG:GET request to https://10.34.180.3:8089/services/messages (body: {})
+2016-02-17 00:39:31,098:DEBUG:Operation took 0:00:00.007041
+2016-02-17 00:39:31,152:DEBUG:GET request to https://10.34.180.3:8089/services/messages (body: {})
+2016-02-17 00:39:31,160:DEBUG:Operation took 0:00:00.008153
+2016-02-17 00:39:46,054:DEBUG:GET request to https://10.34.180.3:8089/services/messages (body: {})
+2016-02-17 00:39:46,073:DEBUG:Operation took 0:00:00.019749
+2016-02-17 00:39:46,074:DEBUG:POST request to https://10.34.180.3:8089/services/search/jobs/ (body: {'segmentation': 'none', 'exec_mode': 'oneshot', 'search': 'search index=internal | head 1'})
+2016-02-17 00:39:46,192:DEBUG:POST request to https://10.34.180.3:8089/services/search/jobs/ (body: {'segmentation': 'none', 'exec_mode': 'oneshot', 'search': 'search index=internal | head 1'})
+2016-02-17 00:39:50,503:DEBUG:Operation took 0:00:04.311349
+2016-02-17 00:39:50,504:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:50,511:DEBUG:Operation took 0:00:00.006882
+2016-02-17 00:39:50,580:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:50,589:DEBUG:Operation took 0:00:00.008720
+2016-02-17 00:39:50,592:DEBUG:GET request to https://localhost:8089/services/apps/local/ (body: {})
+2016-02-17 00:39:50,642:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:50,653:DEBUG:Operation took 0:00:00.011818
+2016-02-17 00:39:50,658:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:50,681:DEBUG:Operation took 0:00:00.023144
+2016-02-17 00:39:50,760:DEBUG:GET request to https://localhost:8089/services/apps/local/ (body: {})
+2016-02-17 00:39:50,763:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:50,781:DEBUG:Operation took 0:00:00.018297
+2016-02-17 00:39:50,871:DEBUG:GET request to https://10.34.180.3:8089/services/apps/local/ (body: {})
+2016-02-17 00:39:50,916:DEBUG:Operation took 0:00:00.044927
+2016-02-17 00:39:50,918:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:50,928:DEBUG:Operation took 0:00:00.010206
+2016-02-17 00:39:50,982:DEBUG:GET request to https://localhost:8089/services/apps/local/ (body: {})
+2016-02-17 00:39:51,013:INFO:TestAbspath
+2016-02-17 00:39:51,067:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,123:INFO:TestAbspath
+2016-02-17 00:39:51,175:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,223:INFO:TestAbspath
+2016-02-17 00:39:51,294:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,347:INFO:TestAbspath
+2016-02-17 00:39:51,413:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,463:INFO:TestAbspath
+2016-02-17 00:39:51,513:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,563:INFO:TestAbspath
+2016-02-17 00:39:51,612:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,663:INFO:TestAbspath
+2016-02-17 00:39:51,713:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,763:INFO:TestAbspath
+2016-02-17 00:39:51,812:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,863:INFO:TestAbspath
+2016-02-17 00:39:51,913:DEBUG:Connected to splunkd.
+2016-02-17 00:39:51,963:INFO:TestAbspath
+2016-02-17 00:39:52,012:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,013:INFO:TestAbspath
+2016-02-17 00:39:52,064:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,064:INFO:TestAbspath
+2016-02-17 00:39:52,112:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,112:INFO:TestAbspath
+2016-02-17 00:39:52,162:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,162:INFO:TestAbspath
+2016-02-17 00:39:52,213:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,214:INFO:TestAbspath
+2016-02-17 00:39:52,299:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,299:INFO:TestAbspath
+2016-02-17 00:39:52,357:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,357:INFO:TestAbspath
+2016-02-17 00:39:52,411:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,411:INFO:TestAbspath
+2016-02-17 00:39:52,461:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,461:INFO:TestAutologin
+2016-02-17 00:39:52,512:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,512:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,520:DEBUG:Operation took 0:00:00.008417
+2016-02-17 00:39:52,577:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,587:DEBUG:Operation took 0:00:00.010394
+2016-02-17 00:39:52,588:INFO:TestAutologin
+2016-02-17 00:39:52,642:DEBUG:Connected to splunkd.
+2016-02-17 00:39:52,642:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,649:DEBUG:Operation took 0:00:00.007065
+2016-02-17 00:39:52,649:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,711:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:52,718:DEBUG:Operation took 0:00:00.006427
+2016-02-17 00:39:52,784:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:52,791:DEBUG:Operation took 0:00:00.007657
+2016-02-17 00:39:52,793:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,800:DEBUG:Operation took 0:00:00.006940
+2016-02-17 00:39:52,852:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,863:DEBUG:Operation took 0:00:00.011324
+2016-02-17 00:39:52,911:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:52,920:DEBUG:Operation took 0:00:00.008801
+2016-02-17 00:39:52,923:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,931:DEBUG:Operation took 0:00:00.007606
+2016-02-17 00:39:52,931:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:52,994:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:53,002:DEBUG:Operation took 0:00:00.008399
+2016-02-17 00:39:53,068:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:53,074:DEBUG:Operation took 0:00:00.006750
+2016-02-17 00:39:53,076:DEBUG:GET request to https://10.34.180.3:8089/services/apps/local (body: {})
+2016-02-17 00:39:53,087:DEBUG:Operation took 0:00:00.011445
+2016-02-17 00:39:53,144:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:53,155:DEBUG:Operation took 0:00:00.010386
+2016-02-17 00:39:53,159:DEBUG:GET request to https://localhost:8089/services/apps/local (body: {})
+2016-02-17 00:39:53,219:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:53,225:DEBUG:Operation took 0:00:00.005699
+2016-02-17 00:39:53,312:DEBUG:GET request to https://10.34.180.3:8089/services/server/info (body: {})
+2016-02-17 00:39:53,325:DEBUG:Operation took 0:00:00.013182
+2016-02-17 00:39:53,328:DEBUG:GET request to https://localhost:8089/services/apps/local (body: {})
+2016-02-17 00:39:53,329:INFO:TestLogout
+2016-02-17 00:39:53,381:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,381:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:53,389:DEBUG:Operation took 0:00:00.007225
+2016-02-17 00:39:53,389:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:53,394:DEBUG:POST request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:53,400:DEBUG:DELETE request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:53,452:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:53,459:DEBUG:Operation took 0:00:00.007333
+2016-02-17 00:39:53,460:INFO:TestResponseReader
+2016-02-17 00:39:53,513:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,513:INFO:TestResponseReader
+2016-02-17 00:39:53,566:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,566:INFO:TestResponseReader
+2016-02-17 00:39:53,621:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,622:INFO:TestResponseReader
+2016-02-17 00:39:53,671:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,671:INFO:TestResponseReader
+2016-02-17 00:39:53,723:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,723:INFO:TestResponseReader
+2016-02-17 00:39:53,773:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,773:INFO:TestSocket
+2016-02-17 00:39:53,835:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,839:INFO:TestSocket
+2016-02-17 00:39:53,897:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,906:INFO:TestSocket
+2016-02-17 00:39:53,973:DEBUG:Connected to splunkd.
+2016-02-17 00:39:53,978:INFO:TestTokenAuthentication
+2016-02-17 00:39:54,042:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,042:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:54,050:DEBUG:Operation took 0:00:00.008433
+2016-02-17 00:39:54,056:INFO:TestTokenAuthentication
+2016-02-17 00:39:54,124:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,124:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:54,132:DEBUG:Operation took 0:00:00.007482
+2016-02-17 00:39:54,136:INFO:TestTokenAuthentication
+2016-02-17 00:39:54,191:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,192:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:54,198:DEBUG:Operation took 0:00:00.006882
+2016-02-17 00:39:54,203:INFO:TestUnicodeConnect
+2016-02-17 00:39:54,263:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,322:DEBUG:GET request to https://10.34.180.3:8089/services (body: {})
+2016-02-17 00:39:54,330:DEBUG:Operation took 0:00:00.008107
+2016-02-17 00:39:54,330:INFO:TestUrlEncoded
+2016-02-17 00:39:54,381:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,382:INFO:TestUrlEncoded
+2016-02-17 00:39:54,437:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,437:INFO:TestUrlEncoded
+2016-02-17 00:39:54,503:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,504:INFO:TestUrlEncoded
+2016-02-17 00:39:54,553:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,553:INFO:TestUrlEncoded
+2016-02-17 00:39:54,602:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,603:INFO:TestUrlEncoded
+2016-02-17 00:39:54,652:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,652:INFO:TestUrlEncoded
+2016-02-17 00:39:54,703:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,703:INFO:TestUserManipulation
+2016-02-17 00:39:54,753:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,753:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698394-75 (body: {})
+2016-02-17 00:39:54,760:DEBUG:POST request to https://10.34.180.3:8089/services/authentication/users/ (body: {'password': 'changeme!', 'name': 'delete-me-268211455698394-75', 'roles': 'power'})
+2016-02-17 00:39:54,812:DEBUG:Operation took 0:00:00.052212
+2016-02-17 00:39:54,813:DEBUG:GET request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698394-75 (body: {})
+2016-02-17 00:39:54,820:DEBUG:Operation took 0:00:00.007857
+2016-02-17 00:39:54,823:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698394-75 (body: {})
+2016-02-17 00:39:54,831:DEBUG:Operation took 0:00:00.007914
+2016-02-17 00:39:54,831:INFO:TestUserManipulation
+2016-02-17 00:39:54,884:DEBUG:Connected to splunkd.
+2016-02-17 00:39:54,884:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698394-88 (body: {})
+2016-02-17 00:39:54,891:DEBUG:POST request to https://10.34.180.3:8089/services/authentication/users/ (body: {'password': 'changeme!', 'name': 'delete-me-268211455698394-88', 'roles': 'power'})
+2016-02-17 00:39:54,942:DEBUG:Operation took 0:00:00.050447
+2016-02-17 00:39:54,942:DEBUG:GET request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698394-88 (body: {})
+2016-02-17 00:39:54,950:DEBUG:Operation took 0:00:00.008335
+2016-02-17 00:39:54,952:DEBUG:POST request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698394-88 (body: {'body': 'defaultApp=search'})
+2016-02-17 00:39:55,010:DEBUG:Operation took 0:00:00.057963
+2016-02-17 00:39:55,011:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698394-88 (body: {})
+2016-02-17 00:39:55,024:DEBUG:Operation took 0:00:00.013904
+2016-02-17 00:39:55,025:INFO:TestUserManipulation
+2016-02-17 00:39:55,083:DEBUG:Connected to splunkd.
+2016-02-17 00:39:55,083:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-08 (body: {})
+2016-02-17 00:39:55,093:DEBUG:POST request to https://10.34.180.3:8089/services/receivers/simple (body: {'body': 'Hello, world!', 'source': 'sdk', 'sourcetype': 'sdk_test'})
+2016-02-17 00:39:55,138:DEBUG:Operation took 0:00:00.044874
+2016-02-17 00:39:55,138:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-08 (body: {})
+2016-02-17 00:39:55,145:INFO:TestUserManipulation
+2016-02-17 00:39:55,201:DEBUG:Connected to splunkd.
+2016-02-17 00:39:55,202:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-2 (body: {})
+2016-02-17 00:39:55,208:DEBUG:POST request to https://10.34.180.3:8089/services/authentication/users/ (body: {'password': 'changeme!', 'name': 'delete-me-268211455698395-2', 'roles': 'power'})
+2016-02-17 00:39:55,262:DEBUG:Operation took 0:00:00.054546
+2016-02-17 00:39:55,262:DEBUG:GET request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-2 (body: {})
+2016-02-17 00:39:55,271:DEBUG:Operation took 0:00:00.009046
+2016-02-17 00:39:55,276:DEBUG:POST request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-2 (body: {'defaultApp': 'search', 'password': 'changeme!', 'email': 'email.me@now.com', 'roles': 'power', 'realname': 'Renzo'})
+2016-02-17 00:39:55,339:DEBUG:Operation took 0:00:00.063642
+2016-02-17 00:39:55,339:DEBUG:GET request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-2 (body: {})
+2016-02-17 00:39:55,349:DEBUG:Operation took 0:00:00.009546
+2016-02-17 00:39:55,355:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-2 (body: {})
+2016-02-17 00:39:55,362:DEBUG:Operation took 0:00:00.007335
+2016-02-17 00:39:55,362:INFO:TestUserManipulation
+2016-02-17 00:39:55,429:DEBUG:Connected to splunkd.
+2016-02-17 00:39:55,429:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-43 (body: {})
+2016-02-17 00:39:55,438:DEBUG:POST request to https://10.34.180.3:8089/services/authentication/users/ (body: {'password': 'changeme!', 'name': 'delete-me-268211455698395-43'})
+2016-02-17 00:39:55,485:DEBUG:DELETE request to https://10.34.180.3:8089/services/authentication/users/delete-me-268211455698395-43 (body: {})
+2016-05-23 11:11:21,476:DEBUG:GET request to https://10.34.221.50:7089/services/messages (body: {})
+2016-05-23 11:11:21,486:DEBUG:Operation took 0:00:00.010409
+2016-05-23 11:11:21,499:DEBUG:GET request to https://10.34.221.50:7089/services/messages (body: {})
+2016-05-23 11:11:21,507:DEBUG:Operation took 0:00:00.007741
+2016-05-23 11:11:21,507:DEBUG:GET request to https://10.34.221.50:7089/services/server/info (body: {})
+2016-05-23 11:11:21,512:DEBUG:Operation took 0:00:00.004466
+2016-05-23 11:11:21,513:DEBUG:Connected to splunkd version 6.3.1
+2016-05-23 11:11:21,514:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,528:DEBUG:Operation took 0:00:00.014899
+2016-05-23 11:11:21,531:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,545:DEBUG:Operation took 0:00:00.014012
+2016-05-23 11:11:21,547:DEBUG:POST request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {'level': 'INFO'})
+2016-05-23 11:11:21,557:DEBUG:Operation took 0:00:00.009285
+2016-05-23 11:11:21,557:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {})
+2016-05-23 11:11:21,570:DEBUG:Operation took 0:00:00.013212
+2016-05-23 11:11:21,571:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,584:DEBUG:Operation took 0:00:00.012523
+2016-05-23 11:11:21,585:DEBUG:POST request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {'level': 'WARN'})
+2016-05-23 11:11:21,593:DEBUG:Operation took 0:00:00.007973
+2016-05-23 11:11:21,594:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {})
+2016-05-23 11:11:21,607:DEBUG:Operation took 0:00:00.013757
+2016-05-23 11:11:21,609:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,621:DEBUG:Operation took 0:00:00.012653
+2016-05-23 11:11:21,623:DEBUG:POST request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {'level': 'ERROR'})
+2016-05-23 11:11:21,629:DEBUG:Operation took 0:00:00.006293
+2016-05-23 11:11:21,629:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {})
+2016-05-23 11:11:21,646:DEBUG:Operation took 0:00:00.016579
+2016-05-23 11:11:21,647:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,663:DEBUG:Operation took 0:00:00.015392
+2016-05-23 11:11:21,664:DEBUG:POST request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {'level': 'DEBUG'})
+2016-05-23 11:11:21,670:DEBUG:Operation took 0:00:00.006345
+2016-05-23 11:11:21,671:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {})
+2016-05-23 11:11:21,686:DEBUG:Operation took 0:00:00.015718
+2016-05-23 11:11:21,688:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,704:DEBUG:Operation took 0:00:00.016145
+2016-05-23 11:11:21,707:DEBUG:POST request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {'level': 'CRIT'})
+2016-05-23 11:11:21,716:DEBUG:Operation took 0:00:00.009749
+2016-05-23 11:11:21,717:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {})
+2016-05-23 11:11:21,736:DEBUG:Operation took 0:00:00.019553
+2016-05-23 11:11:21,738:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,752:DEBUG:Operation took 0:00:00.014653
+2016-05-23 11:11:21,755:DEBUG:POST request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {'level': 'INFO'})
+2016-05-23 11:11:21,764:DEBUG:Operation took 0:00:00.009260
+2016-05-23 11:11:21,765:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AuditLogger/ (body: {})
+2016-05-23 11:11:21,779:DEBUG:Operation took 0:00:00.014287
+2016-05-23 11:11:21,782:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/AuditLogger (body: {})
+2016-05-23 11:11:21,798:DEBUG:Operation took 0:00:00.015466
+2016-05-23 11:11:21,800:DEBUG:GET request to https://10.34.221.50:7089/services/messages (body: {})
+2016-05-23 11:11:21,806:DEBUG:Operation took 0:00:00.006489
+2016-05-23 11:11:21,807:DEBUG:GET request to https://10.34.221.50:7089/services/messages (body: {})
+2016-05-23 11:11:21,811:DEBUG:Operation took 0:00:00.003720
+2016-05-23 11:11:21,820:DEBUG:GET request to https://10.34.221.50:7089/services/messages (body: {})
+2016-05-23 11:11:21,824:DEBUG:Operation took 0:00:00.004311
+2016-05-23 11:11:21,825:DEBUG:GET request to https://10.34.221.50:7089/services/server/info (body: {})
+2016-05-23 11:11:21,829:DEBUG:Operation took 0:00:00.003851
+2016-05-23 11:11:21,831:DEBUG:Connected to splunkd version 6.3.1
+2016-05-23 11:11:21,831:DEBUG:GET request to https://10.34.221.50:7089/services/server/logger/ (body: {'count': 10, 'offset': 0})
+2016-05-23 11:11:21,845:DEBUG:Operation took 0:00:00.013733
+2016-05-23 11:11:21,851:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3AAuthenticationHandler/ (body: {})
+2016-05-23 11:11:21,863:DEBUG:Operation took 0:00:00.012533
+2016-05-23 11:11:21,865:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3ADeprecatedLicenseHandler/ (body: {})
+2016-05-23 11:11:21,879:DEBUG:Operation took 0:00:00.014301
+2016-05-23 11:11:21,882:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3ADeprecatedLicenseRevertHandler/ (body: {})
+2016-05-23 11:11:21,896:DEBUG:Operation took 0:00:00.013415
+2016-05-23 11:11:21,897:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3ADirectoryService/ (body: {})
+2016-05-23 11:11:21,913:DEBUG:Operation took 0:00:00.015648
+2016-05-23 11:11:21,916:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3ADistributedGroupHandler/ (body: {})
+2016-05-23 11:11:21,932:DEBUG:Operation took 0:00:00.016148
+2016-05-23 11:11:21,935:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3ADistributedMetricsHandler/ (body: {})
+2016-05-23 11:11:21,950:DEBUG:Operation took 0:00:00.014823
+2016-05-23 11:11:21,953:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3ADistributedSearchHandler/ (body: {})
+2016-05-23 11:11:21,968:DEBUG:Operation took 0:00:00.015523
+2016-05-23 11:11:21,971:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3AExec/ (body: {})
+2016-05-23 11:11:21,985:DEBUG:Operation took 0:00:00.014100
+2016-05-23 11:11:21,987:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3AExperimentalAdminHandler/ (body: {})
+2016-05-23 11:11:22,003:DEBUG:Operation took 0:00:00.016295
+2016-05-23 11:11:22,006:DEBUG:GET request to https://10.34.221.50:7089/servicesNS/nobody/system/server/logger/AdminHandler%3AFIFO/ (body: {})
+2016-05-23 11:11:22,024:DEBUG:Operation took 0:00:00.018047
+2016-05-23 11:11:22,027:DEBUG:GET request to https://10.34.221.50:7089/services/messages (body: {})
+2016-05-23 11:11:22,031:DEBUG:Operation took 0:00:00.003840
+2016-05-23 11:11:22,031:DEBUG:GET request to https://10.34.221.50:7089/services/messages (body: {})
+2016-05-23 11:11:22,035:DEBUG:Operation took 0:00:00.004129

@@ -1,0 +1,14 @@
+Usage:  ./suricata_support_bundle.pl <Grid VIP> <TP Member LAN IP>
+
+Example:
+        ./suricata_support_bundle.pl 10.36.0.154 10.34.9.51 NIOS
+
+Prerequiste:
+============
+- Grid should be configured with TP service running
+- Upload ruleset to the Grid before running the test
+
+What this script does (Script Algorithm):
+========================================
+- This script downloads the Support bundle for the TP member
+- And validates the mandatory files and its size

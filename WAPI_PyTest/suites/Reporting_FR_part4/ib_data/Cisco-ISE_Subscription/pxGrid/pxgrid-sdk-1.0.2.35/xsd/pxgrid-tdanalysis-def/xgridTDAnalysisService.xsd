@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/tdanalysis" xmlns:xgrid="http://www.cisco.com/pxgrid" xmlns:xgridNet="http://www.cisco.com/pxgrid/net" targetNamespace="http://www.cisco.com/pxgrid/tdanalysis" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<!-- ###############################################################################
+     Capability Definition
+     ############################################################################### -->
+	<xs:complexType name="TDAnalysisServiceCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+</xs:schema>

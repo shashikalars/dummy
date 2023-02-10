@@ -1,0 +1,22 @@
+Usage: ./suricata_cli.pl <SSH IP>
+
+Example: ./suricata_cli.pl 10.36.0.199
+
+Prerequiste:
+============
+Grid should be configured with TP service running
+Enable support access on the Grid
+The script 'suricata.exp' should present in the path, where its being executed
+
+What this script does (Script Algorithm):
+========================================
+- Validates the given <SSH IP> is in IPv4 format or not
+- Does 'addkeys' using the given <SSH IP>. #Note: If addkeys fails, user need to make addkeys work for the IP
+- Validates that root login to <SSH IP> happens fine without password. #Note: Execution will be terminated if root login fails
+- Executes all the supported Suricata CLI commands in following three ways using 'suricata.exp' Expect script
+- Performs two different validations of each commands
+	a) All positive scenario commands and its options - Validates 'success' in response and specific output of the command
+	b) All negative scenario commands and its options - Validates 'error' in response and specific output of the command
+	c) All Empty responses commands and its options - Validates only prompt string
+- Calculates the total passed and failed cases count
+- Displays the test summary

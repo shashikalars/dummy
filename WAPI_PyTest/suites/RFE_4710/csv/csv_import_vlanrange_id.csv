@@ -1,0 +1,4 @@
+header-staticvlan,id*,_new_id,name*,_new_name,parent*,_new_parent,comment,contact,department,description,reserved
+header-vlanrange,end_vlan_id*,_new_end_vlan_id,name*,_new_name,parent*,_new_parent,start_vlan_id*,_new_start_vlan_id,comment
+vlanrange,3600,,csv_range,,"csv_import,3000,4000",,3500,,
+staticvlan,3000,,csv_vlan_id,,"csv_import,3000,4000",,,123456789,IT,test description,True

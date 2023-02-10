@@ -1,0 +1,175 @@
+"""
+ Copyright (c) Infoblox Inc., 2016
+
+ ReportName          : DNS Cache Hit Ratio Trend. 
+ ReportCategory      : DNS Query
+ Number of Test cases: 2
+ Execution time      : 302.61 seconds
+ Execution Group     : Minute Group (MG)
+ Description         : DNS Cache Hit Ratio Trend Report will update every min. 
+ Author   : Raghavendra MN
+ History  : 05/30/2016 (Created)
+ Reviewer : Raghavendra MN
+"""
+import config
+import json
+import os
+import pytest
+import pexpect
+import re
+import sys
+import subprocess
+from time import sleep
+import unittest
+
+import ib_utils.ib_NIOS as ib_NIOS
+import ib_utils.ib_get as ib_get
+from logger import logger
+from ib_utils.ib_system import search_dump as search_dump
+from ib_utils.ib_validaiton import compare_results as compare_results
+
+"""
+TEST Steps:
+      1.  Input/Preparaiton      : Add Zone infoblox.com with 'Grid Master' as primary and Member1 & Member2 as secondaries. 
+                                   Add Zone top.com with Member1 & Member2 as primary
+                                   Add Zone cache.top.com with Master as primary
+                                   Add RR's say default_ttl.cache.top.com and 2sc_ttl.cache.top.com(TTL:2sc)
+      2.  Search                 : Performing Search operaion with default/custom filter
+      3.  Validation             : Comparing Search results against input 
+"""
+class DNSCacheHitRatioTrend(unittest.TestCase):
+    @classmethod
+    def setup_class(cls):
+        logger.info('-'*15+"START:DNS Cache Hit Ratio Trend"+'-'*15)
+        logger.info("Preparation for DNS Cache Hit Ratio Trend")
+        logger.info("Adding Zone 'infoblox.com' to resolve members each other.")
+        zone1 = {"fqdn":"infoblox.com","view":"default","grid_primary": [{"name": config.grid_fqdn,"stealth": False}],"grid_secondaries": [{"name": config.grid_member1_fqdn,"stealth": False},{"name": config.grid_member2_fqdn,"stealth": False}]}
+        response = ib_NIOS.wapi_request('POST', object_type="zone_auth", fields=json.dumps(zone1))
+
+        logger.info("Adding zone 'top.com' with Grid Member1 & Member2 as Primary") 
+        zone2 = {"fqdn":"top.com","view":"default","grid_primary": [{"name": config.grid_member1_fqdn,"stealth": False}],"grid_secondaries": [{"name": config.grid_member2_fqdn,"stealth": False}]}
+        response = ib_NIOS.wapi_request('POST', object_type="zone_auth", fields=json.dumps(zone2))
+
+        logger.info("Adding zone 'cache.top.com' with Grid Master as Primary") 
+        zone3 = {"fqdn":"cache.top.com","view":"default","grid_primary": [{"name": config.grid_fqdn,"stealth": False}]}
+        response = ib_NIOS.wapi_request('POST', object_type="zone_auth", fields=json.dumps(zone3))
+        
+        logger.info("Adding RR's of type A 'default_ttl.cache.top.com/2.2.2.2' and '2sec_ttl.cache.top.com'")
+        a_record1 = {"name":"default_ttl.cache.top.com","ipv4addr":"2.2.2.2"}
+        ref_admin_a = ib_NIOS.wapi_request('POST', object_type="record:a", fields=json.dumps(a_record1))
+
+        a_record1 = {"name":"2sec_ttl.cache.top.com","ipv4addr":"4.4.4.4","ttl":2}
+        ref_admin_a = ib_NIOS.wapi_request('POST', object_type="record:a", fields=json.dumps(a_record1))
+       
+        logger.info("Enabling Recursion")
+        grid_dns =  ib_NIOS.wapi_request('GET', object_type="grid:dns")
+        ref = json.loads(grid_dns)[0]['_ref']
+        enable_recursion={"allow_recursive_query":True}
+        response = ib_NIOS.wapi_request('PUT', object_type=ref, fields=json.dumps(enable_recursion))
+
+        logger.info("Restarting Services")
+        grid =  ib_NIOS.wapi_request('GET', object_type="grid")
+        ref = json.loads(grid)[0]['_ref']
+        request_restart = ib_NIOS.wapi_request('POST', object_type = ref + "?_function=requestrestartservicestatus")
+        restart = ib_NIOS.wapi_request('POST', object_type = ref + "?_function=restartservices")
+        sleep(60) #wait for 30 sec, for Member Restar
+
+        cls.test1=[]
+        cls.test2=[]
+        temp={}
+        logger.info("Performing Dig operation on default_tt.cache.top.com & 2sec_ttl.cache.top.com in loop of 10 sec., with 1 sec delay")
+        for i in range(10):
+            os.system("dig @"+config.grid_member1_vip+" default_ttl.cache.top.com in a")
+            os.system("dig @"+config.grid_member2_vip+" 2sec_ttl.cache.top.com in a")
+            sleep(1)
+
+        temp["_time"]=ib_get.indexer_date(config.indexer_ip)
+        temp[config.grid_member1_fqdn]="90.000000"
+#        temp[config.grid_member2_fqdn]="60.000000"
+        temp[config.grid_member2_fqdn]="46.153846"
+        cls.test1.append(temp)
+        logger.info ("Input Json for test case1 validation")
+        logger.info(json.dumps(cls.test1, sort_keys=True, indent=4, separators=(',', ': ')))
+        logger.info('Wait for 1 min')
+        sleep(60) 
+        logger.info("Performing Dig operation on default_tt.cache.top.com & 2sec_ttl.cache.top.com in loop of 10 sec., with 1 sec delay")
+        for i in range(10):
+            os.system("dig @"+config.grid_member1_vip+" default_ttl.cache.top.com in a")
+            os.system("dig @"+config.grid_member2_vip+" 2sec_ttl.cache.top.com in a")
+            sleep(1)
+        temp["_time"]=ib_get.indexer_date(config.indexer_ip)
+        temp[config.grid_member1_fqdn]="100.000000"
+        #temp[config.grid_member2_fqdn]="60.000000"
+        temp[config.grid_member2_fqdn]="46.153846"
+        cls.test2.append(temp)
+        logger.info ("Input Json for test case2 validation")
+        logger.info(json.dumps(cls.test2, sort_keys=True, indent=4, separators=(',', ': ')))
+        logger.info('Wait for 5 min to report update')
+        sleep(300) #wait for report gets updated
+
+    def test_1_DNS_Cache_Hit_Ratio_Default_Filter_validate_Membe1_and_Member2_CHR_are_90_and_60(self):
+        logger.info("TestCase"+sys._getframe().f_code.co_name)
+        search_str=r"search sourcetype=ib:dns:query:cache_hit_rate index=ib_dns (HITS>0 OR MISSES>0)  | eval PERCENT=if(HITS+MISSES > 0,(HITS*100/(HITS+MISSES)),0) | bucket span=1m _time | timechart bins=1000 avg(PERCENT) by host where max in top5 useother=f"
+        cmd = config.search_py + " \"" + search_str + "\" --output_mode=json"
+        os.system(cmd)
+        try:
+            retrived_data=open(config.json_file).read()
+        except Exception, e:
+            logger.error('search operation failed due to %s',e)
+            raise Exception("Search operaiton failed, Please check Grid Configuraion")
+        output_data = json.loads(retrived_data)
+        results_list = output_data['results']
+        results_dist= results_list[-240::1]
+        search_dump(sys._getframe().f_code.co_name+"_search_output.txt",self.test1,results_dist)
+        logger.info("dumping search results in '%s' 'dumps' directory",sys._getframe().f_code.co_name+"_search_output.txt")
+        logger.info("compare_resutls with 'delta' value as 0")
+        result = compare_results(self.test1,results_list)
+        if result == 0:
+            logger.info("Search validation result: %s (PASS)",result)
+        else:
+            logger.error("Search validation result: %s (FAIL)",result)
+        msg = 'Validation is not matching for object which is retrieved from DB %s', result
+        assert result == 0, msg
+
+
+    def test_2_DNS_Cache_Hit_Ratio_Default_Filter_validate_Membe1_and_Member2_CHR_are_100_and_60(self):
+        logger.info("TestCase"+sys._getframe().f_code.co_name)
+        search_str=r"search sourcetype=ib:dns:query:cache_hit_rate index=ib_dns (HITS>0 OR MISSES>0)  | eval PERCENT=if(HITS+MISSES > 0,(HITS*100/(HITS+MISSES)),0) | bucket span=1m _time | timechart bins=1000 avg(PERCENT) by host where max in top5 useother=f"
+        cmd = config.search_py + " \"" + search_str + "\" --output_mode=json"
+        os.system(cmd)
+        try:
+            retrived_data=open(config.json_file).read()
+        except Exception, e:
+            logger.error('search operation failed due to %s',e)
+            raise Exception("Search operaiton failed, Please check Grid Configuraion")
+        output_data = json.loads(retrived_data)
+        results_list = output_data['results']
+        results_dist= results_list[-240::1]
+        search_dump(sys._getframe().f_code.co_name+"_search_output.txt",self.test2,results_dist)
+        logger.info("dumping search results in '%s' 'dumps' directory",sys._getframe().f_code.co_name+"_search_output.txt")
+        logger.info("compare_resutls with 'delta' value as 0")
+        result = compare_results(self.test2,results_list)
+        if result == 0:
+            logger.info("Search validation result: %s (PASS)",result)
+        else:
+            logger.error("Search validation result: %s (FAIL)",result)
+        msg = 'Validation is not matching for object which is retrieved from DB %s', result
+        assert result == 0, msg
+
+    @classmethod
+    def teardown_class(cls):
+        logger.info("Cleanup deleting added zones")
+        del_zone = ib_NIOS.wapi_request('GET', object_type="zone_auth?fqdn~=top.com")
+        ref = json.loads(del_zone)[0]['_ref']
+        del_status = ib_NIOS.wapi_request('DELETE', object_type = ref)
+
+        del_zone = ib_NIOS.wapi_request('GET', object_type="zone_auth?fqdn~=infoblox.com")
+        ref = json.loads(del_zone)[0]['_ref']
+        del_status = ib_NIOS.wapi_request('DELETE', object_type = ref)
+
+        logger.info("Cleanup,disabling recursion")
+        grid_dns =  ib_NIOS.wapi_request('GET', object_type="grid:dns")
+        ref = json.loads(grid_dns)[0]['_ref']
+        enable_recursion={"allow_recursive_query":False}
+        response = ib_NIOS.wapi_request('PUT', object_type=ref, fields=json.dumps(enable_recursion))
+        logger.info('-'*15+"END:DNS Cache Hit Ratio Trend"+'-'*15)

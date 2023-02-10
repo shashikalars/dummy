@@ -1,0 +1,2 @@
+header-ipv6sharednetwork,name*,_new_name,networks*,always_update_dns,comment,ddns_domainname,ddns_ttl,disabled,domain_name,domain_name_servers,enable_ddns,generate_hostname,network_view,option_logic_filters,preferred_lifetime,update_dns_on_lease_renewal,valid_lifetime
+ipv6sharednetwork,shared_network,,"2001:550:40a:2500::/64,22::/64",TRUE,,,,FALSE,,,,,default,,,,

@@ -1,0 +1,14 @@
+{
+    "version": "6.0",
+    "vendor_identifier": "pxgrid",
+    "name": "PxgrdiSessionTemplate",
+    "type": "PXGRID_ENDPOINT",
+    "comment": "Pxgrid session template",
+    "path": "/wapi/v2.9/",
+    "override_path": true,
+    "timeout": 123,
+    "keepalive": true,
+    "retry": 4,
+    "retry_template": 2,
+    "rate_limit": 200
+}

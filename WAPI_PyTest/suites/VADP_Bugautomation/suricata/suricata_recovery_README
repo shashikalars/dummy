@@ -1,0 +1,17 @@
+Usage:  ./suricata_recovery.pl <TP MEMBER SSH IP>
+
+Example:
+        ./suricata_recovery.pl 10.36.0.154
+
+Prerequiste:
+============
+- Grid should be configured with TP service running
+- Upload ruleset to the Grid before running the test
+- Add "REA DNS" (10.39.16.160) as Forwarder and Enable Forwarder Only and Allow Recursion in Grid DNS Properties
+- Enable remote console access on the Grid
+
+What this script does (Script Algorithm):
+========================================
+- This script examine the recovery process of suricata by Kill Signals
+- Monitors the interface responsiveness after Kill signals
+- All these operation will be performed after enabling the DNS and TP Services

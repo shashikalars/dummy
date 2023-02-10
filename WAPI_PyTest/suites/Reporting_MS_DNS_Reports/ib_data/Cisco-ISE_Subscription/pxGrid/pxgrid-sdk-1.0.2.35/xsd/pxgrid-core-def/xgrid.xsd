@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xgrid="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<!-- ###############################################################################
+     Model Schema
+     ############################################################################### -->
+	<xs:include schemaLocation="./model/xgridCmnModel.xsd"/>
+	<xs:include schemaLocation="./model/xgridPubSubModel.xsd"/>
+	<xs:include schemaLocation="./model/xgridEventModel.xsd"/>
+	<xs:include schemaLocation="./model/xgridFilterModel.xsd"/>
+	<xs:include schemaLocation="./model/xgridMsgModel.xsd"/>
+	<xs:include schemaLocation="./model/xgridNodeModel.xsd"/>
+	<xs:include schemaLocation="./model/xgridGSDLModel.xsd"/>
+	<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+	<xs:include schemaLocation="./methods/xgridCmnMethods.xsd"/>
+	<xs:include schemaLocation="./methods/xgridCoreMethods.xsd"/>
+	<xs:include schemaLocation="./methods/xgridEventMethods.xsd"/>
+	<xs:include schemaLocation="./methods/xgridNodeMethods.xsd"/>
+	<xs:include schemaLocation="./methods/xgridPubSubMethods.xsd"/>
+</xs:schema>

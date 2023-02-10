@@ -1,0 +1,8 @@
+{
+  "DHCP_Fingerprint/test_BRG_Device_Class_Trend.py::DeviceClassTrend::test_1_brg_device_class_trend": true, 
+  "DHCP_Fingerprint/test_BRG_Device_Fingerprint_Change_Detected.py::DeviceFingerprintChangeDetected::test_1_brg_device_fingerprint_change_detected": true, 
+  "DHCP_Fingerprint/test_BRG_Device_Trend.py::DeviceTrend::test_1_brg_device_trend": true, 
+  "DHCP_Fingerprint/test_BRG_Top_Device_Classes.py::TopDeviceClasses::test_1_brg_top_device_classes": true, 
+  "DHCP_Fingerprint/test_BRG_Top_Device_Identified.py::TopDeviceIdentified::test_1_brg_top_device_identified": true, 
+  "DHCP_Fingerprint/test_BRG_Top_Devices_Denied_IP_Address.py::TopDeviceDeniedIPAddress::test_1_brg_top_device_denied_an_ip_address": true
+}

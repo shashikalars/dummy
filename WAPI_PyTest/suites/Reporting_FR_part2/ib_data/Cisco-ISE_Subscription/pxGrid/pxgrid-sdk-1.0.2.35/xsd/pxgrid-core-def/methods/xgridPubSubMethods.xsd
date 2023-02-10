@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="xgridCmnMethods.xsd"/>
+	<xs:include schemaLocation="../model/xgridFilterModel.xsd"/>
+	<xs:include schemaLocation="../model/xgridGSDLModel.xsd"/>
+	<xs:include schemaLocation="../model/xgridPubSubModel.xsd"/>
+	<xs:include schemaLocation="../model/xgridNodeModel.xsd"/>
+	<xs:include schemaLocation="../model/xgridEventModel.xsd"/>
+
+	<!-- Publish Service Methods -->
+
+	<xs:element name="initPublishRequest" type="InitPublishRequest"/>
+	<xs:complexType name="InitPublishRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="requestDataURL" type="xs:anyURI"/>
+					<xs:element name="capability" type="Capability"/>
+	<!-- -anto:2015FEB13- adding a capabilityRef element, starting this version 
+		capability element is deprecated, use capabilityRef element wherever a capability 
+		is referred. the capabilityRef element is made optional in order to support 
+		backward compatibility -->
+	                <xs:element name="capabilityRef" type="CapabilityReference" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="publishResponse" type="PublishResponse"/>
+	<xs:complexType name="PublishResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="0" maxOccurs="1">
+				<xs:element name="subtopics" type="SubtopicList"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="updatePublishRequest" type="UpdatePublishRequest"/>
+	<xs:complexType name="UpdatePublishRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="capability" type="Capability"/>
+    <!-- -anto:2015FEB13- adding a capabilityRef element, starting this version 
+        capability element is deprecated, use capabilityRef element wherever a capability 
+        is referred. the capabilityRef element is made optional in order to support 
+        backward compatibility -->
+                    <xs:element name="capabilityRef" type="CapabilityReference" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="unPublishRequest" type="UnPublishRequest"/>
+	<xs:complexType name="UnPublishRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="capability" type="Capability"/>
+    <!-- -anto:2015FEB13- adding a capabilityRef element, starting this version 
+        capability element is deprecated, use capabilityRef element wherever a capability 
+        is referred. the capabilityRef element is made optional in order to support 
+        backward compatibility -->
+                    <xs:element name="capabilityRef" type="CapabilityReference" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="unPublishResponse" type="UnPublishResponse"/>
+	<xs:complexType name="UnPublishResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Subscribe Service Methods -->
+
+	<xs:element name="subscribeRequest" type="SubscribeRequest"/>
+	<xs:complexType name="SubscribeRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="giNodeInfo" type="GINodeInfo" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="notifyDataURL" type="xs:anyURI" minOccurs="1" maxOccurs="1"/>
+					<!-- for this subscription only return objects that match the filters defined -->
+					<xs:element name="contentFilter" type="BaseContentFilter" minOccurs="0" maxOccurs="1"/>
+					<!-- for object returned by this subscription return only the elements of the object classes that defined by this object filter -->
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="objectSchemaFilter" type="ObjectSchemaFilter"/>
+						<xs:element name="schemaFilterName" type="xs:string"/>
+					</xs:choice>
+					<xs:element name="capability" type="Capability"/>
+    <!-- -anto:2015FEB13- adding a capabilityRef element, starting this version 
+        capability element is deprecated, use capabilityRef element wherever a capability 
+        is referred. the capabilityRef element is made optional in order to support 
+        backward compatibility -->
+                    <xs:element name="capabilityRef" type="CapabilityReference" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="subscribeResponse" type="SubscribeResponse"/>
+	<xs:complexType name="SubscribeResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="subscriptionSuccess" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="topicName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="subscriptionError" minOccurs="0" maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="topicID" type="xs:unsignedInt"/>
+								<xs:element name="errror" type="BaseError"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="xmppDetails" minOccurs="0" maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="jid" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="updateSubscribeRequest" type="UpdateSubscribeRequest"/>
+	<xs:complexType name="UpdateSubscribeRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="requestedInformation" type="Capability"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="unSubscribeRequest" type="UnSubscribeRequest"/>
+	<xs:complexType name="UnSubscribeRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="capabilityID" type="xs:unsignedInt"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Capability Service Methods -->
+
+	<xs:element name="getCapabilityListRequest" type="CapabilityListRequest"/>
+	<xs:complexType name="CapabilityListRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="getCapabilityListResponse" type="CapabilityListResponse"/>
+	<xs:complexType name="CapabilityListResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="unbounded">
+					<xs:element name="capability" type="Capability"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- -anto:2015FEB08- commenting out the error enum - was not consistent 
+		with the error codes in SFS and there is no mechanism to provide code and 
+		description using xsd enum - will need to refactor the BaseError to support properly -->
+    <!--
+	<xs:simpleType name="ProposeCapabilityError">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="illegalName"/>
+			<xs:enumeration value="illegalVersion"/>
+			<xs:enumeration value="illegalOperation"/>
+			<xs:enumeration value="illegalState"/>
+			<xs:enumeration value="duplicateCapabilityName"/>
+			<xs:enumeration value="saveError"/>
+			<xs:enumeration value="pendingRequest"/>
+		</xs:restriction>
+	</xs:simpleType>
+    -->
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: proposeCapabilityRequest
+	Description: Propose a new capability to the pxGrid administrator
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="proposeCapabilityRequest" type="ProposeCapabilityRequest"/>
+	<xs:complexType name="ProposeCapabilityRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="schema" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="package" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:group ref="CapabilityGroup"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: proposeCapabilityResponse
+		Description: Return after proposing a new capability to the pxGrid administrator
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="proposeCapabilityResponse" type="ProposeCapabilityResponse"/>
+	<xs:complexType name="ProposeCapabilityResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Method: updateCapabilityRequest
+	Description: Propose an update to an existing capability to the pxGrid administrator
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="updateCapabilityRequest" type="UpdateCapabilityRequest"/>
+	<xs:complexType name="UpdateCapabilityRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="schema" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="package" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:group ref="CapabilityGroup"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Method: updateCapabilityResponse
+	Description: Return after proposing a capability update to the pxGrid administrator
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="updateCapabilityResponse" type="UpdateCapabilityResponse"/>
+	<xs:complexType name="UpdateCapabilityResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- ###############################################################################
+     Notifications Schema
+     ############################################################################### -->
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: PublisherUpdateNotification
+	Description: Includes one or more publishers that have been updated since the subscription response was sent
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="publisherUpdateNotification" type="PublisherUpdateNotification"/>
+	<xs:complexType name="PublisherUpdateNotification">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="change" type="ChangeType" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="capability" type="Capability"/>
+    <!-- -anto:2015FEB13- adding a capabilityRef element, starting this version 
+        capability element is deprecated, use capabilityRef element wherever a capability 
+        is referred. the capabilityRef element is made optional in order to support 
+        backward compatibility -->
+                    <xs:element name="capabilityRef" type="CapabilityReference" minOccurs="0" />
+					<xs:element name="publisherJID" type="xs:string" minOccurs="0" maxOccurs="1"/>				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="SubtopicUpdateNotification" type="SubtopicUpdateNotification"/>
+	<xs:complexType name="SubtopicUpdateNotification">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="change" type="ChangeType" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="capability" type="Capability"/>
+    <!-- -anto:2015FEB13- adding a capabilityRef element, starting this version 
+        capability element is deprecated, use capabilityRef element wherever a capability 
+        is referred. the capabilityRef element is made optional in order to support 
+        backward compatibility -->
+                    <xs:element name="capabilityRef" type="CapabilityReference" minOccurs="0" />
+					<xs:element name="subtopic" type="Subtopic" minOccurs="1" maxOccurs="unbounded"/>				
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

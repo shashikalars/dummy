@@ -1,0 +1,57 @@
+INFO:root:
+INFO:root:------------------------------------------------
+INFO:root:|           Test Case setup Started            |
+INFO:root:------------------------------------------------
+INFO:root:Enable DNS service
+INFO:root:Request finished successfully with response code: 200 OK
+INFO:root:[
+    {
+        "_ref": "member:dns/ZG5zLm1lbWJlcl9kbnNfcHJvcGVydGllcyQw:infoblox.localdomain", 
+        "host_name": "infoblox.localdomain", 
+        "ipv4addr": "10.35.117.2"
+    }
+]
+INFO:root:Request finished successfully with response code: 200 OK
+INFO:root:Restart services
+INFO:root:Request finished successfully with response code: 200 OK
+INFO:root:Request finished successfully with response code: 200 OK
+INFO:root:Start validation
+INFO:root:Request finished successfully with response code: 200 OK
+INFO:root:[
+    {
+        "_ref": "member:dns/ZG5zLm1lbWJlcl9kbnNfcHJvcGVydGllcyQw:infoblox.localdomain", 
+        "enable_dns": true
+    }
+]
+INFO:root:Validation passed
+INFO:root:---------Test Case setup Execution Completed----------
+INFO:root:----------------------------------------------------
+INFO:root:|          Test Case 1 Execution Started           |
+INFO:root:----------------------------------------------------
+INFO:root:Script execution passed
+INFO:root:-----------Test Case 1 Execution Completed------------
+INFO:root:----------------------------------------------------
+INFO:root:|          Test Case 2 Execution Started           |
+INFO:root:----------------------------------------------------
+INFO:root:Warning: Permanently added '10.35.117.2' (RSA) to the list of known hosts.
+
+
+Disconnect NOW if you have not been expressly authorized to use this system.
+2021-07-29T06:40:51+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8b3e40 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:34+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:35+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:35+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:35+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:35+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:35+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:35+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+2021-07-29T06:41:35+00:00 daemon infoblox.localdomain named[932]: warning client @0x7f081c8a4cc0 (no-peer): TCP client quota reached: quota reached
+INFO:root:Validation passed
+INFO:root:-----------Test Case 2 Execution Completed------------

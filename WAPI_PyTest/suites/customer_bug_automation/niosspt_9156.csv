@@ -1,0 +1,2 @@
+header-dtclbdn,lb_method*,name*,_new_name,auth_zones,comment,disabled,patterns,persistence,pools,priority,topology,ttl,types
+dtclbdn,ROUND_ROBIN,lbdn,,,,FALSE,,0,pool/1,1,,,A AAAA CNAME

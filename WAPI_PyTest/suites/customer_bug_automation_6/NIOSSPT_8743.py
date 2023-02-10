@@ -1,0 +1,458 @@
+#!/usr/bin/env python
+__author__ = "Chetan Kumar PG"
+__email__  = "cpg@infoblox.com"
+
+#############################################################################
+#  Grid Set up required:                                                    #
+#  1. Stand alone Grid Master (MGMT enabled)                                #
+#  2. Licenses : DNS, DHCP, Grid, RPZ, NIOS                                 #
+#############################################################################
+
+import os
+import re
+import config
+import pytest
+import unittest
+import logging
+import subprocess
+import paramiko
+import json
+import shlex
+from time import sleep
+from subprocess import Popen, PIPE
+import ib_utils.ib_NIOS as ib_NIOS
+from ib_utils.log_capture import log_action as log
+from ib_utils.log_validation import log_validation as logv
+logging.basicConfig(format='%(asctime)s - %(name)s(%(process)d) - %(levelname)s - %(message)s',filename="niosspt_8743.log" ,level=logging.DEBUG,filemode='w')
+
+def display_msg(x=""):
+    """ 
+    Additional function.
+    """
+    logging.info(x)
+    print(x)
+
+def start_syslog(logfile):
+    """
+    Start log capture
+    """
+    display_msg("Start capturing "+logfile)
+    log("start",logfile,config.grid_vip)
+
+def stop_syslog(logfile):
+    """
+    Stop log capture
+    """
+    display_msg("Stop capturing "+logfile)
+    log("stop",logfile,config.grid_vip)
+
+def validate_syslog(logfile, lookfor):
+    """
+    Validate captured log
+    """
+    display_msg("Validate captured log")
+    file_name='_'.join(logfile.split('/'))
+    file = '/tmp/'+ str(config.grid_vip)+file_name+'.log'
+    display_msg("cat "+file+" | grep -i '"+lookfor+"'")
+    result = os.popen("cat "+file+" | grep -i '"+lookfor+"'").read()
+    display_msg(result)
+    if result:
+        return True
+    return False
+
+def restart_services():
+    """
+    Restart Services
+    """
+    display_msg("Restart services")
+    grid =  ib_NIOS.wapi_request('GET', object_type="grid")
+    ref = json.loads(grid)[0]['_ref']
+    data= {"member_order" : "SIMULTANEOUSLY","restart_option":"FORCE_RESTART","service_option": "ALL"}
+    restart = ib_NIOS.wapi_request('POST', object_type = ref + "?_function=restartservices", fields=json.dumps(data))
+    sleep(10)
+
+def add_subscriber_data(data):
+    """
+    Add Subscriber Data
+    """
+    args = "sshpass -p 'infoblox' ssh -o StrictHostKeyChecking=no admin@"+config.grid_vip
+    args=shlex.split(args)
+    child = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    child.stdin.write("set subscriber_secure_data add "+data+" \n")
+    child.stdin.write("exit")
+    output = child.communicate()
+    display_msg(output)
+    for line in list(output):
+        if 'Disconnect NOW if you have' in line:
+            continue
+        display_msg(line)
+        if 'Record successfully added' in line:
+            return True
+    return False
+
+def delete_subscriber_data(data):
+    """
+    Delete Subscriber Data
+    """
+    args = "sshpass -p 'infoblox' ssh -o StrictHostKeyChecking=no admin@"+config.grid_vip
+    args=shlex.split(args)
+    child = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    child.stdin.write("set subscriber_secure_data delete "+data+' \n')
+    child.stdin.write("exit")
+    output = child.communicate()
+    display_msg(output)
+    for line in list(output):
+        if 'Disconnect NOW if you have' in line:
+            continue
+        display_msg(line)
+        if 'Record successfully deleted' in line:
+            return True
+    return False
+
+class NIOSSPT_8743(unittest.TestCase):
+    
+    @pytest.mark.run(order=1)
+    def test_000_setup(self):
+        """
+        setup method: Used for configuring pre-required configs.
+        """
+        display_msg()
+        display_msg("------------------------------------------------")
+        display_msg("|           Test Case setup Started            |")
+        display_msg("------------------------------------------------")
+        
+        '''Add MGMT ip route'''
+        cmd1 = "ip route del default via 10.35.0.1 dev eth1 table main"
+        cmd2 = "ip route add default via 10.36.0.1 dev eth0 table main"
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')
+        mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)
+        client.connect(config.grid_vip, username='root', pkey = mykey)
+        stdin, stdout, stderr = client.exec_command(cmd1)
+        stdin1, stdout1, stderr1 = client.exec_command(cmd2)
+        result = stdout.read()
+        display_msg(result)
+        result1 = stdout1.read()
+        display_msg(result1)
+        client.close()
+
+        '''Add DNS Resolver'''
+        display_msg("Add DNS Resolver 10.103.3.10")
+        grid_ref = ib_NIOS.wapi_request('GET', object_type='grid')
+        data = {"dns_resolver_setting":{"resolvers":["10.103.3.10"]}}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Adding DNS Resolver")
+                assert False
+
+        '''Add DNS Forwarder'''
+        display_msg("Add DNS forwarder : 10.103.3.10")
+        grid_dns_ref = ib_NIOS.wapi_request('GET', object_type='grid:dns')
+        data = {"forwarders":["10.103.3.10"]}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps(data))
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Adding DNS Forwarder")
+                assert False
+
+        '''Allow recursive query'''
+        display_msg("Allow recursive query")
+        data =  {"recursive_query_list": [{"address": "Any", "permission": "ALLOW"}]}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps({"allow_recursive_query": True}))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Allow recursive query")
+                assert False
+        display_msg("Update recursive query list")
+        response2 = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response2)
+        if type(response2) == tuple:
+            if response2[0]==400 or response2[0]==401:
+                display_msg("Failure: Add recursive query list")
+                assert False
+
+        '''Enable logging for queries, responses, rpz'''
+        display_msg("Enable logging for queries, responses, rpz")
+        data = {"logging_categories":{"log_queries":True, "log_responses":True, "log_rpz":True}}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps(data))
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Enabling logging for queries, responses, rpz")
+                assert False
+        
+        restart_services()
+
+        ''' Add Subscriber Site'''
+        display_msg("Add Subscriber Site")
+        data={"name": "niosspt_8743_subscbr",
+              "maximum_subscribers": 1000000, 
+              "members": [{"name": config.grid_fqdn}],
+              "nas_gateways": [{"ip_address": "10.36.120.10","shared_secret": "test","name": "niosspt_8743_nas","send_ack": True}]}
+        subs_site = ib_NIOS.wapi_request('POST', object_type="parentalcontrol:subscribersite",fields=json.dumps(data))
+        display_msg(subs_site)
+        if type(subs_site) == tuple:
+            if subs_site[0]==400 or subs_site[0]==401:
+                display_msg("Failure: Adding subscriber site")
+                assert False
+
+        restart_services()
+
+        ''' Enable Parental Control'''
+        display_msg("Enable Parental Control")
+        get_ref = ib_NIOS.wapi_request('GET', object_type="parentalcontrol:subscriber")
+        display_msg(get_ref)
+        data={"enable_parental_control": True,
+              "cat_acctname":"infoblox_sdk", 
+              "cat_password":"LinWmRRDX0q",
+              "category_url":"https://dl.zvelo.com/",
+              "proxy_url":"http://10.36.121.15:8001", 
+              "proxy_username":"proxyclient", 
+              "proxy_password":"infoblox",
+              "pc_zone_name":"niosspt_8743.zone.com", 
+              "cat_update_frequency":24}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(get_ref)[0]["_ref"],fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Enabling parental control")
+                assert False
+        sleep(30)
+
+        restart_services()
+
+
+        '''Update Interim Accounting Interval'''
+        display_msg("Update Interim Accounting Interval to 60min")
+        get_ref = ib_NIOS.wapi_request('GET', object_type='parentalcontrol:subscriber')
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(get_ref)[0]['_ref'], fields=json.dumps({"interim_accounting_interval":60}))
+        if type(response2) == tuple:
+            if response2[0]==400 or response2[0]==401:
+                display_msg("Failure: Updating Interim Accounting Interval to 60min")
+                assert False
+        
+        '''Start Subscriber Collection Service on the Master'''
+        display_msg("Start Subscriber Collection Service")
+        get_ref = ib_NIOS.wapi_request('GET', object_type="member:parentalcontrol")
+        display_msg(get_ref)
+        data= {"enable_service": True}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(get_ref)[0]["_ref"],fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Starting subscriber Collection Service")
+                assert False
+        sleep(60)
+        restart_services()
+
+        '''Start capturing zvelo logs'''
+        start_syslog('/storage/zvelo/log/category_download.log')
+        
+        display_msg("Sleep for 3600 seconds for the Subscriber collection service to start")
+        sleep(3600)
+        
+        '''Stop capturing zvelo logs'''
+        stop_syslog('/storage/zvelo/log/category_download.log')
+
+        '''Validate the zvelo logs for the succesful starting of subscriber collection service'''
+        if not validate_syslog("/storage/zvelo/log/category_download.log", "zvelodb download completed"):
+            display_msg("Failure: Subscriber Collection Service is not started")
+            #assert False
+        display_msg("Subscriber Collection Service Started")
+
+        '''Add Subscriber Data'''
+        client_ip = subprocess.check_output(['hostname','-I']).split()[0]
+        data = client_ip+" 32 N/A N/A 'ACS:Acct-Session-Id=9889732d-34590010;NAS:NAS-PORT=1813;PCP:Parental-Control-Policy=08041000000196ffff37f7;SSP:Subscriber-Secure-Policy=7fffffff;SUB:Calling-Station-Id=04321012134;PXP:PXY_PRI=0ac4065f;PXS:PXY_SEC=0ac4065f'"
+        if not add_subscriber_data(data):
+            display_msg("Failure: Adding subscriber data")
+            assert False
+
+        restart_services()
+
+        '''Add loopback ip as primary DNS Resolver'''
+        display_msg("Add loopback ip as primary DNS Resolvers")
+        grid_ref = ib_NIOS.wapi_request('GET', object_type='grid')
+        data = {"dns_resolver_setting":{"resolvers":["127.0.0.1","10.103.3.10"]}}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Adding DNS Resolvers")
+                assert False
+
+        ''' Add Parental control IPs to subscriber Site'''
+        display_msg("Add Parental control IPs to subscriber Site")
+        site_ref = ib_NIOS.wapi_request('GET', object_type='parentalcontrol:subscribersite')
+        data={"blocking_ipv4_vip1": "1.1.1.1",
+              "blocking_ipv4_vip2": "2.2.2.2",
+              "spms": [{"ip_address": "3.3.3.3"}],"msps": [{"ip_address": "4.4.4.4"}]}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(site_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Adding subscriber site")
+                assert False
+
+        restart_services()
+        
+        display_msg("-----------Test Case setup Completed------------")
+
+    @pytest.mark.run(order=2)
+    def test_001_enable_dns_service_on_mgmt(self):
+        """
+        Enable DNS service on MGMT interface
+        """
+        display_msg()
+        display_msg("----------------------------------------------------")
+        display_msg("|          Test Case 1 Execution Started           |")
+        display_msg("----------------------------------------------------")
+        display_msg('Enable DNS service on MGMT interface')
+        get_ref = ib_NIOS.wapi_request('GET', object_type='member:dns')
+        ref = json.loads(get_ref)[0]['_ref']
+        data = {"enable_dns":True, "use_mgmt_port":True}
+        response = ib_NIOS.wapi_request('PUT', ref=ref, fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            display_msg("Failure: Enable DNS service on MGMT interface")
+            assert False
+        
+        display_msg("-----------Test Case 1 Execution Completed------------")
+
+    @pytest.mark.run(order=3)
+    def test_002_send_dig_query_validate_log_messages_1(self):
+        """
+        Send dig query to i.ytimg.com
+        """
+        display_msg()
+        display_msg("----------------------------------------------------")
+        display_msg("|          Test Case 2 Execution Started           |")
+        display_msg("----------------------------------------------------")
+        start_syslog('/var/log/syslog')
+        display_msg("Send dig query to www.playboy.com")
+        dig_cmd = 'dig @'+config.grid_vip+' www.playboy.com'
+        os.system(dig_cmd)
+        sleep(30)
+        stop_syslog('/var/log/syslog')
+        if not validate_syslog('/var/log/syslog', '\[A\] via www.playboy.com'):
+            display_msg("Failure: Expected log message not found")
+            assert False
+        display_msg("Expected log message found")
+        
+        display_msg("-----------Test Case 2 Execution Completed------------")
+
+    @pytest.mark.run(order=4)
+    def test_003_send_dig_query_validate_log_messages_2(self):
+        """
+        Send dig query to jackdaniels.com
+        """
+        display_msg()
+        display_msg("----------------------------------------------------")
+        display_msg("|          Test Case 3 Execution Started           |")
+        display_msg("----------------------------------------------------")
+        start_syslog('/var/log/syslog')
+        display_msg("Send dig query to jackdaniels.com")
+        dig_cmd = 'dig @'+config.grid_vip+' jackdaniels.com'
+        os.system(dig_cmd)
+        sleep(30)
+        stop_syslog('/var/log/syslog')
+        if not validate_syslog('/var/log/syslog', '\[A\] via jackdaniels.com'):
+            display_msg("Failure: Expected log message not found")
+            assert False
+        display_msg("Expected log message found")
+        
+        display_msg("-----------Test Case 3 Execution Completed------------")
+
+
+    @pytest.mark.run(order=-1)
+    def test_cleanup(self):
+        """
+        cleanup method: Delete all the objects created from this script.
+        """
+        display_msg()
+        display_msg("------------------------------------------------")
+        display_msg("|          Test Case cleanup Started           |")
+        display_msg("------------------------------------------------")
+        display_msg("Delete Subscriber Data")
+        client_ip = subprocess.check_output(['hostname','-I']).split()[0]
+        data = client_ip+" 32 N/A N/A"
+        if not delete_subscriber_data(data):
+            display_msg("Failure: Deleting Subscriber Data")
+        
+        display_msg("Disable Subscriber Collection Service")
+        get_ref = ib_NIOS.wapi_request('GET', object_type="member:parentalcontrol")
+        display_msg(get_ref)
+        data= {"enable_service": False}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(get_ref)[0]["_ref"],fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Disabling subscriber collection service")
+        sleep(30)
+        
+        '''Update Interim Accounting Interval to default'''
+        display_msg("Update Interim Accounting Interval to default")
+        get_ref = ib_NIOS.wapi_request('GET', object_type='parentalcontrol:subscriber')
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(get_ref)[0]['_ref'], fields=json.dumps({"interim_accounting_interval":720}))
+        
+        display_msg("Disable logging for queries, responses, rpz")
+        grid_dns_ref = ib_NIOS.wapi_request('GET', object_type='grid:dns')
+        data = {"logging_categories":{"log_queries":False, "log_responses":False, "log_rpz":False}}
+        response = ib_NIOS.wapi_request('PUT', json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Disabling logging for queries, responses, rpz")
+        
+        display_msg("Delete recursive query list")
+        data =  {"recursive_query_list": []}
+        response2 = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response2)
+        if type(response2) == tuple:
+            if response2[0]==400 or response2[0]==401:
+                display_msg("Failure: Deleting recursive query list")
+        display_msg("Disable recursive query")
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps({ "allow_recursive_query": False}))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Disabling recursive query")
+        
+        display_msg("Delete DNS forwarder : 10.103.3.10")
+        data = {"forwarders":[]}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_dns_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Deleting DNS forwarder : 10.103.3.10")
+        
+        display_msg("Delete DNS Resolver : 127.0.01, 10.103.3.10")
+        grid_ref = ib_NIOS.wapi_request('GET', object_type='grid')
+        data = {"dns_resolver_setting":{"resolvers":[]}}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(grid_ref)[0]['_ref'], fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Deleting DNS Resolver : 127.0.01, 10.103.3.10")
+        
+        display_msg("Delete Subscriber Site")
+        get_ref = ib_NIOS.wapi_request('GET', object_type="parentalcontrol:subscribersite")
+        response = ib_NIOS.wapi_request('DELETE', ref=json.loads(get_ref)[0]['_ref'],fields=json.dumps(data))
+        display_msg(response)
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Deleting subscriber site")
+        
+        display_msg("Disable parental Control")
+        get_ref = ib_NIOS.wapi_request('GET', object_type="parentalcontrol:subscriber")
+        data = {"enable_parental_control":False}
+        response = ib_NIOS.wapi_request('PUT', ref=json.loads(get_ref)[0]['_ref'], fields=json.dumps(data))
+        if type(response) == tuple:
+            if response[0]==400 or response[0]==401:
+                display_msg("Failure: Disabling parental Control")
+        
+        restart_services()
+        
+        display_msg("-----------Test Case cleanup Completed------------")

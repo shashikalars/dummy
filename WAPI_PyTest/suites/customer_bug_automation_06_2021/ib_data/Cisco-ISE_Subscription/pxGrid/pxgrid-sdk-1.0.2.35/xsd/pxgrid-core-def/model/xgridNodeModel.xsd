@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="xgridCmnModel.xsd"/>
+	<xs:simpleType name="NodeRole">
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:complexType name="GINodeDescriptor">
+		<xs:sequence>
+			<!-- mgmtIPInterface can be a domain (specific or wildcard) or IP address (class specification) -->
+			<xs:element name="mgmtIPInterface" type="IPInterfaceIdentifier" minOccurs="1" maxOccurs="unbounded"/>
+			<!-- if specified only match nodes that have the osVersion or greater -->
+			<xs:element name="osVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GINodeInfo">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="groupName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="mgmtIPInterface" type="IPInterfaceIdentifier" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="mgmtMacInterface" type="MACAddress" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="osVersion" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="groups" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GINodeState">
+		<xs:sequence>
+			<xs:element name="info" type="GINodeInfo" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="gridSessionID" type="GISessionID" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="connectionStatus" type="NodeConnectionStatus" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="state" type="NodeState" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="lastUpdateTime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="GISessionID">
+		<xs:restriction base="xs:hexBinary">
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NodeState">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="init"/>
+			<xs:enumeration value="enabled"/>
+			<xs:enumeration value="disabled"/>
+			<xs:enumeration value="deleted"/>
+			<xs:enumeration value="pendingApproval"/>
+            <xs:enumeration value="authorizationChanged"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NodeType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="internal"/>
+			<xs:enumeration value="external"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- this is returned in the connectResponse status value -->
+	<xs:simpleType name="ConnectionApprovalStatus">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="approved"/>
+			<xs:enumeration value="pending"/>
+			<xs:enumeration value="denied"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- this is the current state of the node connection reported in the controller for a node -->
+	<!-- connected == approved and connected to the grid -->
+	<!-- disconnected == approved and disconnected from the grid -->
+	<xs:simpleType name="NodeConnectionStatus">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="connected"/>
+			<xs:enumeration value="disconnected"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--	<xs:simpleType name="ConnectionState">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="deleted"/>
+			<xs:enumeration value="enabled"/>
+			<xs:enumeration value="disabled"/>
+		</xs:restriction>-->
+	<!--</xs:simpleType>-->
+</xs:schema>

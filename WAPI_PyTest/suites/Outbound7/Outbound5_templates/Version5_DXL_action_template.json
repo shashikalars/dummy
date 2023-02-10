@@ -1,0 +1,30 @@
+{
+    "version": "5.0",
+    "name": "Version5_DXL_action_template",
+    "type": "DXL_EVENT",
+    "event_type": ["RPZ","DXL"],
+    "action_type": "RPZ Action",
+    "comment": "Outbound API phase 4",
+    "content_type": "application/json",
+    "vendor_identifier": "McAfee",
+	"steps": 
+	[
+      {
+         "operation": "NOP",
+         "body": "${XC:DEBUG:{E:}}"
+      },
+      {
+         "operation": "DXL_SEND_EVENT",
+         "name": "dxl_event",
+            "body_list": [
+                "{\"rule_name\": \"${E::dxl_event_values}\", "
+            ],
+         "dxl_topic": "/infoblox/outbound/FIXED_ADDRESS_IPV4"
+      },
+      {
+         "operation": "NOP",
+         "body": "${XC:DEBUG:{E:}}"
+      }
+
+	]
+}

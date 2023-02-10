@@ -1,0 +1,33 @@
+{
+   "version": "5.0",
+   "name": "Version5_REST_API_Action_template_DNS_Zone",
+   "type": "REST_EVENT",
+   "event_type": ["RPZ","DNS_RECORD","DNS_ZONE"],
+   "action_type": "All event Action",
+   "comment": "ALL Event",
+   "content_type": "application/json",
+   "vendor_identifier": "extattrsgg WAPI",
+   "headers": {
+       "User-Agent": "Outbound API 0.1 rrtest"
+   },
+   "transport": {
+       "path": "/wapi/v2.3",
+       "content_type": "application/json",
+       "override_path": true
+   },
+   "steps":
+   [
+       {
+           "name": "insert_zone",
+           "operation": "POST",
+           "transport": {
+               "path": "/zone_auth"
+           },
+           "body_list": [
+               "{",
+               "\"fqdn\": \"ar.com\"",
+               "}"
+           ]
+       }
+   ]
+}

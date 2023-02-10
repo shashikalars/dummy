@@ -1,0 +1,17 @@
+<ServiceRequest>
+    <data>
+        <WasScan>
+            <name>was_scan_nios-9.0.0-48144-2022-09-30-11-13</name>
+            <type>VULNERABILITY</type>
+            <target>
+                <webApp>
+                    <name>NIOS-Webscan</name>
+                    <id>683020039</id>
+                </webApp>
+            </target>
+            <profile>
+                <id>1999934</id>
+            </profile>
+        </WasScan>
+    </data>
+</ServiceRequest>

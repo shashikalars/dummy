@@ -1,0 +1,6 @@
+header-ipv6optionfilter,name*,_new_name,comment,expression,lease_time,option_space
+ipv6optionfilter,IPv6_filter,,,"(option dhcp6.fqdn=""test"")",20,DHCPv6
+ipv6optionfilter,rfe_9401,,,"(option dhcp6.vendor-class=""msg"")",10,DHCPv6
+ipv6optionfilter,IPv6_filter1,,,"(option dhcp6.fqdn=""zone"")",20,DHCPv6
+ipv6optionfilter,IPv6_filter2,,,"(option dhcp6.fqdn=""test111"")",20,DHCPv6
+ipv6optionfilter,IPv6_filter3,,,"(option dhcp6.fqdn=""test12"")",20,DHCPv6

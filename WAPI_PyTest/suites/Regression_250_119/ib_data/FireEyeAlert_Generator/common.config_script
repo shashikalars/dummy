@@ -1,0 +1,45 @@
+
+######################################################################
+# Global customizable params
+#   Please change the sample values with your real test env values
+######################################################################
+#FIREEYE_APPLIANCE="eng-lab-249.inca.infoblox.com"
+
+#for i in {1..5}
+#do
+FIREEYE_APPLIANCE="FireEye alert simulator_1"
+echo "FIREEYE_APPLIANCE=${FIREEYE_APPLIANCE}"
+
+#User-defined domain in alert
+MALWARE_CALLBACK_DOMAIN="malware_callback.com"
+MALWARE_OBJECT_DOMAIN="malware_object.com"
+WEB_INFECTION_DOMAIN="web_infection.com"
+INFECTION_MATCH_DOMAIN="infection_match.com"
+DOMAIN_MATCH_DOMAIN="domain_match.com"
+for j in {1..3}
+do
+FIREEYE_ADMINGROUP_USER=attada$j                #User created on NIOS and belonging to fireeye-group admin group
+FIREEYE_ADMINGROUP_PASSWORD=infoblox
+for k in {1..4}
+do
+FIREEYE_ZONE_URL="https://10.34.140.107/alert/feye/default/default/fire$k.com"
+#done
+
+#FIREEYE_ADMINGROUP_USER=jackie                #User created on NIOS and belonging to fireeye-group admin group
+#FIREEYE_ADMINGROUP_PASSWORD=infoblox
+#FIREEYE_ZONE_URL="https://10.34.35.2/alert/feye/default/default/jun.local"
+
+echo "FIREEYE_ADMINGROUP_USER=${FIREEYE_ADMINGROUP_USER}"
+echo "FIREEYE_ADMINGROUP_PASSWORD=${FIREEYE_ADMINGROUP_PASSWORD}"
+echo "FIREEYE_ZONE_URL=${FIREEYE_ZONE_URL}"
+if(k==4)
+then
+j=$((j+1))
+fi
+done
+TEST_CONFIG_FILE="tests.config"
+echo "TEST_CONFIG_FILE=${TEST_CONFIG_FILE}"
+FIREEYE_INFECTION_TYPES="malware-callback malware-object web-infection infection-match domain-match"
+echo "FIREEYE_INFECTION_TYPES=${FIREEYE_INFECTION_TYPES}"
+
+done

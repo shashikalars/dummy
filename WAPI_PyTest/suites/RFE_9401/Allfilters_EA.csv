@@ -1,0 +1,6 @@
+header-ipv6optionfilter,name*,_new_name,comment,expression,lease_time,option_space,EA-location
+header-nacfilter,name*,_new_name,comment,expression,,,
+ipv6optionfilter,IPv6,,vsinha123,"(option dhcp6.fqdn=""true"")",20,v6_space,
+ipv6optionfilter,rfe111,,vsinha123,"(option dhcp6.fqdn=""test"")",20,v6_space,Bangalore
+ipv6optionfilter,rfe123,,vsinha123,"(option dhcp6.fqdn=""zone"")",20,DHCPv6,Bangalore
+nacfilter,rfe124,,vsinha123,,,,

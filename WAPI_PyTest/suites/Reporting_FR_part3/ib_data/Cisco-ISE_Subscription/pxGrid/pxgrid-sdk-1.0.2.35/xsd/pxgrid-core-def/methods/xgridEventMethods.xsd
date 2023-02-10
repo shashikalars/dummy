@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="../model/xgridEventModel.xsd"/>
+	<xs:include schemaLocation="xgridCmnMethods.xsd"/>
+	<xs:element name="eventNotification" type="EventNotification"/>
+	<xs:complexType name="EventNotification">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="eventList" type="EventList"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

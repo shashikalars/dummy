@@ -1,0 +1,26 @@
+
+Looks like test case got failed. If Yes then Please check the following.
+1.Input JSON Content is matching with 'Search Results' except '_time' attribute?
+ a.Check the Time zone, Time Zone should be UTC.
+ b.Make Sure you have not configured Grid 24 hours before, (i.e. for Minute Group Detail Reports, Initially  time difference between  search events  will be  1min  and after some time it will become 5 min)
+2.Trend report?  Then make sure you have not executed reports more than two times.
+3.Reports may fail due to some other influence (DHCP events, DNS Query events etc.,)
+4.Make sure all Grid Members are online (System reported are validated against all Members )
+5.Some reports may fails due to slowness of VM(Example: CPU reports will fail due to slowness of Forwarder)
+6.Check Configuration setup(example for DCVM DC HW should be configured in preparation)
+7.Make sure PORT is opened for the following. (PORT may be disabled  if  Indexer/Grid Master gets rebooted)
+  a. 8089 for Single Indexer in Indexer
+  b. 7089 for Clustering  in Grid Master
+8.  For Multi-Site Cluster Mode, Please make sure Primary-Site Reporting Members are up and running.
+
+Note:
+1.Currently framework is not designed for 'Concurrent/Parallel' execution. So test cases may fail if user manually execute py.test & search.py  when Jenkin Job is under execution.
+2.Test cases may fail due data conflict (i.e., make sure newly implemented suites are not causing any issues)
+3.'DELTA' in 'compare_results' method is used for compare the values in between range, for example if input_value=10 & delta=5  then search result will be considered as pass when value between 5 and 15. 
+
+
+-------------------------Input Data-------------------------[
+    {
+        "threshold": "80"
+    }
+]-------------------------Search Results-------------------------[]

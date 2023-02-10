@@ -1,0 +1,2 @@
+header-responsepolicytxtrecord,fqdn*,_new_fqdn,text*,_new_text,comment,disabled,parent_zone,ttl,view
+responsepolicytxtrecord,,,abcd,,,FALSE,com.zone,,default

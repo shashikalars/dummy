@@ -1,0 +1,2 @@
+header-responsepolicyiparecord,address*,_new_address,fqdn*,_new_fqdn,comment,create_ptr,disabled,parent_zone,ttl,view
+responsepolicyiparecord,,,10.0.0.2.zone.com,,,FALSE,FALSE,com.zone,,default

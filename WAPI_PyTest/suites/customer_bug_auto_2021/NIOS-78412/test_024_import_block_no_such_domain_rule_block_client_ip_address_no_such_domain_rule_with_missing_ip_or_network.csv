@@ -1,0 +1,2 @@
+header-responsepolicyclientipaddress,fqdn*,_new_fqdn,canonical_name,comment,disabled,parent_zone,ttl,view
+responsepolicyclientipaddress,,,,,FALSE,com.zone,,default

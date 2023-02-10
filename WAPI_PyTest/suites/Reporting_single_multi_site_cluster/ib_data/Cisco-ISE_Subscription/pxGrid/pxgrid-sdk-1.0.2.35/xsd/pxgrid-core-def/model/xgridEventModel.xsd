@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" version="1.0">
+	<xs:include schemaLocation="xgridCmnModel.xsd"/>
+	<xs:include schemaLocation="xgridPubSubModel.xsd"/>
+	<xs:element name="event" type="BaseEvent"/>
+	<xs:complexType name="BaseEvent">
+		<xs:complexContent>
+			<xs:extension base="BaseObject">
+				<xs:sequence>
+					<xs:element name="eventSourceIP" type="IPInterfaceIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="eventSourceGID" type="ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="eventNotes" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<!-- the nextRelatedEvent is a pointer to an event that is related in some way to this event in a sequence of events -->
+					<xs:element name="nextRelatedEvent" type="ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EventList">
+		<xs:sequence>
+			<xs:element name="event" type="BaseEvent" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChangeElement">
+		<xs:sequence>
+			<xs:element name="objectClass" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="changeType" type="ChangeType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="fieldName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="newValue" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChangeField">
+		<xs:complexContent>
+			<xs:extension base="ChangeElement">
+				<xs:sequence>
+					<xs:element name="oldValue" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="ChangeType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="add"/>
+			<xs:enumeration value="modify"/>
+			<xs:enumeration value="delete"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ChangeReln">
+		<xs:complexContent>
+			<xs:extension base="ChangeElement">
+				<xs:sequence>
+					<xs:element name="elementIndex" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ChangeEvent">
+		<xs:complexContent>
+			<xs:extension base="BaseEvent">
+				<xs:sequence>
+					<xs:element name="el" type="ChangeElement" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

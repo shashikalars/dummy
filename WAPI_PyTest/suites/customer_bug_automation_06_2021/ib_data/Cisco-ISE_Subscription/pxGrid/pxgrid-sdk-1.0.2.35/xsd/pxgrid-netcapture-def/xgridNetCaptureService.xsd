@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/netcap" xmlns:xgrid="http://www.cisco.com/pxgrid" xmlns:xgridNet="http://www.cisco.com/pxgrid/net" targetNamespace="http://www.cisco.com/pxgrid/netcap" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<xs:import namespace="http://www.cisco.com/pxgrid/net" schemaLocation="../../../target/shared/pxgrid-net-def/xgridNet.xsd"/>
+	<!-- ###############################################################################
+     Capability Definition
+     ############################################################################### -->
+	<xs:complexType name="NetworkCaptureCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="CaptureMode">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="directCopy"/>
+			<xs:enumeration value="batchCopy"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CaptureActionStatus">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="initiated"/>
+			<xs:enumeration value="inProgress"/>
+			<xs:enumeration value="complete"/>
+			<xs:enumeration value="failed"/>
+			<xs:enumeration value="paused"/>
+			<xs:enumeration value="notFound"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CaptureActionState">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="start"/>
+			<xs:enumeration value="pause"/>
+			<xs:enumeration value="stop"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+	<xs:complexType name="BaseCaptureActionRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="captureState" type="CaptureActionState" minOccurs="0" maxOccurs="1"/>
+					<!-- the flows that we want to capture, if not specified then all flows will be captured -->
+					<!-- tbd: define the flow spec properly -->
+					<xs:element name="flowSpecification" type="xgridNet:Flow" minOccurs="0" maxOccurs="1"/>
+					<!-- the amount of time to capture content and whether this is a one off or repeat -->
+					<!-- after the capture period the service will transmit the content to the recipient -->
+					<xs:element name="repeatCapture" type="xs:boolean" default="true" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="captureTimeInSecs" type="xs:string" default="360" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="captureMode" type="CaptureMode" default="directCopy" minOccurs="0" maxOccurs="1"/>
+					<!-- the identifier that should be inserted into the packet if the sender is just forwarding the packets to another remote system -->
+					<xs:element name="captureId" type="xs:hexBinary" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="captureDstIP" type="xgrid:IPInterfaceIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="captureDstPort" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BaseCaptureActionStatusRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="captureId" type="xs:hexBinary" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: sendCaptureActionRequest
+	Description: sends a request to capture content of the device identified by ip address or username 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="sendCaptureActionRequest" type="SendCaptureActionRequest"/>
+	<xs:complexType name="SendCaptureActionRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseCaptureActionRequest">
+				<xs:sequence>
+					<xs:choice minOccurs="1" maxOccurs="1">
+						<xs:element name="deviceIPAddress" type="xgrid:IPInterfaceIdentifier"/>
+						<xs:element name="userName" type="xs:string"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: updateCaptureActionRequest
+	Description: sends a change to previousr request capture. Primarily used to pause/restart
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="updateCaptureActionRequest" type="UpdateCaptureActionRequest"/>
+	<xs:complexType name="UpdateCaptureActionRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseCaptureActionRequest">
+				<xs:sequence>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: deleteCaptureActionRequest
+	Description: sends a request to delete capture content of the device identified by capture id
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="deleteCaptureActionRequest" type="DeleteCaptureActionRequest"/>
+	<xs:complexType name="DeleteCaptureActionRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseCaptureActionRequest">
+				<xs:sequence>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: sendCaptureActionResponse
+		Description: Response to the capture action request with status of request. Returned for all [send|update|delete]CaptureRequest methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="sendCaptureActionResponse" type="SendCaptureActionResponse"/>
+	<xs:complexType name="SendCaptureActionResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseCaptureActionResponse">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="updateCaptureActionResponse" type="UpdateCaptureActionResponse"/>
+	<xs:complexType name="UpdateCaptureActionResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseCaptureActionResponse">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="deleteCaptureActionResponse" type="DeleteCaptureActionResponse"/>
+	<xs:complexType name="DeleteCaptureActionResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseCaptureActionResponse">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="BaseCaptureActionResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<!-- depending on the type of request one of the next 2 elements are returned -->
+					<xs:element name="captureId" type="xs:hexBinary" minOccurs="1" maxOccurs="1"/>
+					<!-- this is only returned if its a get response -->
+					<xs:element name="captureStatus" type="CaptureActionStatus" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCaptureActionStatusRequest
+	Description: sends a request to capture content of the device identified by ip address
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCaptureActionStatusRequest" type="GetCaptureActionStatusRequest"/>
+	<xs:complexType name="GetCaptureActionStatusRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseCaptureActionStatusRequest">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCaptureActionStatusResponse
+		Description: Response to the get capture action status with status of request. Returned for all getCaptureBy***Request methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCaptureActionStatusResponse" type="GetCaptureActionStatusResponse"/>
+	<xs:complexType name="GetCaptureActionStatusResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="captureId" type="xs:hexBinary" minOccurs="1" maxOccurs="1"/>
+					<!-- this is only returned if its a get response -->
+					<xs:element name="captureStatus" type="CaptureActionStatus" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ###############################################################################
+     Notifications Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: CaptureContentNotification
+		Description: Includes the content captured 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="captureContentNotification" type="CaptureContentNotification"/>
+	<xs:complexType name="CaptureContentNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="captureId" type="xs:hexBinary" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="numberOfPackets" type="xs:unsignedInt" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="packets">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="packet" type="xs:hexBinary" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

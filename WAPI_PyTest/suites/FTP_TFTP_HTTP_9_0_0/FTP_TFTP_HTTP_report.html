@@ -1,0 +1,557 @@
+<!DOCTYPE html><html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Test Report</title>
+    <style>body {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	min-width: 1200px;
+	color: #999;
+}
+h2 {
+	font-size: 16px;
+	color: black;
+}
+
+p {
+    color: black;
+}
+
+a {
+	color: #999;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+
+#environment td {
+	padding: 5px;
+	border: 1px solid #E6E6E6;
+}
+
+#environment tr:nth-child(odd) {
+	background-color: #f6f6f6;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed, .passed .col-result {
+	color: green;
+}
+span.skipped, span.xfailed, .skipped .col-result, .xfailed .col-result {
+	color: orange;
+}
+span.error, span.failed, span.xpassed, .error .col-result, .failed .col-result, .xpassed .col-result  {
+	color: red;
+}
+
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+
+#results-table {
+	border: 1px solid #e6e6e6;
+	color: #999;
+	font-size: 12px;
+	width: 100%
+}
+
+#results-table th, #results-table td {
+	padding: 5px;
+	border: 1px solid #E6E6E6;
+	text-align: left
+}
+#results-table th {
+	font-weight: bold
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+
+.log:only-child {
+	height: inherit
+}
+.log {
+	background-color: #e6e6e6;
+	border: 1px solid #e6e6e6;
+	color: black;
+	display: block;
+	font-family: "Courier New", Courier, monospace;
+	height: 230px;
+	overflow-y: scroll;
+	padding: 5px;
+	white-space: pre-wrap
+}
+div.image {
+	border: 1px solid #e6e6e6;
+	float: right;
+	height: 240px;
+	margin-left: 5px;
+	overflow: hidden;
+	width: 320px
+}
+div.image img {
+	width: 320px
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+	cursor: pointer;
+}
+
+.sort-icon {
+	font-size: 0px;
+	float: left;
+	margin-right: 5px;
+	margin-top: 5px;
+	/*triangle*/
+	width: 0;
+	height: 0;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+}
+
+.inactive .sort-icon {
+	/*finish triangle*/
+	border-top: 8px solid #E6E6E6;
+}
+
+.asc.active .sort-icon {
+	/*finish triangle*/
+	border-bottom: 8px solid #999;
+}
+
+.desc.active .sort-icon {
+	/*finish triangle*/
+	border-top: 8px solid #999;
+}
+</style></head>
+  <body>
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function find_all(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sort_column(elem) {
+    toggle_sort_states(elem);
+    var colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    var key;
+    if (elem.classList.contains('numeric')) {
+        key = key_num;
+    } else if (elem.classList.contains('result')) {
+        key = key_result;
+    } else {
+        key = key_alpha;
+    }
+    sort_table(elem, key(colIndex));
+}
+
+addEventListener("DOMContentLoaded", function() {
+    reset_sort_headers();
+
+    split_extra_onto_two_rows();
+    sort_column(find('.initial-sort'));
+
+    find_all('.col-links a.image').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  var node = elem;
+                                  while (node && !node.classList.contains('results-table-row')) {
+                                      node = node.parentNode;
+                                  }
+                                  if (node != null) {
+                                      if (node.nextSibling &&
+                                          node.nextSibling.classList.contains("extra")) {
+                                          var href = find('.image img', node.nextSibling).src;
+                                          window.open(href);
+                                      }
+                                  }
+                                  event.preventDefault();
+                              }, false)
+    });
+
+    find_all('.image a').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  window.open(find('img', elem).getAttribute('src'));
+                                  event.preventDefault();
+                              }, false)
+    });
+
+    find_all('.sortable').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  sort_column(elem);
+                              }, false)
+    });
+
+});
+
+function sort_table(clicked, key_func) {
+    one_row_for_data();
+    var rows = find_all('.results-table-row');
+    var reversed = !clicked.classList.contains('asc');
+
+    var sorted_rows = sort(rows, key_func, reversed);
+
+    var parent = document.getElementById('results-table-body');
+    sorted_rows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+
+    split_extra_onto_two_rows();
+}
+
+function sort(items, key_func, reversed) {
+    var sort_array = items.map(function(item, i) {
+        return [key_func(item), i];
+    });
+    var multiplier = reversed ? -1 : 1;
+
+    sort_array.sort(function(a, b) {
+        var key_a = a[0];
+        var key_b = b[0];
+        return multiplier * (key_a >= key_b ? 1 : -1);
+    });
+
+    return sort_array.map(function(item) {
+        var index = item[1];
+        return items[index];
+    });
+}
+
+function key_alpha(col_index) {
+    return function(elem) {
+        return elem.childNodes[col_index].firstChild.data.toLowerCase();
+    };
+}
+
+function key_num(col_index) {
+    return function(elem) {
+        return parseFloat(elem.childNodes[col_index].firstChild.data);
+    };
+}
+
+function key_result(col_index) {
+    return function(elem) {
+        var strings = ['Error', 'Failed', 'XFailed', 'XPassed', 'Skipped',
+                       'Passed'];
+        return strings.indexOf(elem.childNodes[col_index].firstChild.data);
+    };
+}
+
+function reset_sort_headers() {
+    find_all('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    find_all('.sortable').forEach(function(elem) {
+        var icon = document.createElement("div");
+        icon.className = "sort-icon";
+        icon.textContent = "vvv";
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove("desc", "active");
+        elem.classList.add("asc", "inactive");
+    });
+}
+
+function toggle_sort_states(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        reset_sort_headers();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function split_extra_onto_two_rows() {
+    find_all('tr.results-table-row').forEach(function(elem) {
+        var new_row = document.createElement("tr")
+        new_row.className = "extra";
+        elem.parentNode.insertBefore(new_row, elem.nextSibling);
+        find_all(".extra", elem).forEach(function (td_elem) {
+            if (find("*:not(.empty)", td_elem)) {
+                new_row.appendChild(td_elem);
+                td_elem.colSpan=5;
+            } else {
+                td_elem.parentNode.removeChild(td_elem);
+            }
+        });
+    });
+}
+
+function one_row_for_data() {
+    find_all('tr.results-table-row').forEach(function(elem) {
+        if (elem.nextSibling.classList.contains('extra')) {
+            toArray(elem.nextSibling.childNodes).forEach(
+                function (td_elem) {
+                    elem.appendChild(td_elem);
+                })
+        } else {
+            var new_td = document.createElement("td");
+            new_td.className = "extra";
+            elem.appendChild(new_td);
+        }
+    });
+}
+</script>
+    <p>Report generated on 28-Oct-2022 at 06:00:59</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Platform</td>
+        <td>Linux-4.8.13-100.fc23.x86_64-x86_64-with-fedora-23-Twenty_Three</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>2.7.11</td></tr></table>
+    <h2>Summary</h2>
+    <p>28 tests ran in 1477.03 seconds.<br/><span class="passed">25 passed</span>, <span class="skipped">0 skipped</span>, <span class="failed">3 failed</span>, <span class="error">0 errors</span>.<br/><span class="skipped">0 expected failures</span>, <span class="failed">0 unexpected passes</span>.</p>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable initial-sort result" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable numeric" col="duration">Duration</th>
+          <th>Links</th></tr></thead>
+      <tbody id="results-table-body">
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_000_Start_FTP_services_all_members</td>
+          <td class="col-duration">122.92</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_001_Verify_the_FTP_service_is_running_all_members</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_001_Verify_the_FTP_service_is_running_all_members&gt;<br/><br/>    @pytest.mark.run(order=2)<br/>    def test_001_Verify_the_FTP_service_is_running_all_members(self):<br/>        FTP.Verify_the_FTP_service_is_running(config.grid_vip)<br/>&gt;       FTP.Verify_the_FTP_service_is_running(config.grid_member1_vip)<br/><br/>FTP_TFTP_HTTP.py:52: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.34.154.100'<br/><br/>    def Verify_the_FTP_service_is_running(IP):<br/>        print("\n Verify the FTP service is running on "+IP+"\n")<br/>        LookFor=".*Sending state change trap for.*- ftp .*FTP Service is working.* from 28 to 26.*"<br/>        print(LookFor)<br/>        logs=logv(LookFor,"/infoblox/var/infoblox.log",IP)<br/>        print(logs)<br/>        print('-------------------------')<br/>        if logs:<br/>            print("Success: Verified the FTP service is running")<br/>            assert True<br/>    <br/>        else:<br/>            print("Failure: Verified the FTP service is not running")<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:88: AssertionError<br/></div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_002_Check_the_status_of_FTP_service_are_running</td>
+          <td class="col-duration">0.23</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_003_Validate_the_log_index_forbidden_by_Options_on_master</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_004_Validate_the_log_index_forbidden_by_Options_on_HA_member</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_005_Validate_the_log_index_forbidden_by_Options_on_SA_member</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_006_grep_vsftpd_and_validate_PID_on_master</td>
+          <td class="col-duration">4.14</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_007_grep_vsftpd_and_validate_PID_on_HA_member</td>
+          <td class="col-duration">4.14</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_008_grep_vsftpd_and_validate_PID_on_SA_member</td>
+          <td class="col-duration">4.10</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_009_Upload_files_through_master</td>
+          <td class="col-duration">1.04</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_010_validate_audit_log_able_to_upload_file</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_011_stop_FTP_service</td>
+          <td class="col-duration">62.94</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_012_Verify_the_FTP_service_is_stopped_all_members</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_013_Check_the_status_of_FTP_service_is_inactive</td>
+          <td class="col-duration">0.28</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_014_Restarted_FTP_services_all_members</td>
+          <td class="col-duration">127.92</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_015_Verify_the_FTP_service_is_running_all_members_after_restarted</td>
+          <td class="col-duration">0.03</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_016_Check_the_status_of_FTP_service_are_running_after_restarted</td>
+          <td class="col-duration">0.22</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_017_Start_and_stop_FTP_services_three_times</td>
+          <td class="col-duration">614.46</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_018_Verify_the_FTP_service_is_running_all_members_after_stop_starting_3_times</td>
+          <td class="col-duration">0.04</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_019_Check_the_status_of_FTP_service_are_running_after_restarted</td>
+          <td class="col-duration">0.24</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_020_Set_FTP_ACLs</td>
+          <td class="col-duration">60.53</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_021_validate_FTP_ACLs_added</td>
+          <td class="col-duration">0.12</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_022_Upload_files_after_configure_ACLs</td>
+          <td class="col-duration">1.11</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_023_validate_able_to_upload_file_after_configure_ACLs</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_024_Stop_and_start_FTP_services_and_validate_the_status</td>
+          <td class="col-duration">196.14</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_024_Stop_and_start_FTP_services_and_validate_the_status&gt;<br/><br/>    @pytest.mark.run(order=25)<br/>    def test_024_Stop_and_start_FTP_services_and_validate_the_status(self):<br/>    <br/>        FTP.stop_FTP_services(0,config.grid_vip,"Master")<br/>        FTP.stop_FTP_services(1,config.grid_member1_vip,"HA member")<br/>        FTP.stop_FTP_services(2,config.grid_member3_vip,"SA member")<br/>        sleep(10)<br/>    <br/>        FTP.start_FTP_services(0,config.grid_vip,"Master")<br/>        FTP.start_FTP_services(1,config.grid_member1_vip,"HA member")<br/>        FTP.start_FTP_services(2,config.grid_member3_vip,"SA member")<br/>    <br/>        FTP.Verify_the_FTP_service_is_running(config.grid_vip)<br/>&gt;       FTP.Verify_the_FTP_service_is_running(config.grid_member1_vip)<br/><br/>FTP_TFTP_HTTP.py:251: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.34.154.100'<br/><br/>    def Verify_the_FTP_service_is_running(IP):<br/>        print("\n Verify the FTP service is running on "+IP+"\n")<br/>        LookFor=".*Sending state change trap for.*- ftp .*FTP Service is working.* from 28 to 26.*"<br/>        print(LookFor)<br/>        logs=logv(LookFor,"/infoblox/var/infoblox.log",IP)<br/>        print(logs)<br/>        print('-------------------------')<br/>        if logs:<br/>            print("Success: Verified the FTP service is running")<br/>            assert True<br/>    <br/>        else:<br/>            print("Failure: Verified the FTP service is not running")<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:88: AssertionError<br/></div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_025_Stop_FTP_services_and_try_to_upload_the_file</td>
+          <td class="col-duration">73.25</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_026_Start_FTP_services_then_restart_member_validate_no_error_in_log</td>
+          <td class="col-duration">142.33</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_026_Start_FTP_services_then_restart_member_validate_no_error_in_log&gt;<br/><br/>    @pytest.mark.run(order=27)<br/>    def test_026_Start_FTP_services_then_restart_member_validate_no_error_in_log(self):<br/>    <br/>        print("======================================")<br/>        print("Start FTP services on HA member \n\n")<br/>        print("======================================")<br/>        FTP.start_FTP_services(1,config.grid_member1_vip,"HA member")<br/>    <br/>        print("======================================")<br/>        print("Start FTP services on SA member \n\n")<br/>        print("======================================")<br/>        FTP.start_FTP_services(2,config.grid_member3_vip,"SA member")<br/>    <br/>        FTP.restart_services(1)<br/>        FTP.restart_services(2)<br/>    <br/>&gt;       FTP.Verify_the_FTP_service_is_running(config.grid_member1_vip)<br/><br/>FTP_TFTP_HTTP.py:290: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.34.154.100'<br/><br/>    def Verify_the_FTP_service_is_running(IP):<br/>        print("\n Verify the FTP service is running on "+IP+"\n")<br/>        LookFor=".*Sending state change trap for.*- ftp .*FTP Service is working.* from 28 to 26.*"<br/>        print(LookFor)<br/>        logs=logv(LookFor,"/infoblox/var/infoblox.log",IP)<br/>        print(logs)<br/>        print('-------------------------')<br/>        if logs:<br/>            print("Success: Verified the FTP service is running")<br/>            assert True<br/>    <br/>        else:<br/>            print("Failure: Verified the FTP service is not running")<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:88: AssertionError<br/></div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_027_cleanup</td>
+          <td class="col-duration">60.55</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr></tbody></table></body></html>

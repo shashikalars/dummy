@@ -1,0 +1,5 @@
+header-arecord,address*,_new_address,fqdn*,_new_fqdn,comment,create_ptr,creator,ddns_principal,ddns_protected,disabled,ttl,view,,,,,,,,,,,
+header-hostaddress,address*,_new_address,parent*,boot_file,boot_server,broadcast_address,configure_for_dhcp,configure_for_dns,deny_bootp,domain_name,domain_name_servers,ignore_dhcp_param_request_list,lease_time,mac_address,match_option,network_view,next_server,option_logic_filters,pxe_lease_time,pxe_lease_time_enabled,routers,use_for_ea_inheritance,view
+header-hostrecord,fqdn*,_new_fqdn,addresses,aliases,cli_credentials,comment,configure_for_dns,_new_configure_for_dns,created_timestamp,creator_member,ddns_protected,disabled,enable_discovery,enable_immediate_discovery,ipv6_addresses,network_view,override_cli_credentials,override_credential,snmpv1v2_credential,snmpv3_credential,ttl,use_snmpv3_credential,view
+hostrecord,[10.rfe_7507.com,,1.1.1.10,,,,TRUE,,,,FALSE,FALSE,TRUE,FALSE,,default,FALSE,FALSE,,,,FALSE,default
+hostaddress,1.1.1.10,,[10.rfe_7507.com,,,,FALSE,TRUE,,,,,,,,default,,,,,,TRUE,default

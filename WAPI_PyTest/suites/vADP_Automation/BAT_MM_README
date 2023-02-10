@@ -1,0 +1,16 @@
+Usage: 	./BAT_MM <SSH IP> <LAN IP> [<RuleSet_File|NIOS>]
+
+Example: 
+	./BAT_MM 10.36.0.154 10.34.9.51 NIOS
+	./BAT_MM 10.36.0.154 10.34.9.51 /import/qaddi/Olympic-Proj/ET_Rules/latest_et_rules_file.txt 
+
+Prerequiste:
+============
+- Grid should be configured with TP service running
+- Upload ruleset to the Grid before running the test
+- Add "REA DNS" (10.39.16.160) as Forwarder and Enable Forwarder Only and Allow Recursion in Grid DNS Properties
+- Enable remote console access on the Grid
+
+What this script does (Script Algorithm):
+========================================
+- This program will enable monitor mode and execute a basic subset of test cases to quickly validate a NIOS rule set.

@@ -1,0 +1,21 @@
+Physical Usage: ./adp_commands_physical.pl <SSH IP>
+Virtual Usage: ./adp_commands_virtual.pl <SSH IP>
+
+Physical Example: ./adp_commands_physical.pl 10.36.0.199
+Virtual Example: ./adp_commands_virtual.pl 10.36.0.199
+
+Prerequiste:
+============
+Grid should be configured with TP service running
+Upload ruleset to the Grid before running the test
+Enable remote console access on the Grid
+The script 'admin_console.exp' should present in the path, where its being executed
+
+What this script does (Script Algorithm):
+========================================
+- Validates the given <SSH IP> is in IPv4 format or not
+- Executes all the adp and adp-debug NIOS CLI commands using 'admin_console.exp' Expect script
+        a) All positive scenario commands and its options - Validates the specific output of the command
+        b) All negative scenario commands and its options - Validates the specific output of the command
+- Calculates the total passed and failed cases count
+- Displays the test summary

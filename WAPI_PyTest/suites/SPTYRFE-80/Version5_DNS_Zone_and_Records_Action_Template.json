@@ -1,0 +1,46 @@
+{
+   "version": "5.0",
+   "name": "Version5_DNS_Zone_and_Records_Action_Template",
+   "event_type": ["RPZ","ADP","DNS_RECORD","DNS_ZONE","NETWORK_IPV4","NETWORK_IPV6","FIXED_ADDRESS_IPV4","LEASE","HOST_ADDRESS_IPV4","DISCOVERY_DATA"],
+   "type": "REST_EVENT",
+      "content_type": "application/json",
+   "vendor_identifier": "extattrsgg WAPI",
+   "headers": {
+       "User-Agent": "Outbound API 0.1 rrtest"
+   },
+   "transport": {
+       "path": "/wapi/v2.3",
+       "content_type": "application/json",
+       "override_path": true
+   },
+   "functions": {
+      "is_ipv4_address": {
+         "steps": [
+            {
+               "operation": "CONDITION",
+               "condition": {
+                  "statements": [
+                     {
+                        "left": "${L:A:address}",
+                        "op": "!~",
+                        "right": ":"
+                     }
+                  ],
+                  "condition_type": "AND",
+                  "eval": "${XC:ASSIGN:{L:result}:{B:true}}",
+                  "else_eval": "${XC:ASSIGN:{L:result}:{B:false}}"
+               }
+            }
+         ]
+      }
+
+   },
+   "steps": [
+       {
+         "operation": "FUNCTION",
+         "function_name": "is_ipv4_address",
+         "body": "${XC:ASSIGN:{L:address}:{S:10.0.0.1}}"
+      }
+
+   ]
+}

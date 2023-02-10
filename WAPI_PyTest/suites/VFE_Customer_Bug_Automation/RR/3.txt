@@ -1,0 +1,21 @@
+Packet-Type=4
+Packet-Dst-Port=1813
+Acct-Session-Id = "99nofields-d72"
+#Acct-Status-Type = INTERIM
+Acct-Status-Type = Start
+Acct-Authentic = RADIUS
+User-Name = "usernofiled456"
+NAS-Port = 1813
+NAS-IP-Address = 10.36.1.255 
+Called-Station-Id = 111977
+Calling-Station-Id = 111978
+Framed-IP-Address = 10.36.6.76
+Framed-IPv6-Address = 2001:550:40a:2500::97 
+Infoblox-LocalId  = E0CB4E80E766
+Connect-Info = "CONNECT 48Mbps 802.11b"
+Acct-Session-Time = 45
+Class= 0x13
+Acct-Terminate-Cause = User-Request
+3GPP-IMSI=500
+3GPP-IMEISV=201238908747520
+

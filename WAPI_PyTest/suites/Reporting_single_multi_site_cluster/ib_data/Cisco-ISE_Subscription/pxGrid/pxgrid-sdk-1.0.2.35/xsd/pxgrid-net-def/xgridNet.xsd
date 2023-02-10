@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xgrid="http://www.cisco.com/pxgrid" xmlns="http://www.cisco.com/pxgrid/net" targetNamespace="http://www.cisco.com/pxgrid/net" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<!-- ###############################################################################
+     xgridFlowsModel Schema
+     ############################################################################### -->
+	<xs:complexType name="FlowElement">
+		<xs:sequence>
+			<xs:element name="user" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+			<xs:choice>
+				<xs:element name="ipInterface" type="xgrid:IPInterfaceIdentifier"/>
+				<xs:element name="macAddress" type="xgrid:MACAddress"/>
+			</xs:choice>
+			<xs:element name="protocolPortNumber" type="xs:unsignedInt" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Flow">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence>
+					<xs:element name="src" type="FlowElement" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="dst" type="FlowElement" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="protocol" type="xs:token" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="applicationId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="statistics" type="FlowStatistics" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FlowListEntry">
+		<xs:sequence>
+			<xs:element name="gid" type="xgrid:ObjectIdentifier"/>
+			<xs:element name="object" type="Flow"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FlowStatistics">
+		<xs:sequence>
+			<xs:element name="bytesRecv" type="xs:unsignedLong" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="bytesSent" type="xs:unsignedLong" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="framesRecv" type="xs:unsignedLong" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="framesSent" type="xs:unsignedLong" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ###############################################################################
+     xgridPhysModel Schema
+     ############################################################################### -->
+	<!-- types of L2 connections -->
+	<xs:simpleType name="L2-8023-InterfaceType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="enet"/>
+			<xs:enumeration value="1genet"/>
+			<xs:enumeration value="10genet"/>
+			<xs:enumeration value="100genet"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="L2-80211-InterfaceType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="11n"/>
+			<xs:enumeration value="11a"/>
+			<xs:enumeration value="11gb"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="L2-ATM-InterfaceType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="lowSpeed"/>
+			<xs:enumeration value="highSpeed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Virtual-InterfaceType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="virtual-1g"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="L2-80211-Params">
+		<xs:sequence>
+			<xs:element name="apId" type="xgrid:ObjectIdentifier" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="ssid" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="L2-8023-Params">
+		<xs:sequence>
+			<!-- placeholder for enet specific parameters for enet ports -->
+			<xs:element name="param1" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="L2-ATM-Params">
+		<xs:sequence>
+			<!-- placeholder for specific parameters for atm ports -->
+			<xs:element name="xpi" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="xci" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="circuitID" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="remoteID" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="defaultString" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VirtualParams">
+		<xs:sequence>
+			<!-- placeholder for virtual specific parameters for virtual ports -->
+			<xs:element name="param1" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- this is the base class for all ports that has an associated port type -->
+	<xs:complexType name="Port">
+		<xs:sequence>
+			<xs:element name="portId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="atmType" type="L2-ATM-InterfaceType"/>
+				<xs:element name="enetType" type="L2-8023-InterfaceType"/>
+				<xs:element name="wifiType" type="L2-80211-InterfaceType"/>
+				<xs:element name="virtualType" type="Virtual-InterfaceType"/>
+			</xs:choice>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="atmParams" type="L2-ATM-Params"/>
+				<xs:element name="enetParams" type="L2-8023-Params"/>
+				<xs:element name="wifiParams" type="L2-80211-Params"/>
+				<xs:element name="virtualParams" type="VirtualParams"/>
+			</xs:choice>
+			<xs:element name="adminState" type="xgrid:AdminState" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PortList">
+		<xs:sequence>
+			<xs:element name="port" type="Port" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- this identifies both the physical device (mgmt address) and the port -->
+	<xs:complexType name="DevicePortIdentifier">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="deviceGID" type="xgrid:ObjectIdentifier"/>
+				<xs:element name="deviceMgmtIntfID" type="xgrid:IPInterfaceIdentifier"/>
+			</xs:choice>
+			<xs:element name="port" type="Port"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VLANIdentifier">
+		<xs:sequence>
+			<xs:element name="num" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Interface">
+		<xs:sequence>
+			<xs:element name="identifier" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="ipIntfID" type="xgrid:IPInterfaceIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="macAddress" type="xgrid:MACAddress" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="vlan" type="VLANIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="deviceAttachPt" type="DevicePortIdentifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InterfaceList">
+		<xs:sequence>
+			<xs:element name="interface" type="Interface" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="NetworkOSType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="ios"/>
+			<xs:enumeration value="fwsm"/>
+			<xs:enumeration value="asa"/>
+			<xs:enumeration value="ips"/>
+			<xs:enumeration value="pix"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UserOSType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="appleOS"/>
+			<xs:enumeration value="android"/>
+			<xs:enumeration value="linux"/>
+			<xs:enumeration value="windowsXP"/>
+			<xs:enumeration value="windowsVista"/>
+			<xs:enumeration value="windows7"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ConfigurationState">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="undefined"/>
+			<xs:enumeration value="committed"/>
+			<xs:enumeration value="deployed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Device">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence>
+					<xs:element name="osType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="osVersion" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="imageName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="mgmtInterface" type="xgrid:IPInterfaceIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="portList" type="PortList" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="interfaceList" type="InterfaceList" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="modelNumber" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<!-- a virtual device could be a vm, and the parent device is the vm server -->
+					<xs:element name="virtualDeviceList" type="Device" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NetworkElement">
+		<xs:complexContent>
+			<xs:extension base="Device">
+				<xs:sequence>
+					<xs:element name="fullConfig" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="configState" type="ConfigurationState" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="UserDevice">
+		<xs:complexContent>
+			<xs:extension base="Device">
+				<xs:sequence>
+					<!-- the list of users that are currently active on the device -->
+					<xs:element name="userList" type="xgrid:ObjectIdentifierList" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DeviceCluster">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence>
+					<xs:element name="deviceList" type="xgrid:ObjectIdentifierList" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ###############################################################################
+     xgridPostureModel Schema
+     ############################################################################### -->
+	<!-- this is a posture record that is configured by an administrator and then each device is assessed against one or more posture definitions -->
+	<!-- this is equivalent to an ISE profile -->
+	<xs:complexType name="Posture">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence>
+					<!-- the set of user's that have sessions that have been assessed with this posture -->
+					<xs:element name="userList" type="UserListEntry" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- the set of user session's that have been assessed with this posture -->
+					<xs:element name="sessionList" type="SessionListEntry" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PostureEntry">
+		<xs:sequence>
+			<xs:element name="gid" type="xgrid:ObjectIdentifier"/>
+			<xs:element name="object" type="Posture"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- this is a posture assessement state, as assessment occurs -->
+	<xs:complexType name="PostureAssessment">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEvent">
+				<xs:sequence>
+					<!-- a pointer to the posture record this assessment is associated with -->
+					<xs:element name="postureGID" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="status" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ###############################################################################
+     xgridTopoModel Schema
+     ############################################################################### -->
+	<xs:simpleType name="L2Events">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="8021x"/>
+			<xs:enumeration value="cdp"/>
+			<xs:enumeration value="lldp"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IPEvents">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="acl"/>
+			<xs:enumeration value="forwarding"/>
+			<xs:enumeration value="routeLookup"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="AuthenticationTypeAttrs">
+		<xs:sequence>
+			<xs:element name="authenType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="authenIdentifier" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RADIUSAVPair">
+		<xs:sequence>
+			<xs:element name="attrName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="attrValue" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- The following states are defined for a session
+Authenticating: not tracked unless switch syslog is sent to ISE, established when we receive the "dot1x authentication started" event from the switch
+Authenticated: RADIUS authentication succeed
+Postured: ISE said Posture completed
+Started: ISE said RADIUS accounting started, more precisely it is the switch/WLC that sends accounting start to ISE, official start of session, somewhat similar to WLC Running
+Disconnected: ISE receives accounting stop from switch/WLC
+-->
+	<xs:simpleType name="SessionState">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="Authenticating"/>
+			<xs:enumeration value="Authenticated"/>
+			<xs:enumeration value="Postured"/>
+			<xs:enumeration value="Started"/>
+			<xs:enumeration value="Disconnected"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Session">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence>
+					<xs:element name="state" type="SessionState" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="RADIUSAttrs" type="RADIUSAVPair" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="interface" type="Interface" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="authenTypeAttrs" type="AuthenticationTypeAttrs" minOccurs="0" maxOccurs="1"/>
+					<!-- you can have objects or objectGID (i.e. pointers) but no need for both -->
+					<xs:element name="user" type="User" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="userGID" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="assessedPostureEvent" type="PostureAssessment" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="assessedPostureEventGID" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="endpointProfile" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="securityGroup" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="EPSStatus" type="EPSStatusType" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="ANCStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SessionListEntry">
+		<xs:sequence>
+			<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="object" type="Session" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ###############################################################################
+     xgridUserModel Schema
+     ############################################################################### -->
+	<xs:complexType name="Group">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence>
+					<xs:element name="type" type="GroupType" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="GroupType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ActiveDirectory"/>
+			<xs:enumeration value="Identity"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EPSStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="quarantine"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GroupListEntry">
+		<xs:sequence>
+			<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="object" type="Group" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Role">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RoleListEntry">
+		<xs:sequence>
+			<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="object" type="Role" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UserListEntry">
+		<xs:sequence>
+			<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="object" type="User" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="User">
+		<xs:complexContent>
+			<xs:extension base="xgrid:Subject">
+				<xs:sequence>
+					<xs:element name="identifier" type="xgrid:UserIdentity" minOccurs="1" maxOccurs="unbounded"/>
+					<xs:element name="ADUserDNSDomain" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="ADHostDNSDomain" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="ADUserNetBIOSName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="ADHostNetBIOSName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="sessionList" type="SessionListEntry" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="flowList" type="FlowListEntry" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="groupList" type="GroupListEntry" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="roleList" type="RoleListEntry" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="UserList">
+		<xs:sequence>
+			<xs:element name="user" type="User" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

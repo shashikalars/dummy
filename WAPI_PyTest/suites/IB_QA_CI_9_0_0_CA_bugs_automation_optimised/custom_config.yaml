@@ -1,0 +1,9 @@
+username: admin
+password: infoblox
+auth_server: 10.197.38.101
+resolver: 10.195.3.10
+ip_range: 10.120.23.
+ipv4network1: 10.0.0.0/8
+ipv4network2: 20.0.0.0/8
+scp_dest_path: /tmp/
+

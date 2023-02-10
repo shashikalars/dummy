@@ -1,0 +1,21 @@
+19 physical & 17 virtual nodes. NIOS=9.0.0-48288-efba5fbb09d2 VIP=10.34.128.20
+VN (V)IP @      VRID PN LAN IP @      MGMT IP @    Hardware Lab ID  Passwd   Status
+ 0 10.34.128.10       0 10.34.128.10  10.36.0.240  IB-4010  unknown 1a8d89a1 OFFLINE
+ 1 10.34.128.11   10  1 10.34.128.203 10.36.2.178  PT-2200  unknown faca6b13 OFFLINE
+ 1                10  2 10.34.128.204 10.36.2.180  PT-2200  unknown faca6b13 OFFLINE
+ 2                11  3 10.34.128.207 10.36.173.10 IB-V1415 unknown 1734d255 OFFLINE
+ 2 10.34.128.12   11  4 10.34.128.208 10.36.192.4  IB-V1415 unknown ce8e27b8 OFFLINE
+ 3 10.34.128.13       5 10.34.128.13               CP-V1405 unknown 825323fa OFFLINE
+ 4 10.34.128.14       6 10.34.128.14               CP-V1405 unknown ffe91c30 OFFLINE
+ 5 10.34.128.15       7 10.34.128.15               ND-V805  unknown 45676af8 OFFLINE
+ 6 10.34.128.16       8 10.34.128.16               ND-V2205 unknown 59df9f52 OFFLINE
+ 7 10.34.128.17       9 10.34.128.17  10.36.1.156  IB-4030  unknown c33b438e OFFLINE
+ 8 10.34.128.18      10 10.34.128.18  10.36.1.97   PT-1400  unknown bdfc611a OFFLINE
+ 9 10.34.128.19      11 10.34.128.19               IB-V1405 unknown 7ce4724f OFFLINE
+10 10.34.128.20      12 10.34.128.20               IB-1410  unknown 187373e1 ONLINE
+11 10.34.128.21      13 10.34.128.21               IB-V1415 unknown f103e8f1 OFFLINE
+12 10.34.128.22      14 10.34.128.22               CP-V1405 unknown 5242ea55 OFFLINE
+13 10.34.128.23      15 10.34.128.23               PT-4000  unknown 1810bd7e OFFLINE
+14 10.34.128.24      16 10.34.128.24  10.36.3.160  IB-4030  unknown fa2b0678 OFFLINE
+15 10.34.128.25      17 10.34.128.25               IB-V1415 unknown 2f0ac4fe OFFLINE
+16 10.34.128.26      18 10.34.128.26               IB-FLEX  unknown 6c617e77 OFFLINE

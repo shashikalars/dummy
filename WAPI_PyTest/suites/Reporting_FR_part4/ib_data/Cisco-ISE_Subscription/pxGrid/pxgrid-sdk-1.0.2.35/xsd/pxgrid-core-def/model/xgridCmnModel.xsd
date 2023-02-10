@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:simpleType name="ObjectIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ObjectIdentifierList">
+		<xs:list itemType="ObjectIdentifier"/>
+	</xs:simpleType>
+	<!-- -anto:2014NOV14- Generic attributes related -->
+	<xs:simpleType name="GenericAttributeValueType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="string"/>
+			<xs:enumeration value="number"/>
+			<xs:enumeration value="boolean"/>
+			<xs:enumeration value="raw"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GenericAttribute">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attribute name="name" type="xs:token" use="required"/>
+				<xs:attribute name="type" type="GenericAttributeValueType" default="string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="GenericAttributeList">
+		<xs:sequence>
+			<xs:element name="attribute" type="GenericAttribute" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- end -anto:2014NOV14- Generic attributes related -->
+	<xs:complexType name="BaseObject" abstract="true">
+		<xs:sequence>
+			<xs:element name="schemaVersion" type="xs:decimal" default="1.0" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="partialObject" type="xs:boolean" default="false" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="gid" type="ObjectIdentifier" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="lastUpdateTime" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+			<!-- if ttl is missing or ttl=0 then the object is persistent for ever, if ttl != 0 then the use of the object should only be done when object-timestamp+ttl <= current timestamp -->
+			<!-- saml uses validUntil so consider doing the same -->
+			<xs:element name="ttlInMins" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+			<!-- an optional pointer to this object's parent -->
+			<xs:element name="parentGID" type="ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+			<!-- an optional hex identifier of all zones that this object belongs to 
+				Default (Value 0 or missing) == the object is belongs to all zones
+				0x0001 == this object is part of zones identified by Bit 0
+				0x0002 == this object is part of zones identifier by Bit 1
+				0x0003 == this object is part of zones 's identified by Bits 0 and Bit 1 -->
+			<xs:element name="memberOfZones" type="xs:hexBinary" minOccurs="0" maxOccurs="1"/>
+			<!-- -anto:2014NOV14- Generic attributes related -->
+			<xs:element name="extraAttributes" type="GenericAttributeList" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="Protocol">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="ospf"/>
+			<xs:enumeration value="bgp"/>
+			<xs:enumeration value="udp"/>
+			<xs:enumeration value="tcp"/>
+			<xs:enumeration value="eigrp"/>
+			<xs:enumeration value="other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="AdminState">
+		<xs:sequence>
+			<xs:element name="enabled" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="MACAddress">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-f0-9]{2}[:][a-f0-9]{2}[:][a-f0-9]{2}[:][a-f0-9]{2}[:][a-f0-9]{2}[:][a-f0-9]{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="IPInterfaceIdentifier">
+		<xs:sequence>
+			<xs:element name="domainName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="ipAddress" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="isNatAddress" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="realIpAddress" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="ipVersion" default="IPv4" minOccurs="0" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="IPv4"/>
+						<xs:enumeration value="IPv6"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="IID">
+		<xs:restriction base="xs:anyURI"/>
+	</xs:simpleType>
+	<xs:simpleType name="IIDList">
+		<xs:list itemType="IID"/>
+	</xs:simpleType>
+	<xs:complexType name="TimeWindow">
+		<xs:sequence>
+			<xs:element name="begin" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="end" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TimeWindowMatch">
+		<xs:complexContent>
+			<xs:extension base="TimeWindow">
+				<xs:sequence>
+					<xs:element name="beginOp" type="Operator" default="gteq" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="endOp" type="Operator" default="lteq" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Subject" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="BaseObject">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Principal" abstract="true">
+		<xs:sequence>
+			<xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- a zone is a multi-tenancy concept that allows an object to be part of one or more collections of objects -->
+	<!-- e.g. Zone1 = customer A, Zone2 = customer B, ZoneAll = all customers belonging to service provider X -->
+	<!-- to get objects belonging to Zone1 the BaseObjectRequest would have a IID that maps memberOfZones=0x0001 -->
+	<!-- to get objects belonging to ZoneAll the BaseObjectRequest would have a IID that maps memberOfZones=0xffff -->
+	<xs:complexType name="Zone">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="bitPosition" type="xs:unsignedInt"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="Result">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="ok"/>
+			<xs:enumeration value="timeout"/>
+			<xs:enumeration value="failed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Operator">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="eq"/>
+			<xs:enumeration value="contains"/>
+			<xs:enumeration value="does-not-contains"/>
+			<xs:enumeration value="neq"/>
+			<xs:enumeration value="lteq"/>
+			<xs:enumeration value="gteq"/>
+			<xs:enumeration value="gt"/>
+			<xs:enumeration value="lt"/>
+			<xs:enumeration value="and"/>
+			<xs:enumeration value="or"/>
+			<xs:enumeration value="xor"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RelnList">
+		<xs:list itemType="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="IdentityType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ActiveDirectory"/>
+			<xs:enumeration value="IEEE8021x"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="UserIdentity">
+		<xs:complexContent>
+			<xs:extension base="Principal">
+				<xs:sequence>
+					<xs:element name="type" type="IdentityType" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="GridTopicStatus">
+                <xs:restriction base="xs:token">
+                        <xs:enumeration value="CreatePending"/>
+                        <xs:enumeration value="Approved"/>
+                        <xs:enumeration value="Denied"/>
+                        <xs:enumeration value="Enabled"/>
+                        <xs:enumeration value="Disabled"/>
+                        <xs:enumeration value="UpdatePending"/>
+			<xs:enumeration value="Deleted"/>
+                </xs:restriction>
+	</xs:simpleType>
+        <xs:simpleType name="GridTopicType">
+                <xs:restriction base="xs:token">
+                        <xs:enumeration value="SystemDefined"/>
+                        <xs:enumeration value="UserDefined"/>
+			<xs:enumeration value="MetaTopic"/>
+			<xs:enumeration value="SubTopic"/>
+        	</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+

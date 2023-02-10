@@ -1,0 +1,11 @@
+header-ipv6optiondefinition,code*,name*,_new_name,space*,_new_space,type*,,,,,,,,,,,,,,,,,,,,,,,
+header-ipv6optionspace,name*,_new_name,comment,enterprise_number,ms_server,_new_ms_server,,,,,,,,,,,,,,,,,,,,,,,
+ipv6optionspace,v6_space1,,,22,,,,,,,,,,,,,,,,,,,,,,,,,
+ipv6optiondefinition,9,fqdn,,v6_space1,,T_STRING,,,,,,,,,,,,,,,,,,,,,,,
+header-ipv6optionfilter,name*,_new_name,comment,expression,lease_time,option_space,OPTION-v6_space1-9,,,,,,,,,,,,,,,,,,,,,,
+ipv6optionfilter,IPv6_filter001,,vsinha123,"(option dhcp6.fqdn=""test"")",20,v6_space1,test,,,,,,,,,,,,,,,,,,,,,,
+ipv6optionfilter,IPv6_filter002,,,"(option dhcp6.fqdn=""test"")",20,DHCPv6,,,,,,,,,,,,,,,,,,,,,,,
+header-ipv6networkcontainer,address*,cidr*,always_update_dns,comment,ddns_domainname,ddns_ttl,discovery_exclusion_range,discovery_member,domain_name,domain_name_servers,enable_ddns,enable_discovery,enable_option81,generate_hostname,mgm_private,network_view,option_logic_filters,preferred_lifetime,recycle_leases,update_dns_on_lease_renewal,valid_lifetime,zone_associations,,,,,,,
+ipv6networkcontainer,30::,64,TRUE,,,,,,,,,,,,FALSE,default,.com.infoblox.dns.dhcp_option_filter/IPv6_filter001,,,,,<empty>,,,,,,,
+header-ipv6fixedaddress,address_type,cli_credentials,comment,disabled,domain_name,domain_name_servers,duid,enable_discovery,enable_immediate_discovery,ip_address,_new_ip_address,ipv6_prefix,_new_ipv6_prefix,ipv6_prefix_bits,_new_ipv6_prefix_bits,match_option,ms_server,_new_ms_server,name,network_view,option_logic_filters,override_cli_credentials,override_credential,parent,preferred_lifetime,snmpv1v2_credential,snmpv3_credential,use_snmpv3_credential,valid_lifetime
+ipv6fixedaddress,ADDRESS,,,FALSE,,,00:02:00:01:02:03:04:05:07:a4,TRUE,FALSE,23::7,,,,,,DUID,,,,default,.com.infoblox.dns.dhcp_option_filter/IPv6_filter001,FALSE,FALSE,23::/64,,,,FALSE,

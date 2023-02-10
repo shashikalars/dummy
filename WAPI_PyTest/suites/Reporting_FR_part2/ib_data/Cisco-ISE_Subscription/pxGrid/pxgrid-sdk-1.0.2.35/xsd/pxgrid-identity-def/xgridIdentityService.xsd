@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/identity" xmlns:xgrid="http://www.cisco.com/pxgrid" xmlns:xgridNet="http://www.cisco.com/pxgrid/net" targetNamespace="http://www.cisco.com/pxgrid/identity" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<xs:import namespace="http://www.cisco.com/pxgrid/net" schemaLocation="../../../target/shared/pxgrid-net-def/xgridNet.xsd"/>
+	<!-- ###############################################################################
+     Capability Definition
+     ############################################################################### -->
+	<xs:complexType name="SessionDirectoryCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IdentityGroupCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="Operation">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="getSessionDirectoryHostnames"/>
+			<xs:enumeration value="getSessionListByTime"/>
+			<xs:enumeration value="getActiveSessionByIPAddress"/>
+			<xs:enumeration value="getSessionByGID"/>
+			<xs:enumeration value="getIdentityGroup"/>
+			<xs:enumeration value="getIdentityGroupList"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getSessionDirectoryHostnamesRequest
+	Description: Get a list of session directory hostnames.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSessionDirectoryHostnamesRequest" type="GetSessionDirectoryHostnamesRequest"/>
+	<xs:complexType name="GetSessionDirectoryHostnamesRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getSessionDirectoryHostnamesResponse
+		Description: Return the list of session directory hostnames.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSessionDirectoryHostnamesResponse" type="GetSessionDirectoryHostnamesResponse"/>
+	<xs:complexType name="GetSessionDirectoryHostnamesResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="hostnames">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="hostname" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getSessionListByTimeRequest
+	Description: Get a list of sessions that have changed state (created, modified or deleted) since the specified time
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSessionListByTimeRequest" type="GetSessionListByTimeRequest"/>
+	<xs:complexType name="GetSessionListByTimeRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="timeWindow" type="xgrid:TimeWindow" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="contentFilter" type="xgrid:BaseContentFilter" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getSessionListByTimeResponse
+		Description: Return the list of sessions changed since the specified time
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSessionListByTimeResponse" type="GetSessionListByTimeResponse"/>
+	<xs:complexType name="GetSessionListByTimeResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="sessions">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="session" type="xgridNet:Session" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Method: getActiveSessionListByIPAddressRequest
+		Description: Get a session for an IP Address
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getActiveSessionByIPAddressRequest" type="GetActiveSessionByIPAddressRequest"/>
+	<xs:complexType name="GetActiveSessionByIPAddressRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ipInterface" type="xgrid:IPInterfaceIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- Description: Get the active session associated with an IP address -->
+	<xs:element name="getActiveSessionByIPAddressResponse" type="GetActiveSessionByIPAddressResponse"/>
+	<xs:complexType name="GetActiveSessionByIPAddressResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="session" type="xgridNet:Session" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Method: getSessionByGIDRequest
+		Description: Get a session for GID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSessionByGIDRequest" type="GetSessionByGIDRequest"/>
+	<xs:complexType name="GetSessionByGIDRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Method: getSessionByGIDResponse
+		Description: Returns a session that matches the GID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSessionByGIDResponse" type="GetSessionByGIDResponse"/>
+	<xs:complexType name="GetSessionByGIDResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="session" type="xgridNet:Session" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ###############################################################################
+     Notifications Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: SessionNotification
+		Description: Includes one or more sessions as part of the publish of session notifications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="sessionNotification" type="SessionNotification"/>
+	<xs:complexType name="SessionNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="sessions">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="session" type="xgridNet:Session" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- IdentityGroup -->
+	<xs:element name="getIdentityGroupRequest" type="GetIdentityGroupRequest"/>
+	<xs:complexType name="GetIdentityGroupRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="user" type="xgridNet:User" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="getIdentityGroupResponse" type="GetIdentityGroupResponse"/>
+	<xs:complexType name="GetIdentityGroupResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="user" type="xgridNet:User" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="getIdentityGroupListRequest" type="GetIdentityGroupListRequest"/>
+	<xs:complexType name="GetIdentityGroupListRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="getIdentityGroupListResponse" type="GetIdentityGroupListResponse"/>
+	<xs:complexType name="GetIdentityGroupListResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="users">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="user" type="xgridNet:User" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="identityGroupNotification" type="IdentityGroupNotification"/>
+	<xs:complexType name="IdentityGroupNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="users">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="user" type="xgridNet:User" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	
+	<!-- SXP -->
+	<xs:complexType name="SXPBinding">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObject">
+				<xs:sequence>
+					<xs:element name="ipPrefix" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="tag" type="xs:int" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="peerSequence" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="SXPBindingEventType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="add"/>
+			<xs:enumeration value="delete"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="SXPBindingEvent">
+		<xs:sequence>
+			<xs:element name="type" type="SXPBindingEventType"  minOccurs="1" maxOccurs="1"/>
+			<xs:element name="binding" type="SXPBinding" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="SXPBindingNotification" type="SXPBindingNotification"/>
+	<xs:complexType name="SXPBindingNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="events">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="event" type="SXPBindingEvent" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="SXPGetAllLocalAndLearnedBindingsRequest" type="SXPGetAllLocalAndLearnedBindingsRequest"/>
+	<xs:complexType name="SXPGetAllLocalAndLearnedBindingsRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="SXPGetAllLocalAndLearnedBindingsResponse" type="SXPGetAllLocalAndLearnedBindingsResponse"/>
+	<xs:complexType name="SXPGetAllLocalAndLearnedBindingsResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="bindings">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="binding" type="SXPBinding" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+</xs:schema>

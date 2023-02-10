@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--###########################################################################
+     Common Schema for all Publish, Subscribe, Query operations on the grid
+##############################################################################-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="xgridCmnModel.xsd"/>
+	<xs:include schemaLocation="xgridFilterModel.xsd"/>
+	<xs:include schemaLocation="xgridMsgModel.xsd"/>
+	<xs:simpleType name="Operation">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="publish"/>
+			<xs:enumeration value="unpublish"/>
+			<xs:enumeration value="subscribe"/>
+			<xs:enumeration value="unsubscribe"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:group name="CapabilityGroup">
+		<xs:sequence>
+			<xs:element name="version" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<!-- the license associated with the grid node -->
+			<xs:element name="license" type="License" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="queryMethods" type="BaseOperationList" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="publishNotifications" type="BaseNotificationList" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="vendorPlatform" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="Capability" abstract="true">
+		<xs:sequence>
+			<!-- id is required for registration/unregister/modifying capabilities -->
+			<xs:element name="id" type="xs:unsignedInt" minOccurs="1" maxOccurs="1"/>
+			<!-- name is a display name for the capability -->
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<!-- ttl is the number of minutes that this capability should be registered in the gi grid. Undefined or 0 indicates the capability should be persitent until unpublished by the node -->
+			<xs:element name="ttlInMins" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+			<!-- content filters are value based filters that can be specified when publishing/subscribing a capability -->
+			<xs:element name="contentFilter" type="BaseContentFilter" minOccurs="0" maxOccurs="1"/>
+			<xs:group ref="CapabilityGroup" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- -anto:2015FEB13- adding a type for referencing a capability, starting 
+		this version use capabilityRef element wherever a capability is referred. 
+		make the capabilityRef element optional in order to support backward compatibility -->
+	<xs:complexType name="CapabilityReference">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	<!-- -anto:2015FEB17- adding a type for capturing capability details in a generic way -->
+	<xs:complexType name="GenericCapability">
+	   <xs:complexContent>
+	       <xs:extension base="Capability">
+	           <xs:sequence/>
+	       </xs:extension>
+	   </xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CapabilityPolicy">
+		<xs:sequence>
+			<xs:element name="allowedNode" type="GINodeDescriptor" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CapabilityLicensePermission">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:unsignedInt" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="license" type="License" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="allowedPublishCapabilityLicenses" type="CapabilityLicense" minOccurs="1" maxOccurs="unbounded"/>
+				<xs:element name="allowedSubscribeCapabilityLicenses" type="CapabilityLicense" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="License">
+		<xs:sequence>
+			<xs:element name="licenseKey" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="expirationDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CapabilityLicense">
+		<xs:sequence>
+			<xs:element name="license" type="License" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="count" type="xs:int" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="capability" type="Capability" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CapabilityPolicyDefinition">
+		<xs:sequence>
+			<!-- policy must have a name. Its the key of the policy -->
+			<xs:element name="policyName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<!-- the allowed GI nodes that are allowed to access the list of capabilities from the set of publishers defined -->
+			<!-- if not specified then any authenticated GINode is allowed access to thse capabilities -->
+			<xs:element name="allowedSubscriberNodes" type="CapabilityPolicy" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- the subscribers that provide these capabilities -->
+			<!-- if not specific then any capability published from any source is allowed to be access by the allowed nodes -->
+			<xs:element name="allowedPublisherNodes" type="CapabilityPolicy" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- the set of capabilities covered by this policy definition -->
+			<xs:element name="capability" type="Capability" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CapabilityState">
+		<xs:sequence>
+			<!-- the capability -->
+			<xs:element name="capability" type="Capability" minOccurs="1" maxOccurs="1"/>
+			<!-- the state of the capability (true == enabled) -->
+			<xs:element name="enabled" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<!-- associated policy list -->
+			<xs:element name="policyList" type="CapabilityPolicyList" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="supportedFilters" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="status" type="GridTopicStatus" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="type" type="GridTopicType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="creatorJID" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CapabilityStatus">
+		<xs:sequence>
+			<xs:element name="state" type="CapabilityState" minOccurs="1" maxOccurs="1"/>
+			<!-- the current set of subscribes to the capability -->
+			<xs:element name="subscriberNodeList" type="NodeStateList" minOccurs="0" maxOccurs="1"/>
+			<!-- the current set of publishers to the capability -->
+			<xs:element name="publisherNodeList" type="NodeStateList" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="filterSubscriberNodeList" type="MessageFilterNodeStateList" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NodeStateList">
+		<xs:sequence>
+			<xs:element name="nodeState" type="GINodeState" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MessageFilter">
+		<xs:sequence>
+			<xs:element name="filterName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="filterType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="contentFilter" type="BaseContentFilter" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MessageFilterNodeStateList">
+		<xs:sequence>
+			<xs:element name="filter" type="MessageFilter" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="subscribers" type="NodeStateList" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CapabilityStatusList">
+		<xs:sequence>
+			<xs:element name="capabilityStatus" type="CapabilityStatus" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CapabilityPolicyList">
+		<xs:sequence>
+			<xs:element name="capabilityPolicy" type="CapabilityPolicyDefinition" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CapabilityList">
+		<xs:sequence>
+			<xs:element name="capability" type="Capability" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="EventRate">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="realTime"/>
+			<xs:enumeration value="aggregate"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EventRateList">
+		<xs:list itemType="EventRate"/>
+	</xs:simpleType>
+	<xs:simpleType name="TimePeriod">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="milliSeconds"/>
+			<xs:enumeration value="seconds"/>
+			<xs:enumeration value="minutes"/>
+			<xs:enumeration value="hours"/>
+			<xs:enumeration value="days"/>
+			<xs:enumeration value="months"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="BaseEventsCapability">
+		<xs:complexContent>
+			<xs:extension base="Capability">
+				<xs:sequence>
+					<xs:element name="eventRateList" type="EventRateList" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="minAggregateTimePeriod" type="TimePeriod" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="maxAggregateTimePeriod" type="TimePeriod" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="SubtopicList">
+		<xs:sequence>
+			<xs:element name="subtopic" type="Subtopic" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Subtopic">
+		<xs:sequence>
+			<xs:element name="subtopicName" type="xs:string" minOccurs="1"
+				maxOccurs="1" />
+			<xs:element name="subtopicContentfilter" type="BaseContentFilter"
+				minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

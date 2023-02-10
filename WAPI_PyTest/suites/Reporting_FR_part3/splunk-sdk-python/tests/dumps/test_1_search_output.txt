@@ -1,0 +1,211 @@
+
+Looks like test case got failed. If Yes then Please check the following.
+1.Input JSON Content is matching with 'Search Results' except '_time' attribute?
+ a.Check the Time zone, Time Zone should be UTC.
+ b.Make Sure you have not configured Grid 24 hours before, (i.e. for Minute Group Detail Reports, Initially  time difference between  search events  will be  1min  and after some time it will become 5 min)
+2.Trend report?  Then make sure you have not executed reports more than two times.
+3.Reports may fail due to some other influence (DHCP events, DNS Query events etc.,)
+4.Make sure all Grid Members are online (System reported are validated against all Members )
+5.Some reports may fails due to slowness of VM(Example: CPU reports will fail due to slowness of Forwarder)
+6.Check Configuration setup(example for DCVM DC HW should be configured in preparation)
+7.Make sure PORT is opened for the following. (PORT may be disabled  if  Indexer/Grid Master gets rebooted)
+  a. 8089 for Single Indexer in Indexer
+  b. 7089 for Clustering  in Grid Master
+8.  For Multi-Site Cluster Mode, Please make sure Primary-Site Reporting Members are up and running.
+
+Note:
+1.Currently framework is not designed for 'Concurrent/Parallel' execution. So test cases may fail if user manually execute py.test & search.py  when Jenkin Job is under execution.
+2.Test cases may fail due data conflict (i.e., make sure newly implemented suites are not causing any issues)
+3.'DELTA' in 'compare_results' method is used for compare the values in between range, for example if input_value=10 & delta=5  then search result will be considered as pass when value between 5 and 15. 
+
+
+-------------------------Input Data-------------------------[
+    {
+        "IPAM Network": "167.1.1.0/24",
+        "Utilization %": "64.9"
+    },
+    {
+        "IPAM Network": "166.10.0.0/16",
+        "Utilization %": "2.3"
+    },
+    {
+        "IPAM Network": "165.0.0.0/8",
+        "Utilization %": "3.9"
+    }
+]-------------------------Search Results-------------------------[
+    {
+        "Device IP": "10.40.16.10",
+        "Device Model": "Powerconnect 8024F",
+        "Device Name": "DELL-PC8024F",
+        "Device OS Version": "5.1.2.3",
+        "Device Vendor": "Dell",
+        "IPAM Network": "2620:10a:6000:2810::/64",
+        "Interface IP": "2620:10a:6000:2810::10",
+        "Network View": "discovery_view",
+        "Utilization %": "0.0"
+    },
+    {
+        "Device IP": "10.40.16.7",
+        "Device Model": "EX2200-48T-4G",
+        "Device Name": "EX2200-48T-4G",
+        "Device OS Version": "13.2X51-D20.2",
+        "Device Vendor": "Juniper",
+        "IPAM Network": "10.40.16.0/24",
+        "Interface IP": "10.40.16.7",
+        "Network View": "discovery_view",
+        "Utilization %": "2.3"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.19.0/24",
+        "Interface IP": "10.40.19.1",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.25.0/24",
+        "Interface IP": "10.40.25.1",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.240.0/24",
+        "Interface IP": "10.40.240.1",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.20.0/24",
+        "Interface IP": "10.40.20.1",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.255.0/24",
+        "Interface IP": "10.40.255.1",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.29.0/28",
+        "Interface IP": "10.40.29.1",
+        "Network View": "discovery_view",
+        "Utilization %": "7.1"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.35.0/24",
+        "Interface IP": "10.40.35.1",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "Device IP": "10.40.16.1",
+        "Device Model": "WS-C3560X-48T-S",
+        "Device Name": "ni-mri-core.inca.infoblox.com",
+        "Device OS Version": "15.0(2)SE8",
+        "Device Vendor": "Cisco",
+        "IPAM Network": "10.40.30.0/23",
+        "Interface IP": "10.40.30.1",
+        "Network View": "discovery_view",
+        "Utilization %": "0.1"
+    },
+    {
+        "IPAM Network": "2001:550:40a:2500::/64",
+        "Network View": "default",
+        "Utilization %": "0.0"
+    },
+    {
+        "IPAM Network": "2620:10a:6000:2500::/64",
+        "Network View": "default",
+        "Utilization %": "0.0"
+    },
+    {
+        "IPAM Network": "62.0.0.0/24",
+        "Network View": "default",
+        "Utilization %": "0.0"
+    },
+    {
+        "IPAM Network": "61.0.0.0/24",
+        "Network View": "default",
+        "Utilization %": "0.0"
+    },
+    {
+        "IPAM Network": "2.0.0.0/24",
+        "Network View": "default",
+        "Utilization %": "0.3"
+    },
+    {
+        "IPAM Network": "167.1.1.0/24",
+        "Network View": "default",
+        "Utilization %": "64.9"
+    },
+    {
+        "IPAM Network": "10.40.17.0/24",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "IPAM Network": "10.40.18.0/24",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "IPAM Network": "10.255.40.0/24",
+        "Network View": "discovery_view",
+        "Utilization %": "0.3"
+    },
+    {
+        "IPAM Network": "10.40.0.0/20",
+        "Network View": "discovery_view",
+        "Utilization %": "0.0"
+    },
+    {
+        "IPAM Network": "166.10.0.0/16",
+        "Network View": "default",
+        "Utilization %": "2.3"
+    },
+    {
+        "IPAM Network": "10.0.0.0/8",
+        "Network View": "default",
+        "Utilization %": "0.0"
+    },
+    {
+        "IPAM Network": "165.0.0.0/8",
+        "Network View": "default",
+        "Utilization %": "3.9"
+    }
+]

@@ -1,0 +1,2 @@
+header-responsepolicyptrrecord,dname*,_new_dname,address,_new_address,comment,disabled,fqdn,_new_fqdn,parent_zone,ttl,view
+responsepolicyptrrecord,,,10.0.0.1,,,FALSE,1.0.0.10.in-addr.arpa.zone.com,,com.zone,,default

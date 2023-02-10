@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>pxGrid Java SDK Tutorial</title>
+		<link href="include/js/google-code-prettify/prettify.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="include/js/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()" style="width:650px; margin-left:50px;">
+		<img src="include/image/logo.gif" />
+		<h1 align="center">pxGrid Java SDK Tutorial</h1>
+
+		<h2>Contents</h2>
+		<p style="text-align:justify;">
+			<ul style="width:550px;">
+				<li><a href="#c0">Introduction</a></li>
+				<li><a href="#c1">Prerequisites</a></li>
+				<li><a href="#c2">Programming Environment</a></li>
+				<li><a href="#c3">Building a Sample Application</a></li>
+				<li><a href="#c5">Troubleshooting</a></li>
+			</ul>
+		</p>
+
+		<h2><a id="c0">Introduction</a></h2>
+		<p style="text-align:justify;">
+			Cisco Platform Exchange Grid (pxGrid) enables multivendor, cross-platform network system collaboration
+			among parts of the IT infrastructure such as security monitoring and detection systems, network policy
+			platforms, asset and configuration management, identity and access management platforms, and virtually
+			any other IT operations platform. When business or operational needs arise, ecosystem partners use
+			pxGrid to exchange contextual information with Cisco products that support pxGrid.
+		</p>
+
+		<p style="text-align:justify;">
+			Cisco pxGrid provides a unified framework that enables ecosystem partners to integrate to pxGrid once,
+			then share context either uni or bidirectionally with many platforms without the need to adopt
+			platform-specific APIs. pxGrid is secure and customizable, enabling partners to share only what they
+			want to share and consume only context relevant to their platform. Key features of pxGrid include:
+
+			<ul style="text-align:justify;">
+				<li>
+					Ability to control what context is shared and with which platforms – Because pxGrid is
+					customizable, partners can "publish" only the specific contextual information they want
+					to share and can control the partner platform that information gets shared with.
+				</li>
+				<li>
+					Bidirectional context sharing - pxGrid enables platforms to both share or publish context
+					as well as consume or "subscribe to" context from specific platforms. These features are
+					orchestrated and secured by the pxGrid server.
+				</li>
+				<li>
+					Ability to share context data in native formats - Contextual information shared via pxGrid
+					is done in each platform's native data format.
+				</li>
+				<li>
+					Ability to connect to multiple platforms simultaneously - pxGrid enables platforms to publish
+					only the context data relevant to partner platforms.  Numerous context "topics" may be customized
+					for a variety of partner platforms, yet always shared via the same reusablepxGrid framework.
+					Furthermore, only sharing relevant data enables both publishing and subscribing platforms to scale
+					their context sharing by eliminating excess, irrelevant data.
+				</li>
+				<li>
+					Integration with Cisco platforms - pxGrid provides a unified method of publishing or subscribing
+					to relevant context with Cisco platforms that utilize pxGrid for 3rd party integrations.
+				</li>
+			</ul>
+		</p>
+
+		<p style="text-align:justify;">
+			Currently client libraries are available for the C and Java programming languages. This document
+			describes how to use the pxGrid Java client libraries. For reference, the
+			<a href="api/index.html">API documentation</a> is also available as part of this SDK distribution.
+		</p>
+
+		<h2><a id="c1">Prerequisites</a></h2>
+		<p style="text-align:justify;">
+			This document is intended for developers and assumes:
+			<ul style="width:550px;">
+		   	    <li>You have an understanding of pxGrid concepts (see pxGrid Technical Overview)</li>
+			   	<li>You have installed and set up ISE (see pxGrid Configuration Guide)</li>
+				<li>You have unpackaged the SDK into a directory herein referred to as <SDK_HOME>
+					and has successfully executed the sample scripts (see pxGrid Setup Guide)
+				</li>
+				<li>You have moderate experience with compiling and running Java programs</li>
+			</ul> 
+		</p>
+
+		<h2><a id="c2">Programming Environment</a></h2>
+		<p style="text-align:justify;">
+			As with any software programming project, you must first set up the programming environment with the
+			appropriate dependencies. The details for this largely depend on the type of development tools
+			being used. However, pxGrid provided its Java SDK as JAR files just like other Java-based systems.
+			These need to be in your classpath for your code to compile. All libraries (including dependencies)
+			are located in the directory &lt;SDK_HOME&gt;/lib. The SDK samples are located in separate 
+			&lt;SDK_HOME&gt;/samples/lib. However, if you are writing code that doesn't depend on samples source you
+			just need to include all JAR files in &lt;SDK_HOME&gt;/lib in your classpath.
+		</p>
+
+		<h2><a id="c3">Building a Sample Application</a></h2>
+		<p style="text-align:justify;">
+			In this tutorial we will create a basic pxGrid client that retrieves session information in real-time from ISE.
+			Whenever wireless devices connect to or disconnect from the network, ISE will publish session notifications
+			through pxGrid. Our simple application will receive these notifications and print relevant session
+			information to the console. Of course, a real-world applications will do more than just print session
+			information. Having context from ISE, updated in real-time, applications can performance a virtually unlimited
+			set of functions. However, we will keep things simple for the purpose of this tutorial. We will also show how
+			to use other parts of the API such as querying for a specific session and downloading all active sessions
+			at once. Having read the pxGrid Programming Guide, you are familiar with 
+
+			<ul style="width:550px;">
+				<li><a href="#a1">Configuring a pxGrid Connection</a></li>
+				<li><a href="#a2">Connecting to the pxGrid Controller</a></li>
+				<li><a href="#a3">Subscribing to Session Notifications</a></li>
+				<li><a href="#a4">Querying for Specific Sessions</a></li>
+				<li><a href="#a5">Downloading all Sessions in Bulk</a></li>
+				<li><a href="#a6">Disconnecting from the pxGrid Controller</a></li>
+			</ul>
+		</p>
+
+		<h3><a id="a1">Configuring a pxGrid Connection</a></h3>
+		<p style="text-align:justify;">
+			Before a pxGrid client can connect to the pxGrid Controller, a
+			<a href="api/index.html?com/cisco/pxgrid/TLSConfiguration.html">TLSConfiguration</a> object needs to be
+			instantiated and set with the appropriate properties. Most properties are used to set up the following
+			security mechanisms. In the next few paragraphs we describe security in general to give context around
+			why pxGrid needs certain properties.
+		</p>
+
+		<p style="text-align:justify;">
+			Internally, the pxGrid client library uses encryption at the transport layer
+			(TLS with mutual authentication) in all communication with the pxGrid Controller. This requires a key
+			store and a trust store. The key store contains the certificate/key pair that gets used during the
+			TLS handshake between the pxGrid client and the pxGrid Controller. Currently the Java API only supports
+			JKS key stores. You specify the key store location in the keystorePath property. You'll also need
+			to set the keystorePassphrase property since key stores are password-protected. The trust store
+			contains the certificate of the certificate authority (CA) that signed the pxGrid Controller certificate.
+			If the CA certificate is part of a chain, be sure to add the entire chain to the trust store. Like
+			with the key store, the trust store takes the form of a JKS file. You specify the trust store location
+			in the truststorePath property.
+		</p>
+
+		<p style="text-align:justify;">
+			The property username is used to specify the name of the client trying to
+			connect. This value must be unique for each client trying to connect. When you connect using a certain
+			username for the first time, the certificate used in the TLS handshake is associated with the username
+			on the pxGrid Controller. To connect again, the same certificate must be used. Otherwise authentication
+			will fail.
+		</p>
+
+		<p style="text-align:justify;">
+			pxGrid uses group-based authorization. When a client connects for the first time, the client is
+			associated with a group. Currently pxGrid supports the following groups: Basic, Session, and EPS.
+			Clients in the Basic group can only connect and perform very basic functions. Clients in the Session
+			group can perform everything in the Basic group along with other actions such as subscribing to session
+			notifications, querying for session information, and downloading session information in bulk. Clients
+			in the EPS group can perform everything allowed in the Session group along with other actions such as
+			quarantining an IP address, unquarantining an IP address, etc. Note that by specifying the group
+			property in the configuration, you are merely asking to register as a member of the group.
+			Administrators have control over your group membership in the administration console. The following
+			summarizes the groups and access:
+		</p>
+
+		<div style=" text-align: left; text-indent: 10px; padding: 0px 0px 0px 0px; margin: 0px 40px 0px 40px;">
+			<table width="100%" border="1" cellpadding="1" cellspacing="1" style="background-color: #ffffff;">
+				<tr valign="top">
+					<td style="width: 200px; text-align:center; border-bottom-width: 1px; border-right-width: 1px;"><b>Group</b></td>
+					<td style="text-align:center; border-bottom-width: 1px; border-right-width: 1px;"><b>Access</b></td>
+				</tr>
+				<tr valign="top">
+					<td style="border-width : 1px;">Basic</td>
+					<td style="border-width : 1px;">connect only</td>
+				</tr>
+				<tr valign="top">
+					<td style="border-width : 1px;">Session</td>
+					<td style="border-width : 1px;">connect, consume session information</td>
+				</tr>
+				<tr valign="top">
+					<td style="border-width : 1px;">EPS</td>
+					<td style="border-width : 1px;">connect, consume session information, invoke EPS actions</td>
+				</tr>
+			</table>
+		</div>
+
+		<p style="text-align:justify;">
+			For this tutorial, we specify Session as the group so we can later subscribe to session notifications.
+		</p>
+
+		<p style="text-align:justify;">
+			Other properties unrelated to security are part of the TLSConfiguration. Hosts refers to the pxGrid Controller
+			hostnames. In a simple setup, there will be only one host. In a high-availability environment, there will be
+			an active and a standby host. Specify the active hostname first and the standby hostname second. Finally, you
+			can set a description. Although optional, this property will associate a more verbose description of your
+			client with your account for the administrator to see.
+		</p>
+
+		<div>
+			<pre class="prettyprint">
+
+    // configure the connection properties
+
+    TLSConfiguration config = new TLSConfiguration();
+    config.setHosts(new String[]{"ise.test_domain.com"});
+    config.setUserName("test_client");
+    config.setGroup(Group.SESSION.value());
+    config.setKeystorePath("/root/testKeystore.jks");
+    config.setKeystorePassphrase("test_password");
+    config.setTruststorePath("/root/testTruststore.jks");
+    config.setTruststorePassphrase("test_password");
+			</pre>
+		</div>
+
+		<h3><a id="a2">Connecting to the pxGrid Controller</a></h3>
+		<p style="text-align:justify;">
+			Clients actually establish a connection with the pxGrid Controller by calling either the 'connect' method of the
+			<a href="api/index.html?com/cisco/pxgrid/GridConnection.html">GridConnection</a>
+			class or using the
+			<a href="api/index.html?com/cisco/pxgrid/ReconnectionManager.html">ReconnectionManager</a> class. GridConnection.connect
+			will establish the connection but won't provide fault tolerance. In the event the connection is broken, the
+			client remains unconnected to the pxGrid Controller, unable to receive notifications, issue queries, or issue
+			bulk download requests. For this reason we strongly recommend you use the ReconnectionManager. Like the
+			GridConnection.connect, the ReconnectionManager will establish the connection but with the added benefit of
+			fault tolerance. In the event the connection is broken, the ReconnectionManager will attempt to reconnect for you.
+			The ReconnectionManager.setRetryMilliseconds method allows you to control the retry interval. Try to keep that
+			value on the order of multiple seconds.
+		</p>
+
+		<div>
+			<pre class="prettyprint">
+
+    // establishing a connection with the pxGrid controller
+
+    GridConnection con = new GridConnection(config);
+    ReconnectionManager recon = new ReconnectionManager(con);
+    recon.setRetryMillisecond(2000);
+    recon.start();
+			</pre>
+		</div>
+
+		<p style="text-align:justify;">
+			If the client is connecting to the pxGrid Controller for the first time, an account is established on the pxGrid
+			Controller. In pxGrid's auto-registration mode (set by administrator through the ISE web-based user interface),
+			the client is allowed to communicate once the account is created. Whereas if auto registration mode is turned off,
+			the node and authorization group assignment of the node remains in Pending Approval mode and not allowed to communicate
+			over pxGrid until it is approved by the administrator.
+		</p>
+
+		<h3><a id="a3">Subscribing to Session Notifications</a></h3>
+		<p style="text-align:justify;">
+			ISE receives session updates from devices as they connect, authenticate, and disconnect from the network.
+			As a client to pxGrid, ISE publishes these updates to pxGrid so other clients can receive real-time
+			notification of this network activity. You can receive these notifications by performing two steps.
+		</p>
+		<p style="text-align:justify;">
+			First, create a custom implementation of
+			<a href="api/index.html?com/cisco/pxgrid/stub/identity/SessionDirectoryNotification.html">SessionDirectoryNotification</a>.
+			There is only one method to be concerned with, called 'onChange'. This method will get called internally
+			by the pxGrid client library when session updates are received from the pxGrid controller. For the
+			purposes of demonstration, the implementation below simply prints out the GID of the session. Your
+			real-world implementation will obviously do much more. Keep in mind that you will need to build thread
+			safety into your implementation. You can expect that 'onChange' will get called by multiple threads
+			at the same time. Take this into account when writing your code.
+		</p>
+
+		<div>
+			<pre class="prettyprint">
+
+    // creating a custom session notification handler
+
+    public class SampleNotificationHandler
+        implements SessionDirectoryNotification
+    {
+        @Override
+        public void onChange(Session session) {
+            System.out.println("received session: " + session.getGid());
+        }
+    }
+			</pre>
+		</div>
+
+		<p style="text-align:justify;">
+			Second, create an instance of your handler and register the instance with your pxGrid connection using the
+			<a href="api/index.html?com/cisco/pxgrid/stub/identity/SessionDirectoryFactory.html">SessionDirectoryFactory</a>
+			class as follows.
+		</p>
+
+		<div>
+			<pre class="prettyprint">
+
+    // creating a custom session notification handler
+
+    SampleNotificationHandler handler = new SampleNotificationHandler();
+    SessionDirectoryFactory.registerNotification(con, handler);
+			</pre>
+		</div>
+
+		<p style="text-align:justify;">
+			A <a href="../samples/src/java/com/cisco/pxgrid/samples/ise/SessionSubscribe.java">complete example of session subscribe</a>
+			is available. In addition to subscribing to session notifications, you can also subscribe to identity group notifications.
+			The setup is similar to above. You can view the
+			<a href="../samples/src/java/com/cisco/pxgrid/samples/ise/UserIdentityGroupSubscribe.java">complete example of identity
+			group subscribe.</a>
+		</p>
+
+		<h3><a id="a4">Querying for Specific Sessions</a></h3>
+		<p style="text-align:justify;">
+			Perhaps there is a specific session you are interested in, and you only know a characteristic of the session such
+			as an IP address. Through pxGrid, you can query ISE for the particular session. This and many other types of
+			queries can be initiated using the 
+			<a href="api/index.html?com/cisco/pxgrid/stub/identity/SessionDirectoryQuery.html">SessionDirectoryQuery</a>
+			class. To retrieve a session by its IP address, provide the IP address the the getActiveSessionByIPAddress
+			method as shown below.
+		</p>
+
+		<div>
+			<pre class="prettyprint">
+
+    // create query we'll use to make call
+
+    SessionDirectoryQuery query = SessionDirectoryFactory.createQuery(con);
+    InetAddress ip InetAddress.getByName("1.2.3.4");
+    Session session = query.getActiveSessionByIPAddress(ip);
+    System.out.println("received session: " + session.getGid());
+			</pre>
+		</div>
+
+		<p style="text-align:justify;">
+			A <a href="../samples/src/java/com/cisco/pxgrid/samples/ise/SessionQueryByIp.java">complete example of session query</a>
+			is also available.
+		</p>
+
+		<p style="text-align:justify;">
+			As you can see from the API documentation for 
+			<a href="api/index.html?com/cisco/pxgrid/stub/identity/SessionDirectoryQuery.html">SessionDirectoryQuery</a>,
+			you can initiate a wide range of queries related to the session directory. In pxGrid terminology, these queries are
+			all part of the Session Directory capability. Other capabilities are also supported. For example, pxGrid supports
+			the Endpoint Protection Service (EPS) capability. Queries for the EPS capabilities are wrapped into the class
+			<a href="api/index.html?com/cisco/pxgrid/stub/eps/EPSQuery.html">EPSQuery</a>
+			for ease of use. Using the API you can, for example, quarantine an IP address. You can also find queries related
+			to the Identity Group capability by using the <a href="api/index.html?com/cisco/pxgrid/stub/identity/IdentityGroupQuery.html">IdentityGroupQuery</a>
+			class. You can, for example, retrieve the identity groups associated with a user.
+		<p>
+
+		<h3><a id="a5">Downloading all Sessions in Bulk</a></h3>
+		<p style="text-align:justify;">
+			While subscribing to session notifications will give you the updated session state, you may at times need to
+			retrieve all active sessions in ISE. If your application requires all session state you may want to initiate
+			a bulk download query when a connection to pxGrid is established. Once again, you can use the
+			<a href="api/index.html?com/cisco/pxgrid/stub/identity/SessionDirectoryQuery.html">SessionDirectoryQuery</a>
+			class for this purpose. A method called getSessionsByTime takes a time range in the form of two Calendar
+			objects. The first specifies the beginning of the time interval, and the second specifies the end of the
+			time interval. The example below uses a time interval of the last hour. Thus, the API returns all sessions
+			active in the last hour.
+		</p>
+
+		<div>
+			<pre class="prettyprint">
+
+    // construct a date range and request those sessions
+
+    Calendar begin = Calendar.getInstance();
+    begin.set(Calendar.HOUR, begin.get(Calendar.HOUR) - 1);
+    Calendar end = Calendar.getInstance();
+
+    SessionDirectoryQuery query = SessionDirectoryFactory.createQuery(con);
+    SessionIterator iterator = query.getSessionsByTime(begin, end);
+    iterator.open();
+
+    Session session = iterator.next();
+    while (session != null) {
+        System.out.println("received session: " + session.getGid());
+        session = iterator.next();
+    }
+			</pre>
+		</div>
+
+		<p style="text-align:justify;">
+		   Keep in mind that your ISE server may have a large number of active sessions (perhaps hundreds of thousands). Whereas
+		   a simple query by IP address may take a few milliseconds, the bulk session download may take a few minutes if the
+		   number of sessions is large. So take caution in how you write your code to account for this (ensure nothing is
+		   waiting on the operation that can timeout, etc).
+		</p>
+
+		<p style="text-align:justify;">
+			A <a href="../samples/src/java/com/cisco/pxgrid/samples/ise/SessionDownload.java">complete example of session download</a>
+			is also available. Another bulk download operation allows you to retrieve all identity groups associated with active
+			users. Refer to the samples for code of this
+			<a href="../samples/src/java/com/cisco/pxgrid/samples/ise/UserIdentityGroupDownload.java">identity group download</a>.
+		</p>
+
+		<h3><a id="a6">Disconnecting from the pxGrid Controller</a></h3>
+		<p style="text-align:justify;">
+			Previously you <a href="#a2">connected your client to the pxGrid Controller</a> by starting the reconnection manager. To disconnect
+			from the pxGrid Controller, all you need to to is stop the reconnection manager. If we had subscribed to session
+			notifications on this pxGrid connection, then our notification handler will stop receiving notifications once the
+			connection is dropped.
+		</p>
+
+		<div>
+			<pre class="prettyprint">
+
+    // disconnect from xGrid. using the reconnection manager we only
+    // need to call stop.
+
+    recon.stop();
+			</pre>
+		</div>
+
+		<h2><a id="c5">Troubleshooting</a></h2>
+		<p style="text-align:justify;">
+			Below is a list of common issues you may face when writing code to integrate with pxGrid.
+		</p>
+
+		<h3>Connection Errors</h3>
+		<ul>
+			<li>
+				<p style="text-align:justify;">
+					<b>After enabling pxGrid in ISE deployment, the pxGrid services UI page on ISE administrative node does not show any
+					client or capability data.</b>
+				</p>
+				<p style="text-align:justify;">
+					This error could occur if a connection could not be established between the ISE administrative node and pxGrid server.
+					This can happen if the right certificates are not setup on the ISE administrative node for use for pxGrid connection.
+					Make sure that on ISE administrative node, a system certificate to be used for pxGrid services is setup and also the
+					corresponding CA certificate is set up in the trusted certificate that is trusted for authentication within ISE.
+ 		 		</p>
+			</li>
+			<li>
+				<p style="text-align:justify;">
+			   	   <b>Not able to establish connection from a pxGrid client node to pxGrid server due to
+				   javax.net.ssl.SSLHandshakeException: Received fatal alert: handshake_ failure</b>
+				</p>
+        		<p style="text-align:justify;">
+        			Handshake failure can happen if the certificate presented by the client program is invalid or  not trusted by ISE.
+        			Make sure that the certificate is not expired  and there is no timing issues between the pxGrid server and the pxGrid
+        			client node.  Also ensure that the  right intermediate/root CA certificate that signed the client certificate exists
+        			on the ISE server as Trusted Certificates.
+        		</p>
+			</li>
+			<li>
+        		<p style="text-align:justify;">
+        			<b>Not able to establish connection from pxGrid client node to pxGrid server due to
+        			"javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: root certificate not trusted of . . ."</b>
+        		</p>
+        		<p style="text-align:justify;">
+        			This can happen if pxGrid server certificate is not trusted by the pxGrid client node. Make sure that the trust store
+        			on the client contains the intermediate/root certificate of the certificate used by  pxGrid server.
+        		</p>
+			</li>
+			<li>
+        		<p style="text-align:justify;">
+        			<b>Not able to establish connection from pxGrid client node to pxGrid server due to "SASL authentication
+        			EXTERNAL failed: not-authorized:"</b>
+        		</p>
+        		<p style="text-align:justify;">
+        			Make sure that the certificate presented by the the pxGrid client node is the same as was used for the first time
+        			connection establishment. pxGrid internally stores the certificate fingerprint for each client. If the fingerprint does
+        			not match, this error can be thrown. Also, make sure that the pxGrid client node is not in disabled state. This can be
+        			checked from the ISE pxGrid services page on ISE administrator node.
+        		</p>
+			</li>
+		</ul>
+
+		<h3>Authorization Errors</h3>
+		<ul>
+			<li>
+        		<p style="text-align:justify;">
+        			<b>On subscribing to a capability or while invoking a query on a capability, a "Not Authorized" error is thrown by the
+        			GCL library</b>
+        		</p>
+        		<p style="text-align:justify;">
+        			This can happen if the pxGrid client node is not part of the right authorization group that provides access to a
+        			capability. Please check authorization groups section to see the list of supported groups and access provided.
+        			Authorization group for a pxGrid client node can be changed from ISE pxGrid services page on ISE administrator node.
+        		</p>
+			</li>
+		</ul>
+
+		<h3>Query Errors</h3>
+		<ul>
+			<li>
+        		<p style="text-align:justify;">
+        			<b>On invoking a query on a capability, "No provider for this capability is available" error is thrown by the GCL
+        			library</b>
+        		</p>
+        		<p style="text-align:justify;">
+        			This implies that there is no provider registered for this capability so pxGrid is not able to route the message.
+        			You can check the provider for a capability from ISE pxGrid services page on ISE administrator node. Make sure that
+        			the provider is online. For e.g. if you see this error on calling bulk download API or session query API,  it implies
+        			that the ISE MnT node which is the provider for session data may be down or is not able to establish connection to
+        			pxGrid server. If this error is seen for EndpointProtectionServiceCapability, please make sure that EPS Service is
+        			enabled on ISE.
+        		</p>
+			</li>
+		</ul>
+	</body>
+</html>

@@ -1,0 +1,38 @@
+{
+    "version": "5.0",
+    "name": "event_tunnel_ipv4",
+    "type": "REST_EVENT",
+    "event_type": ["DNS_ZONE","DNS_RECORD","NETWORK_IPV4","NETWORK_IPV6","RANGE_IPV4","RANGE_IPV6","FIXED_ADDRESS_IPV4","FIXED_ADDRESS_IPV6","HOST_ADDRESS_IPV4","HOST_ADDRESS_IPV6","DISCOVERY_DATA"],
+    "action_type": "Some Action",
+    "comment": "Analytics DNS Tunneling events with IPv4 source_ip",
+    "content_type": "application/json",
+    "vendor_identifier": "extattrsgg WAPI",
+    "headers": {
+        "User-Agent": "Outbound API 0.1 rrtest"
+    },
+    "transport": {
+        "path": "/wapi/v2.3",
+        "content_type": "application/json",
+        "override_path": true
+    },
+    "steps":
+    [
+        {
+            "name": "get_zone",
+            "operation": "GET",
+            "transport": {
+                "path": "/zone_auth"
+            },
+	    "parameters": [
+                {
+                    "name": "fqdn",
+                    "value": "testzone2.test"
+                },
+                {
+                    "name": "_return_fields",
+                    "value": "comment"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,2 @@
+header-responsepolicyarecord,address*,_new_address,fqdn*,_new_fqdn,comment,create_ptr,disabled,parent_zone,ttl,view
+responsepolicyarecord,,,abc.zone.com,,,FALSE,FALSE,com.zone,,default

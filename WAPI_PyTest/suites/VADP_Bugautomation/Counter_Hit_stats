@@ -1,0 +1,169 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use diagnostics;
+use lib "/import/qaddi/vADP_Automation/";
+use REA;
+use Infoblox;
+
+my $myname="$0";
+$myname=~s/.*\///;
+
+my $ssh_ip=shift;
+my $ip=shift;
+
+my ($output, $str, $sid, $result, $file, $pass, $fail);
+my %command_list;
+
+if (! defined($ssh_ip) || $ssh_ip eq '' || $ssh_ip =~ /help/ || 
+    ! defined($ip) || $ip eq '' || $ip =~ /help/) {
+    print "This program will execute a basic subset of test cases to quickly validate a NIOS rule hit stat.\n";
+    print "To run, provide the appliance's SSH IP address, the test IP Address.\n";
+    print "E.G.     $myname 10.36.0.154 10.34.9.51\n";
+    exit 1;
+}
+
+print "\nExecuting ADP CLI Rule Hit Stats Automation\n\n";
+
+my $session = Infoblox::Session->new(
+     master   => "$ssh_ip",
+     username => "admin",
+     password => "infoblox"
+);
+
+die "Session creation failed. Please re-check the given Grid VIP:$ssh_ip<>\n" unless (($session->{'statusdetail'}) eq "Operation succeeded");
+
+################## Add Rule ##################
+#Get Rule template Object
+my $timestamp = `date +%s`;
+chomp $timestamp;
+my $fqdn = "$timestamp.com";
+my $template = $session->search('object' => 'Infoblox::Grid::ThreatProtection::RuleTemplate', 'name' => 'RATE LIMITED UDP FQDN lookup');
+
+my $param1 = Infoblox::Grid::ThreatProtection::RuleParam->new(
+    'name' => 'FQDN',
+    'value' => "$fqdn",
+);
+my $param2 = Infoblox::Grid::ThreatProtection::RuleParam->new(
+    'name' => 'EVENTS_PER_SECOND',
+    'value' => '500',
+);
+my $param3 = Infoblox::Grid::ThreatProtection::RuleParam->new(
+    'name' => 'PACKETS_PER_SECOND',
+    'value' => '5',
+);
+my $param4 = Infoblox::Grid::ThreatProtection::RuleParam->new(
+    'name' => 'DROP_INTERVAL',
+    'value' => '5',
+);
+
+my $config = Infoblox::Grid::ThreatProtection::RuleConfig->new(
+    'action' => 'ALERT',
+    'log_severity' => 'MAJOR',
+    'params' => [$param1, $param2, $param3, $param4]
+);
+
+#Construct an custom rule object
+my $custom_rule = Infoblox::Grid::ThreatProtection::Rule->new(
+    'template'   => $template,
+    'comment'    => 'Test Custom Rule',
+    'config'     => $config,
+    'disable'    => 'false');
+
+#Submit for custom rule addition
+my $response = $session->add( $custom_rule ) || print "Add Rule Failed\n";
+
+print"----------------------------------------\n";
+print "Add Rule: ";
+print Infoblox::status_detail();
+print"\n----------------------------------------\n";
+
+publish_changes();
+
+$pass = 0;
+$fail = 0;
+$sid = "120301001";
+
+my @Test_Cases=(
+                # EARLY DROP TCP non-DNS query # SID: 130000700
+                {cmd=>"dnsq -ns=$ip -qname=$fqdn -repeat=10 -wait=0.1", rule=>$sid, alert_count=>1, drop_count=>'5'},
+    );
+
+my $test;
+$test = REA->new(ssh_ip=>$ssh_ip, test_ip=>$ip, rules_filename=>"NIOS", test_cases=>\@Test_Cases, strict_source_IP_checking=>1);
+unless ($test) {die "$myname: Could not configure test environment to $ip\n"}
+
+$file = "/import/qaddi/vADP_Automation/admin_console.exp";
+die "$file not found, to get the hit stats.\n" unless (-e $file);
+
+$test->print_header();                          # Print a nice summary.
+$test->execute_test_cases();                    # Run through our test cases.
+$test->evaluate();                              # Determine PASS or FAIL for each test case.
+
+print "\nValidate the ADP Counters for Rule Severity\n";
+%command_list = (
+  #CLI Command => Output to validate
+  "show adp" => "Threat Protection event stats:\\s*CRITICAL",
+);
+cli_command("MAJOR","6");
+
+@Test_Cases=(
+                # EARLY DROP TCP non-DNS query # SID: 130000700
+                {cmd=>"dnsq -ns=$ip -qname=$fqdn -repeat=100 -wait=0.01", rule=>$sid, alert_count=>1, drop_count=>'95'},
+    );
+$test = REA->new(ssh_ip=>$ssh_ip, test_ip=>$ip, rules_filename=>"NIOS", test_cases=>\@Test_Cases, strict_source_IP_checking=>1);
+unless ($test) {die "$myname: Could not configure test environment to $ip\n"}
+$test->execute_test_cases();                    # Run through our test cases.
+$test->evaluate();                              # Determine PASS or FAIL for each test case.
+
+cli_command("MAJOR","102");
+
+print "\nSummary\n";
+print "="x80 . "\n";
+print "Total  : " . ($pass+$fail) . "\n";
+print "Passed : $pass\n";
+print "Failed : $fail\n";
+
+#################### End of MAIN ####################
+
+sub cli_command {
+    my $category = shift;
+    my $exp_count = shift;
+    my $hit_count = 0;
+    foreach my $scenario (sort keys %command_list) {
+      $str = "expect $file $ssh_ip '$scenario'";
+      $result = `$str 2>&1 | grep "$command_list{$scenario}"`;
+      chomp $result;
+      if ($result =~ /$category=(\d{1,4})/) {
+         $hit_count = $1;
+         if ($hit_count == $exp_count) {
+             print "\tExpected $category count '$exp_count' Matched with Received $category count '$hit_count'  \t::\tPASSED ...\n";
+	     $pass++;
+         } else {
+             print "\tExpected $category count '$exp_count' NOT Matched with Received $category count '$hit_count' \t::\tFAILED ...\n";
+	     $fail++;
+         }
+      } else {
+         print "\t$scenario \t::\tFAILED ...\n";
+         print "No Hit Stats found. Hence terminated the execution\n";
+         exit 0;
+      }
+    }
+}
+
+sub publish_changes {
+    my $res = $session->publish_changes(
+        'sequential_delay' => 1,
+        'member_order'     => 'SIMULTANEOUSLY',
+        'services'         => 'ALL',
+     );
+    
+    unless($res) {
+       die("Publish Changes failed");
+    } else {
+       print "Wait some moment for the Publish Changes\n";
+       sleep 45;
+    }
+    
+}

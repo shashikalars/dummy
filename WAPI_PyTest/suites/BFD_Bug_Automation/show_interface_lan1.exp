@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+set CONSOLE_IN_USE   42;
+set CONSOLE_TIMEOUT  43;
+
+set server [ lindex $argv 0]
+#set master [ lindex $argv 1]
+
+send_user "\n---------------Promote Master------------------------------\n";
+set state 0
+set timeout 180
+set tos 0
+set failed_login 0
+set login 1
+spawn ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null admin@$server
+#spawn console_connect -H vm-05-05b
+        expect {
+                eof { send_user "Connection Terminated"; exit 1 }
+#                "*continue connecting (yes/no)?" { send "yes\r"; exp_continue;}
+                "*assword:" {
+                        send "infoblox\r";
+                        exp_continue;
+                }
+               "Infoblox >" {
+                        if { $login == 1} {
+                                send "show interface lan1\r";
+                                set login 2
+                                exp_continue;
+                             }   else {
+                                 send "exit\r";
+                              #  send_user "Connection Terminated\n";
+                        }
+                }
+              }

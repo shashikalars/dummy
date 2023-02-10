@@ -1,0 +1,24 @@
+{
+    "version": "3.0",
+    "name": "syslog_action_new",
+    "type": "SYSLOG_EVENT",
+    "event_type": ["RPZ","ADP","DNS_RECORD","DNS_ZONE","NETWORK_IPV4","NETWORK_IPV6","FIXED_ADDRESS_IPV4"],
+    "action_type": "Some Action",
+    "comment": "ADP Events",
+    "content_type": "application/json",
+    "vendor_identifier": "syslog",
+    "steps":
+    [
+   {
+         "operation": "NOP",
+         "body": "${XC:DEBUG:{E:}}"
+      }, 
+        {
+            "name": "syslog_send",
+            "operation": "SYSLOG_SEND_EVENT",
+            "body_list": [
+                "\"Syslog_data_Raj\": \"${E::values{}}\", "
+            ]
+        }
+    ]
+}

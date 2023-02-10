@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="xgridCmnModel.xsd"/>
+	<!-- #########################################################################################
+								 Schema Filters
+         #########################################################################################-->
+	<!-- object schema filtering allows the filtering of particular attributes or relations to be returned in queries or subscriptions -->
+	<xs:complexType name="ObjectSchemaFilterElement">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="relnElement" type="xs:string"/>
+				<xs:element name="attrElement" type="xs:string"/>
+			</xs:choice>
+			<xs:element name="matchElement" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="expandElement" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SchemaFilterDefinition" type="ObjectSchemaFilter"/>
+	<xs:complexType name="ObjectSchemaFilter">
+		<xs:sequence>
+			<xs:element name="filterName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="filterElement" type="ObjectSchemaFilterElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SchemaFilterObjectByExampleDefinition" type="BaseObjectByExampleFilter"/>
+	<xs:complexType name="BaseObjectByExampleFilter">
+		<xs:sequence>
+			<xs:element name="filterName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="filterObjectExample" type="BaseObject" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="NamedObjectSchemaFilter">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="SchemaFilterList">
+		<xs:sequence>
+			<xs:element name="elementFilter" type="ObjectSchemaFilter" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="exampleFilter" type="BaseObjectByExampleFilter" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- #########################################################################################
+								 Content Filters
+         #########################################################################################-->
+	<!-- content filters allow the filtering of queries or results based on the content of the values -->
+	<xs:complexType name="BaseContentFilter">
+		<xs:sequence>
+			<xs:element name="operator" type="Operator" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IPv4ContentFilter">
+		<xs:complexContent>
+			<xs:extension base="BaseContentFilter">
+				<xs:sequence>
+					<xs:element name="address" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProtocolContentFilter">
+		<xs:complexContent>
+			<xs:extension base="BaseContentFilter">
+				<xs:sequence>
+					<xs:element name="name" type="Protocol" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="portNumber" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PayloadContentFilter">
+		<xs:complexContent>
+			<xs:extension base="BaseContentFilter">
+				<xs:sequence>
+					<xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubnetContentFilter">
+		<xs:complexContent>
+			<xs:extension base="BaseContentFilter">
+				<xs:sequence>
+					<xs:element name="subnets" type="Subnet" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Subnet">
+		<xs:sequence>
+			<xs:element name="NetworkIp" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Netmask" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="prefix" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="filter" type="Filter"/>
+	<xs:complexType name="Filter">
+			<xs:sequence>
+				<xs:element name="filter" type="BaseContentFilter" minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+	</xs:complexType>
+</xs:schema>

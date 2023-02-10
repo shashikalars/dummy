@@ -1,0 +1,24 @@
+Packet-Type=4
+Packet-Dst-Port=1813
+Acct-Session-Id = "9999732d-34590e08"
+#Acct-Status-Type = Stop
+Acct-Status-Type = Start
+NAS-Port = 1813
+NAS-IP-Address = 10.36.6.80
+Called-Station-Id = 6406201992
+Calling-Station-Id = 1101202041
+Framed-IP-Address = 10.36.6.80
+NAS-Port-Type = Wireless-802.11
+Connect-Info = "CONNECT 48Mbps 802.11b"
+Acct-Session-Time = 45
+Acct-Terminate-Cause = User-Request
+3GPP-IMSI=500
+3GPP-IMEISV=201238908747520
+#Infoblox-Proxy-All=1
+#Infoblox-Parental-Control-Policy=0x00000000000000000000000000020040
+#Infoblox-Expire-Profile=1514538523
+Infoblox-Unknown-Category-Policy=1
+#Infoblox-Dynamic-Category-Policy=1
+#Infoblox-Subscriber-Secure-Policy=0X111100ff
+#Infoblox-Subscriber-Secure-Policy=ff
+

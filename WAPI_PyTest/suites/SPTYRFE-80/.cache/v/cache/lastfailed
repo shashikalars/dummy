@@ -1,0 +1,4 @@
+{
+  "sptyrfe80.py::Outbound::test_009_Test_Hidden_CLI_command_to_check_RabbitMQ_queues_checking_negative_scenario": true, 
+  "sptyrfe80.py::Outbound::test_010_add_rpz_zone_added_in_the_grid": true
+}

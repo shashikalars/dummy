@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/admin" xmlns:xgrid="http://www.cisco.com/pxgrid" xmlns:xgridNet="http://www.cisco.com/pxgrid/net" targetNamespace="http://www.cisco.com/pxgrid/admin" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<!-- ###############################################################################
+     Capability Definition: GridControllerAdminServiceCapability
+	Description: GC Admin provides administration of the controller including nodes & capabilities
+     ############################################################################### -->
+	<xs:complexType name="GridControllerAdminServiceCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="Operation">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="getGridNodeList"/>
+			<xs:enumeration value="getGridNodeBySessionID"/>
+			<xs:enumeration value="setGridNodeState"/>
+			<xs:enumeration value="setGridNodeStateList"/>
+			<xs:enumeration value="getCapabilityList"/>
+			<xs:enumeration value="getCapabilityStatusList"/>
+			<xs:enumeration value="getCapabilityStatusByName"/>
+			<xs:enumeration value="getCapabilityByName"/>
+			<xs:enumeration value="getCapabilityStatusByName"/>
+			<xs:enumeration value="setCapabilityState"/>
+			<xs:enumeration value="setGCApprovalMode"/>
+			<xs:enumeration value="getGCApprovalMode"/>
+			<xs:enumeration value="setLicenseState"/>
+			<xs:enumeration value="getAuthorizedByUser"/>
+			<xs:enumeration value="getAuthorizedByCertificate"/>
+			<xs:enumeration value="getGroupList"/>
+			<xs:enumeration value="setTopicStatus"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ApprovalMode">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="auto"/>
+			<xs:enumeration value="manual"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="LicenseState">
+		<xs:sequence>
+			<xs:element name="valid" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- -anto:2015JAN13- Group related data types -->
+	
+	<xs:simpleType name="GroupOrigin">
+	   <xs:restriction base="xs:string">
+	       <xs:enumeration value="pre-created"/>
+	       <xs:enumeration value="auto-created"/>
+	   </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="GroupState">
+	   <xs:restriction base="xs:string">
+	       <xs:enumeration value="active"/>
+	       <xs:enumeration value="in-active"/>
+	       <xs:enumeration value="deleted"/>
+	   </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="Group">
+	   <xs:sequence>
+	       <xs:element name="name" type="xs:string"/>
+	       <xs:element name="internal" type="xs:boolean" default="false"/>
+	       <xs:element name="origin" type="GroupOrigin"/>
+	       <xs:element name="state" type="GroupState" default="active"/>
+	       <xs:element name="createdAt" type="xs:dateTime"/>
+	   </xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GroupList">
+	   <xs:sequence>
+	       <xs:element name="group" type="Group" minOccurs="0" maxOccurs="unbounded"/>
+	   </xs:sequence>
+	</xs:complexType>
+
+    <!-- -anto:2015JAN13- Group related data types -->
+
+	<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getGridNodeListRequest
+	Description: Get a list of nodes and their connection status
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getGridNodeListRequest" type="GetGridNodeListRequest"/>
+	<xs:complexType name="GetGridNodeListRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getGridNodeListResponse
+		Description: Return the list of nodes and their status
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getGridNodeListResponse" type="GetGridNodeListResponse"/>
+	<xs:complexType name="GetGridNodeListResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="nodes">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="gridNode" type="xgrid:GINodeState" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getGridNodeBySessionIDRequest
+	Description: Get a specific node by session ID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getGridNodeBySessionIDRequest" type="GetGridNodeBySessionIDRequest"/>
+	<xs:complexType name="GetGridNodeBySessionIDRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="gridSessionID" type="xgrid:GISessionID" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getGridNodeBySessionIDResponse
+		Description: Return a specific node 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getGridNodeBySessionIDResponse" type="GetGridNodeBySessionIDResponse"/>
+	<xs:complexType name="GetGridNodeBySessionIDResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="gridNode" type="xgrid:GINodeState" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setGridNodeStateRequest
+	Description: Set a specific node
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setGridNodeStateRequest" type="SetGridNodeStateRequest"/>
+	<xs:complexType name="SetGridNodeStateRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="gridNodeState" type="xgrid:GINodeState" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setGridNodeStateResponse
+		Description: Response to setting the state of a node
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setGridNodeStateResponse" type="SetGridNodeStateResponse"/>
+	<xs:complexType name="SetGridNodeStateResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="gridNodeState" type="xgrid:GINodeState" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>			
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityListRequest
+	Description: Get a list of capability 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityListRequest" type="GetCapabilityListRequest"/>
+	<xs:complexType name="GetCapabilityListRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityListResponse
+		Description: Return the list of capability 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityListResponse" type="GetCapabilityListResponse"/>
+	<xs:complexType name="GetCapabilityListResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilities">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="capability" type="xgrid:Capability" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setGridNodeStateListRequest
+	Description: Set the state of a list of nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setGridNodeStateListRequest" type="SetGridNodeStateListRequest"/>
+	<xs:complexType name="SetGridNodeStateListRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="gridNodeStates">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="gridNodeState" type="xgrid:GINodeState" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setGridNodeStateListResponse
+		Description: Response to setting the state of a list of nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setGridNodeStateListResponse" type="SetGridNodeStateListResponse"/>
+	<xs:complexType name="SetGridNodeStateListResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="gridNodeStates">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="gridNodeState" type="xgrid:GINodeState" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>			
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityStatusListRequest
+	Description: Get a list of capability status
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityStatusListRequest" type="GetCapabilityStatusListRequest"/>
+	<xs:complexType name="GetCapabilityStatusListRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityStatusListResponse
+		Description: Return the list of capability status
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityStatusListResponse" type="GetCapabilityStatusListResponse"/>
+	<xs:complexType name="GetCapabilityStatusListResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilityStatuses">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="capabilityStatus" type="xgrid:CapabilityStatus" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityStatusByNameRequest
+	Description: Get a specific capabiltiy status by name
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityStatusByNameRequest" type="CapabilityStatusByNameRequest"/>
+	<xs:complexType name="CapabilityStatusByNameRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilityName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityStatusByNameResponse
+		Description: Return a specific capability 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityStatusByNameResponse" type="CapabilityStatusResponse"/>
+	<xs:complexType name="CapabilityStatusResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilityStatus" type="xgrid:CapabilityStatus" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityByNameRequest
+	Description: Get a specific capabiltiy  by name
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityByNameRequest" type="CapabilityByNameRequest"/>
+	<xs:complexType name="CapabilityByNameRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilityName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getCapabilityByNameResponse
+		Description: Return a specific capability 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getCapabilityByNameResponse" type="GetCapabilityByNameResponse"/>
+	<xs:complexType name="GetCapabilityByNameResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capability" type="xgrid:Capability" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setCapabilityStateRequest
+		Description: Set capability status
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setCapabilityStateRequest" type="SetCapabilityStateRequest"/>
+	<xs:complexType name="SetCapabilityStateRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilityState" type="xgrid:CapabilityState" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setCapabilityStateResponse
+		Description: Set capability status response
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setCapabilityStateResponse" type="SetCapabilityStateResponse"/>
+	<xs:complexType name="SetCapabilityStateResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setGCApprovalMode
+		Description: Set's the mode of how the controller approves connection requests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setGCApprovalModeRequest" type="SetGCApprovalModeRequest"/>
+	<xs:complexType name="SetGCApprovalModeRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="approvalMode" type="ApprovalMode" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setGCApprovalModeResponse
+		Description: Set GC Approval Mode Response
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setGCApprovalModeResponse" type="SetGCApprovalModeResponse"/>
+	<xs:complexType name="SetGCApprovalModeResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getGCApprovalMode
+		Description: Get's the mode of how the controller approves connection requests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getGCApprovalModeRequest" type="GetGCApprovalModeRequest"/>
+	<xs:complexType name="GetGCApprovalModeRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getGCApprovalModeResponse
+		Description: Get GC Approval Mode Response
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getGCApprovalModeResponse" type="GetGCApprovalModeResponse"/>
+	<xs:complexType name="GetGCApprovalModeResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="approvalMode" type="ApprovalMode" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setLicenseStateRequest
+	Description: Set xGrid license state
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setLicenseStateRequest" type="SetLicenseStateRequest"/>
+	<xs:complexType name="SetLicenseStateRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="licenseState" type="LicenseState" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: setLicenseStateResponse
+		Description: Response to setting the license state
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="setLicenseStateResponse" type="SetLicenseStateResponse"/>
+	<xs:complexType name="SetLicenseStateResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="licenseState" type="LicenseState" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>			
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ###############################################################################
+     Notifications Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: SessionNotification
+		Description: Includes one or more sessions as part of the publish of session notifications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="nodeConnectionStatusChangeNotification" type="NodeConnectionStatusChangeNotification"/>
+	<xs:complexType name="NodeConnectionStatusChangeNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="nodeState" type="xgrid:GINodeState" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: CapabilityStatusChangeNotification
+		Description: Updates on when subscribers or publishers change (add or remove) for a capability. The node state object itself has the resultant statef the node (created, or deleted...etc)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="capabilityStatusChangeNotification" type="CapabilityStatusChangeNotification"/>
+	<xs:complexType name="CapabilityStatusChangeNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capability" type="xgrid:Capability" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="capabilityRef" type="xgrid:CapabilityReference" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="messageFilter" type="xgrid:MessageFilter" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="subscriberNode" type="xgrid:GINodeState" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="publisherNode" type="xgrid:GINodeState" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getAuthorizedByUserRequest
+	Description: Get authorized by capability, operation, and user
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getAuthorizedByUserRequest" type="GetAuthorizedByUserRequest"/>
+	<xs:complexType name="GetAuthorizedByUserRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilityName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="operationName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="user" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getAuthorizedByUserResponse
+	Description: Response to retrieving authorized by user
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getAuthorizedByUserResponse" type="GetAuthorizedByUserResponse"/>
+	<xs:complexType name="GetAuthorizedByUserResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="authorized" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getAuthorizedByCertificateRequest
+	Description: Get authorized by capability, operation, client certificate, and issuer certificate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getAuthorizedByCertificateRequest" type="GetAuthorizedByCertificateRequest"/>
+	<xs:complexType name="GetAuthorizedByCertificateRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="capabilityName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="operationName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="user" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="clientCertificate" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="issuerCertificate" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getAuthorizedByCertificateResponse
+	Description: Response to retrieving authorized by certificate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getAuthorizedByCertificateResponse" type="GetAuthorizedByCertificateResponse"/>
+	<xs:complexType name="GetAuthorizedByCertificateResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="authorized" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+ <xs:element name="topicStatusChangeNotification" type="TopicStatusChangeNotification"/>
+        <xs:complexType name="TopicStatusChangeNotification">
+                <xs:complexContent>
+                        <xs:extension base="xgrid:BaseObjectMsg">
+                                <xs:sequence>
+                                        <xs:element name="topicName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                                        <xs:element name="topicStatus" type="xgrid:GridTopicStatus" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="requesterJID" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="reqVersion" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="vendorPlatform" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+    
+    <xs:element name="setTopicStatusRequest" type="SetTopicStatusRequest"/>
+	<xs:complexType name="SetTopicStatusRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseMsg">
+				<xs:sequence>
+					<xs:element name="topicName" type="xs:string"/>
+					<xs:element name="topicStatus" type="xgrid:GridTopicStatus"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+    <xs:element name="setTopicStatusResponse" type="SetTopicStatusResponse"/>
+    <xs:complexType name="SetTopicStatusResponse">
+        <xs:complexContent>
+            <xs:extension base="xgrid:BaseMsg">
+                <xs:sequence>
+                    <xs:element name="topicName" type="xs:string"/>
+                    <xs:element name="topicStatus" type="xgrid:GridTopicStatus"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+        
+    <!-- -anto:2015JAN13- Group related messages -->
+    
+    <xs:element name="getGroupListRequest" type="GetGroupListRequest"/>
+    <xs:complexType name="GetGroupListRequest">
+        <xs:complexContent>
+            <xs:extension base="xgrid:BaseMsg">
+                <xs:sequence/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:element name="getGroupListResponse" type="GetGroupListResponse"/>
+    <xs:complexType name="GetGroupListResponse">
+        <xs:complexContent>
+            <xs:extension base="xgrid:BaseMsg">
+                <xs:sequence>
+                    <xs:element name="groups" type="GroupList"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:element name="groupStatusChangeNotification" type="GroupStatusChangeNotification"/>
+    <xs:complexType name="GroupStatusChangeNotification">
+        <xs:complexContent>
+            <xs:extension base="xgrid:BaseMsg">
+                <xs:sequence>
+                    <xs:element name="groups" type="GroupList"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- -anto:2015JAN13- Group related messages -->
+</xs:schema>

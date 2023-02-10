@@ -1,0 +1,1271 @@
+<!DOCTYPE html><html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Test Report</title>
+    <style>body {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	min-width: 1200px;
+	color: #999;
+}
+h2 {
+	font-size: 16px;
+	color: black;
+}
+
+p {
+    color: black;
+}
+
+a {
+	color: #999;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+
+#environment td {
+	padding: 5px;
+	border: 1px solid #E6E6E6;
+}
+
+#environment tr:nth-child(odd) {
+	background-color: #f6f6f6;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed, .passed .col-result {
+	color: green;
+}
+span.skipped, span.xfailed, .skipped .col-result, .xfailed .col-result {
+	color: orange;
+}
+span.error, span.failed, span.xpassed, .error .col-result, .failed .col-result, .xpassed .col-result  {
+	color: red;
+}
+
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+
+#results-table {
+	border: 1px solid #e6e6e6;
+	color: #999;
+	font-size: 12px;
+	width: 100%
+}
+
+#results-table th, #results-table td {
+	padding: 5px;
+	border: 1px solid #E6E6E6;
+	text-align: left
+}
+#results-table th {
+	font-weight: bold
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+
+.log:only-child {
+	height: inherit
+}
+.log {
+	background-color: #e6e6e6;
+	border: 1px solid #e6e6e6;
+	color: black;
+	display: block;
+	font-family: "Courier New", Courier, monospace;
+	height: 230px;
+	overflow-y: scroll;
+	padding: 5px;
+	white-space: pre-wrap
+}
+div.image {
+	border: 1px solid #e6e6e6;
+	float: right;
+	height: 240px;
+	margin-left: 5px;
+	overflow: hidden;
+	width: 320px
+}
+div.image img {
+	width: 320px
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+	cursor: pointer;
+}
+
+.sort-icon {
+	font-size: 0px;
+	float: left;
+	margin-right: 5px;
+	margin-top: 5px;
+	/*triangle*/
+	width: 0;
+	height: 0;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+}
+
+.inactive .sort-icon {
+	/*finish triangle*/
+	border-top: 8px solid #E6E6E6;
+}
+
+.asc.active .sort-icon {
+	/*finish triangle*/
+	border-bottom: 8px solid #999;
+}
+
+.desc.active .sort-icon {
+	/*finish triangle*/
+	border-top: 8px solid #999;
+}
+</style></head>
+  <body>
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function find_all(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sort_column(elem) {
+    toggle_sort_states(elem);
+    var colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    var key;
+    if (elem.classList.contains('numeric')) {
+        key = key_num;
+    } else if (elem.classList.contains('result')) {
+        key = key_result;
+    } else {
+        key = key_alpha;
+    }
+    sort_table(elem, key(colIndex));
+}
+
+addEventListener("DOMContentLoaded", function() {
+    reset_sort_headers();
+
+    split_extra_onto_two_rows();
+    sort_column(find('.initial-sort'));
+
+    find_all('.col-links a.image').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  var node = elem;
+                                  while (node && !node.classList.contains('results-table-row')) {
+                                      node = node.parentNode;
+                                  }
+                                  if (node != null) {
+                                      if (node.nextSibling &&
+                                          node.nextSibling.classList.contains("extra")) {
+                                          var href = find('.image img', node.nextSibling).src;
+                                          window.open(href);
+                                      }
+                                  }
+                                  event.preventDefault();
+                              }, false)
+    });
+
+    find_all('.image a').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  window.open(find('img', elem).getAttribute('src'));
+                                  event.preventDefault();
+                              }, false)
+    });
+
+    find_all('.sortable').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  sort_column(elem);
+                              }, false)
+    });
+
+});
+
+function sort_table(clicked, key_func) {
+    one_row_for_data();
+    var rows = find_all('.results-table-row');
+    var reversed = !clicked.classList.contains('asc');
+
+    var sorted_rows = sort(rows, key_func, reversed);
+
+    var parent = document.getElementById('results-table-body');
+    sorted_rows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+
+    split_extra_onto_two_rows();
+}
+
+function sort(items, key_func, reversed) {
+    var sort_array = items.map(function(item, i) {
+        return [key_func(item), i];
+    });
+    var multiplier = reversed ? -1 : 1;
+
+    sort_array.sort(function(a, b) {
+        var key_a = a[0];
+        var key_b = b[0];
+        return multiplier * (key_a >= key_b ? 1 : -1);
+    });
+
+    return sort_array.map(function(item) {
+        var index = item[1];
+        return items[index];
+    });
+}
+
+function key_alpha(col_index) {
+    return function(elem) {
+        return elem.childNodes[col_index].firstChild.data.toLowerCase();
+    };
+}
+
+function key_num(col_index) {
+    return function(elem) {
+        return parseFloat(elem.childNodes[col_index].firstChild.data);
+    };
+}
+
+function key_result(col_index) {
+    return function(elem) {
+        var strings = ['Error', 'Failed', 'XFailed', 'XPassed', 'Skipped',
+                       'Passed'];
+        return strings.indexOf(elem.childNodes[col_index].firstChild.data);
+    };
+}
+
+function reset_sort_headers() {
+    find_all('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    find_all('.sortable').forEach(function(elem) {
+        var icon = document.createElement("div");
+        icon.className = "sort-icon";
+        icon.textContent = "vvv";
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove("desc", "active");
+        elem.classList.add("asc", "inactive");
+    });
+}
+
+function toggle_sort_states(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        reset_sort_headers();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function split_extra_onto_two_rows() {
+    find_all('tr.results-table-row').forEach(function(elem) {
+        var new_row = document.createElement("tr")
+        new_row.className = "extra";
+        elem.parentNode.insertBefore(new_row, elem.nextSibling);
+        find_all(".extra", elem).forEach(function (td_elem) {
+            if (find("*:not(.empty)", td_elem)) {
+                new_row.appendChild(td_elem);
+                td_elem.colSpan=5;
+            } else {
+                td_elem.parentNode.removeChild(td_elem);
+            }
+        });
+    });
+}
+
+function one_row_for_data() {
+    find_all('tr.results-table-row').forEach(function(elem) {
+        if (elem.nextSibling.classList.contains('extra')) {
+            toArray(elem.nextSibling.childNodes).forEach(
+                function (td_elem) {
+                    elem.appendChild(td_elem);
+                })
+        } else {
+            var new_td = document.createElement("td");
+            new_td.className = "extra";
+            elem.appendChild(new_td);
+        }
+    });
+}
+</script>
+    <p>Report generated on 11-Nov-2022 at 02:28:23</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Platform</td>
+        <td>Linux-4.8.13-100.fc23.x86_64-x86_64-with-fedora-23-Twenty_Three</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>2.7.11</td></tr></table>
+    <h2>Summary</h2>
+    <p>49 tests ran in 1919.42 seconds.<br/><span class="passed">32 passed</span>, <span class="skipped">0 skipped</span>, <span class="failed">17 failed</span>, <span class="error">0 errors</span>.<br/><span class="skipped">0 expected failures</span>, <span class="failed">0 unexpected passes</span>.</p>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable initial-sort result" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable numeric" col="duration">Duration</th>
+          <th>Links</th></tr></thead>
+      <tbody id="results-table-body">
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_000_Start_FTP_services_all_members</td>
+          <td class="col-duration">93.00</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_001_Verify_the_FTP_service_is_running_all_members</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_002_Check_the_status_of_FTP_service_are_running</td>
+          <td class="col-duration">0.24</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_003_Validate_the_log_index_forbidden_by_Options_on_master</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_004_Validate_the_log_index_forbidden_by_Options_on_HA_member</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_005_Validate_the_log_index_forbidden_by_Options_on_SA_member</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_006_grep_vsftpd_and_validate_PID_on_master</td>
+          <td class="col-duration">4.17</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_007_grep_vsftpd_and_validate_PID_on_HA_member</td>
+          <td class="col-duration">4.17</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_008_grep_vsftpd_and_validate_PID_on_SA_member</td>
+          <td class="col-duration">4.17</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_009_Upload_files_through_master</td>
+          <td class="col-duration">1.18</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_010_validate_audit_log_able_to_upload_file</td>
+          <td class="col-duration">4.17</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_010_validate_audit_log_able_to_upload_file&gt;<br/><br/>    @pytest.mark.run(order=11)<br/>    def test_010_validate_audit_log_able_to_upload_file(self):<br/>        print("\n Validate audit log of uploading file\n")<br/>        LookFor=".*imported tftp file.*"<br/>        print(LookFor)<br/>        logs=logv(LookFor,"/infoblox/var/audit.log",config.grid_vip)<br/>        print(logs)<br/>        print('-------------------------')<br/>        if logs:<br/>            print("Success: Uploaded the file successfully")<br/>            assert True<br/>        else:<br/>            print("Failed: unable to uploaded the file")<br/>            assert False<br/>&gt;       FTP.validate_uploaded_files_in_storage_path(config.grid_vip,"upload_file.txt")<br/><br/>FTP_TFTP_HTTP.py:113: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1', file_name = 'upload_file.txt'<br/><br/>    def validate_uploaded_files_in_storage_path(IP,file_name):<br/>        client = paramiko.SSHClient()<br/>        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())<br/>        privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')<br/>        mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)<br/>        client.connect(IP, username='root', pkey = mykey)<br/>        sleep(2)<br/>        data="cd /storage/tftpboot"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        sleep(2)<br/>        data="ls -ltr"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        stdout=stdout.read()<br/>        stderr=stderr.read()<br/>        print(data,stdout,stderr)<br/>    <br/>        if file_name in stdout:<br/>            print("\n Success: uploaded file is present in /storage path")<br/>            assert True<br/>        else:<br/>            print("\n Failure: Could not find the file in the /storage path")<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:278: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+ Validate audit log of uploading file
+
+.*imported tftp file.*
+(&apos;file_name :&apos;, &apos;_infoblox_var_audit.log&apos;)
+2022-11-11 09:52:13.957Z [admin]: imported tftp file
+
+-------------------------
+Success: Uploaded the file successfully
+(&apos;ls -ltr&apos;, &apos;total 36\n-rw-r--r-- 1 root root    56 Nov  6 19:41 snmptrapv2.txt\n-rw-r--r-- 1 root root 25909 Nov  7 16:15 snmptrapv3.txt\ndrwxrwxrwx 2 root root  4096 Nov 11 09:52 dump\n&apos;, &apos;&apos;)
+
+ Failure: Could not find the file in the /storage path
+</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_011_stop_FTP_service</td>
+          <td class="col-duration">63.02</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_012_Verify_the_FTP_service_is_stopped_all_members</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_013_Check_the_status_of_FTP_service_is_inactive</td>
+          <td class="col-duration">0.23</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_014_Restarted_FTP_services_all_members</td>
+          <td class="col-duration">93.09</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_015_Verify_the_FTP_service_is_running_all_members_after_restarted</td>
+          <td class="col-duration">0.03</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_016_Check_the_status_of_FTP_service_are_running_after_restarted</td>
+          <td class="col-duration">0.21</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_017_Start_and_stop_FTP_services_three_times</td>
+          <td class="col-duration">498.30</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_018_Verify_the_FTP_service_is_running_all_members_after_stop_starting_3_times</td>
+          <td class="col-duration">0.04</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_019_Check_the_status_of_FTP_service_are_running_after_restarted</td>
+          <td class="col-duration">0.22</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_020_Set_FTP_ACLs_any_allow</td>
+          <td class="col-duration">60.47</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_021_validate_FTP_ACLs_added</td>
+          <td class="col-duration">0.12</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_022_Upload_files_after_configure_ACLs</td>
+          <td class="col-duration">5.39</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_022_Upload_files_after_configure_ACLs&gt;<br/><br/>    @pytest.mark.run(order=23)<br/>    def test_022_Upload_files_after_configure_ACLs(self):<br/>        FTP.upload_files("upload_file.txt",config.grid_vip)<br/>&gt;       FTP.validate_uploaded_files_in_storage_path(config.grid_vip,"upload_file.txt")<br/><br/>FTP_TFTP_HTTP.py:223: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1', file_name = 'upload_file.txt'<br/><br/>    def validate_uploaded_files_in_storage_path(IP,file_name):<br/>        client = paramiko.SSHClient()<br/>        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())<br/>        privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')<br/>        mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)<br/>        client.connect(IP, username='root', pkey = mykey)<br/>        sleep(2)<br/>        data="cd /storage/tftpboot"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        sleep(2)<br/>        data="ls -ltr"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        stdout=stdout.read()<br/>        stderr=stderr.read()<br/>        print(data,stdout,stderr)<br/>    <br/>        if file_name in stdout:<br/>            print("\n Success: uploaded file is present in /storage path")<br/>            assert True<br/>        else:<br/>            print("\n Failure: Could not find the file in the /storage path")<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:278: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>(&apos;check here :&apos;, &apos;tail -f /infoblox/var/audit.log &gt;&gt; /root/dump/10.36.171.1_infoblox_var_audit.log 2&gt;&amp;1 &amp;&apos;)
+{
+    &quot;token&quot;: &quot;eJytjlELgjAUhf+K7Dk3p3OZb4YFQVREPQ9xyy6oW3NBEf33HFGPPXUev3PvOeeB1M2AvQsHnUJ5\nQDnPKGc8ZThLZnHEJwG62nZ00Nk5M+SE0AgnHNMpxZR4JiRYVTtxglYJ0MSqiwAZHnfrbVGG1CuK\nGGVZwuM0IdAZbd/XaAyXlauE6mstoW98zXy1+fJOSz8KlcWhEPvF8mN4RganbdUo4jrzhx0gfejv\nH/R8AfQ0Whs=\n&quot;, 
+    &quot;url&quot;: &quot;https://10.36.171.1/http_direct_file_io/req_id-UPLOAD-1111100414836253/import_file&quot;
+}
+(&apos;URL is : %s&apos;, u&apos;https://10.36.171.1/http_direct_file_io/req_id-UPLOAD-1111100414836253/import_file&apos;)
+(&apos;Token is %s&apos;, u&apos;eJytjlELgjAUhf+K7Dk3p3OZb4YFQVREPQ9xyy6oW3NBEf33HFGPPXUev3PvOeeB1M2AvQsHnUJ5\nQDnPKGc8ZThLZnHEJwG62nZ00Nk5M+SE0AgnHNMpxZR4JiRYVTtxglYJ0MSqiwAZHnfrbVGG1CuK\nGGVZwuM0IdAZbd/XaAyXlauE6mstoW98zXy1+fJOSz8KlcWhEPvF8mN4RganbdUo4jrzhx0gfejv\nH/R8AfQ0Whs=\n&apos;)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  129k    0     0  100  129k      0   773k --:--:-- --:--:-- --:--:--  775k
+{&apos;token&apos;: u&apos;eJytjlELgjAUhf+K7Dk3p3OZb4YFQVREPQ9xyy6oW3NBEf33HFGPPXUev3PvOeeB1M2AvQsHnUJ5\nQDnPKGc8ZThLZnHEJwG62nZ00Nk5M+SE0AgnHNMpxZR4JiRYVTtxglYJ0MSqiwAZHnfrbVGG1CuK\nGGVZwuM0IdAZbd/XaAyXlauE6mstoW98zXy1+fJOSz8KlcWhEPvF8mN4RganbdUo4jrzhx0gfejv\nH/R8AfQ0Whs=\n&apos;, &apos;type&apos;: &apos;TFTP_FILE&apos;, &apos;dest_path&apos;: &apos;/upload_file.txt&apos;}
+{}
+(&apos;:::::::::::::::::::::::::::::&apos;, &apos;scp -o StrictHostKeyChecking=no -o BatchMode=yes -o UserKnownHostsFile=/dev/null root@[10.36.171.1]:/root/dump/10.36.171.1_infoblox_var_audit.log /tmp/&apos;)
+(&apos;ls -ltr&apos;, &apos;total 36\n-rw-r--r-- 1 root root    56 Nov  6 19:41 snmptrapv2.txt\n-rw-r--r-- 1 root root 25909 Nov  7 16:15 snmptrapv3.txt\ndrwxrwxrwx 2 root root  4096 Nov 11 10:04 dump\n&apos;, &apos;&apos;)
+
+ Failure: Could not find the file in the /storage path
+----------------------------- Captured stderr call -----------------------------<br/>Warning: Permanently added &apos;10.36.171.1&apos; (RSA) to the list of known hosts.
+
+
+Disconnect NOW if you have not been expressly authorized to use this system.
+</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_023_validate_able_to_upload_file_after_configure_ACLs</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_024_Stop_and_start_FTP_services_and_validate_the_status</td>
+          <td class="col-duration">166.35</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_025_Stop_FTP_services_and_try_to_upload_the_file</td>
+          <td class="col-duration">78.55</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_025_Stop_FTP_services_and_try_to_upload_the_file&gt;<br/><br/>    @pytest.mark.run(order=26)<br/>    def test_025_Stop_FTP_services_and_try_to_upload_the_file(self):<br/>    <br/>        FTP.stop_FTP_services(0,config.grid_vip,"Master")<br/>        FTP.stop_FTP_services(1,config.grid_member1_vip,"HA member")<br/>        FTP.stop_FTP_services(2,config.grid_member2_vip,"SA member")<br/>        sleep(10)<br/>    <br/>        FTP.Verify_the_FTP_service_is_stopped(config.grid_vip)<br/>        FTP.Verify_the_FTP_service_is_stopped(config.grid_member1_vip)<br/>        FTP.Verify_the_FTP_service_is_stopped(config.grid_member2_vip)<br/>    <br/>        FTP.Check_the_status_of_FTP_service_is_inactive(0)<br/>        FTP.Check_the_status_of_FTP_service_is_inactive(1)<br/>        FTP.Check_the_status_of_FTP_service_is_inactive(2)<br/>    <br/>        FTP.upload_files("upload_file.txt",config.grid_vip)<br/>&gt;       FTP.validate_uploaded_files_in_storage_path(config.grid_vip,"upload_file.txt")<br/><br/>FTP_TFTP_HTTP.py:277: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1', file_name = 'upload_file.txt'<br/><br/>    def validate_uploaded_files_in_storage_path(IP,file_name):<br/>        client = paramiko.SSHClient()<br/>        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())<br/>        privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')<br/>        mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)<br/>        client.connect(IP, username='root', pkey = mykey)<br/>        sleep(2)<br/>        data="cd /storage/tftpboot"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        sleep(2)<br/>        data="ls -ltr"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        stdout=stdout.read()<br/>        stderr=stderr.read()<br/>        print(data,stdout,stderr)<br/>    <br/>        if file_name in stdout:<br/>            print("\n Success: uploaded file is present in /storage path")<br/>            assert True<br/>        else:<br/>            print("\n Failure: Could not find the file in the /storage path")<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:278: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>(&apos;check here :&apos;, &apos;tail -f /infoblox/var/infoblox.log &gt;&gt; /root/dump/10.36.171.1_infoblox_var_infoblox.log 2&gt;&amp;1 &amp;&apos;)
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com&quot;
+(&apos;:::::::::::::::::::::::::::::&apos;, &apos;scp -o StrictHostKeyChecking=no -o BatchMode=yes -o UserKnownHostsFile=/dev/null root@[10.36.171.1]:/root/dump/10.36.171.1_infoblox_var_infoblox.log /tmp/&apos;)
+(&apos;check here :&apos;, &apos;tail -f /infoblox/var/infoblox.log &gt;&gt; /root/dump/10.34.128.100_infoblox_var_infoblox.log 2&gt;&amp;1 &amp;&apos;)
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMg:ib-10.34.128.100.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMg:ib-10.34.128.100.infoblox.com&quot;
+(&apos;:::::::::::::::::::::::::::::&apos;, &apos;scp -o StrictHostKeyChecking=no -o BatchMode=yes -o UserKnownHostsFile=/dev/null root@[10.34.128.100]:/root/dump/10.34.128.100_infoblox_var_infoblox.log /tmp/&apos;)
+(&apos;check here :&apos;, &apos;tail -f /infoblox/var/infoblox.log &gt;&gt; /root/dump/10.35.195.1_infoblox_var_infoblox.log 2&gt;&amp;1 &amp;&apos;)
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com&quot;
+(&apos;:::::::::::::::::::::::::::::&apos;, &apos;scp -o StrictHostKeyChecking=no -o BatchMode=yes -o UserKnownHostsFile=/dev/null root@[10.35.195.1]:/root/dump/10.35.195.1_infoblox_var_infoblox.log /tmp/&apos;)
+
+======================================
+
+ Verify the FTP service is stopped on 10.36.171.1
+
+======================================
+
+.*Sending state change trap for.*- ftp .*FTP Service is inactive.* from 26 to 28.*
+(&apos;file_name :&apos;, &apos;_infoblox_var_infoblox.log&apos;)
+[2022/11/11 10:07:09.832] (24674 monitor) snmp_trap.c:1518 one_send_snmp_trap(): Sending state change trap for 10.35.171.1 - ftp (FTP Service is inactive) from 26 to 28
+
+-------------------------
+Success: Verified the FTP service is stopped
+
+======================================
+
+ Verify the FTP service is stopped on 10.34.128.100
+
+======================================
+
+.*Sending state change trap for.*- ftp .*FTP Service is inactive.* from 26 to 28.*
+(&apos;file_name :&apos;, &apos;_infoblox_var_infoblox.log&apos;)
+[2022/11/11 10:07:41.980] (31812 monitor) snmp_trap.c:1518 one_send_snmp_trap(): Sending state change trap for 10.34.128.103 - ftp (FTP Service is inactive) from 26 to 28
+
+-------------------------
+Success: Verified the FTP service is stopped
+
+======================================
+
+ Verify the FTP service is stopped on 10.35.195.1
+
+======================================
+
+.*Sending state change trap for.*- ftp .*FTP Service is inactive.* from 26 to 28.*
+(&apos;file_name :&apos;, &apos;_infoblox_var_infoblox.log&apos;)
+[2022/11/11 10:08:02.694] (31689 monitor) snmp_trap.c:1518 one_send_snmp_trap(): Sending state change trap for 10.35.195.1 - ftp (FTP Service is inactive) from 26 to 28
+
+-------------------------
+Success: Verified the FTP service is stopped
+
+ Check if FTP services is inactive state
+
+INACTIVE
+Success: **FTP services is inactive state**
+
+ Check if FTP services is inactive state
+
+INACTIVE
+Success: **FTP services is inactive state**
+
+ Check if FTP services is inactive state
+
+INACTIVE
+Success: **FTP services is inactive state**
+(&apos;check here :&apos;, &apos;tail -f /infoblox/var/audit.log &gt;&gt; /root/dump/10.36.171.1_infoblox_var_audit.log 2&gt;&amp;1 &amp;&apos;)
+{
+    &quot;token&quot;: &quot;eJytjsEKwjAQRH9FcrZNt4Y27a1SBUFURM+hNLEutE1MIyjiv9sgevTkHN/szsyDqJtBexcOO0Xy\nCSQJh4TxLAs5YzFLYTohV9uOFjk7Z4acUojCWRJCCiFQz4REq2onTtgqgZpadREog+NuvS3KALyi\niEPGWQwsotgZbd/XZAyXlauE6mstsW98zXy1+fJOS7+KlMWhEPvF8mN4RgenbdUo6jrzhx0ofejv\nH/J8AUAEWls=\n&quot;, 
+    &quot;url&quot;: &quot;https://10.36.171.1/http_direct_file_io/req_id-UPLOAD-1111100819842140/import_file&quot;
+}
+(&apos;URL is : %s&apos;, u&apos;https://10.36.171.1/http_direct_file_io/req_id-UPLOAD-1111100819842140/import_file&apos;)
+(&apos;Token is %s&apos;, u&apos;eJytjsEKwjAQRH9FcrZNt4Y27a1SBUFURM+hNLEutE1MIyjiv9sgevTkHN/szsyDqJtBexcOO0Xy\nCSQJh4TxLAs5YzFLYTohV9uOFjk7Z4acUojCWRJCCiFQz4REq2onTtgqgZpadREog+NuvS3KALyi\niEPGWQwsotgZbd/XZAyXlauE6mstsW98zXy1+fJOS7+KlMWhEPvF8mN4RgenbdUo6jrzhx0ofejv\nH/J8AUAEWls=\n&apos;)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  129k    0     0  100  129k      0   799k --:--:-- --:--:-- --:--:--  804k
+{&apos;token&apos;: u&apos;eJytjsEKwjAQRH9FcrZNt4Y27a1SBUFURM+hNLEutE1MIyjiv9sgevTkHN/szsyDqJtBexcOO0Xy\nCSQJh4TxLAs5YzFLYTohV9uOFjk7Z4acUojCWRJCCiFQz4REq2onTtgqgZpadREog+NuvS3KALyi\niEPGWQwsotgZbd/XZAyXlauE6mstsW98zXy1+fJOS7+KlMWhEPvF8mN4RgenbdUo6jrzhx0ofejv\nH/J8AUAEWls=\n&apos;, &apos;type&apos;: &apos;TFTP_FILE&apos;, &apos;dest_path&apos;: &apos;/upload_file.txt&apos;}
+{}
+(&apos;:::::::::::::::::::::::::::::&apos;, &apos;scp -o StrictHostKeyChecking=no -o BatchMode=yes -o UserKnownHostsFile=/dev/null root@[10.36.171.1]:/root/dump/10.36.171.1_infoblox_var_audit.log /tmp/&apos;)
+(&apos;ls -ltr&apos;, &apos;total 36\n-rw-r--r-- 1 root root    56 Nov  6 19:41 snmptrapv2.txt\n-rw-r--r-- 1 root root 25909 Nov  7 16:15 snmptrapv3.txt\ndrwxrwxrwx 2 root root  4096 Nov 11 10:08 dump\n&apos;, &apos;&apos;)
+
+ Failure: Could not find the file in the /storage path
+----------------------------- Captured stderr call -----------------------------<br/>Warning: Permanently added &apos;10.36.171.1&apos; (RSA) to the list of known hosts.
+
+
+Disconnect NOW if you have not been expressly authorized to use this system.
+Warning: Permanently added &apos;10.34.128.100&apos; (RSA) to the list of known hosts.
+
+
+Disconnect NOW if you have not been expressly authorized to use this system.
+Warning: Permanently added &apos;10.35.195.1&apos; (RSA) to the list of known hosts.
+
+
+Disconnect NOW if you have not been expressly authorized to use this system.
+Warning: Permanently added &apos;10.36.171.1&apos; (RSA) to the list of known hosts.
+
+
+Disconnect NOW if you have not been expressly authorized to use this system.
+</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_026_Start_FTP_services_then_restart_member_validate_no_error_in_log</td>
+          <td class="col-duration">122.26</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_027_create_a_directory</td>
+          <td class="col-duration">5.41</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_028_rename_created_directory_check_path_rightly_updated</td>
+          <td class="col-duration">5.67</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_029_create_FTP_user</td>
+          <td class="col-duration">5.37</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_029_create_FTP_user&gt;<br/><br/>    @pytest.mark.run(order=30)<br/>    def test_029_create_FTP_user(self):<br/>        print("\n======================================\n")<br/>        print("Create FTP user and  check that the /storage path has been updated ")<br/>        print("\n======================================\n")<br/>        FTP.Create_ftpuser(config.grid_vip,config.client_user,"RO",config.client_passwd)<br/>&gt;       FTP.validate_directory_created_in_storage_path(config.grid_vip,config.client_user,"/storage/tftpboot/ftpusers")<br/><br/>FTP_TFTP_HTTP.py:322: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1', dir_name = '[CLIENT_USER]', path = '/storage/tftpboot/ftpusers'<br/><br/>    def validate_directory_created_in_storage_path(IP,dir_name,path):<br/>        client = paramiko.SSHClient()<br/>        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())<br/>        privatekeyfile = os.path.expanduser('~/.ssh/id_rsa')<br/>        mykey = paramiko.RSAKey.from_private_key_file(privatekeyfile)<br/>        client.connect(IP, username='root', pkey = mykey)<br/>        sleep(5)<br/>        channel = client.invoke_shell()<br/>        stdin = channel.makefile('wb')<br/>        stdout = channel.makefile('rb')<br/>    <br/>        stdin.write('''<br/>        cd {}<br/>        ls<br/>        exit<br/>        '''.format(path))<br/>        stdout=stdout.read()<br/>        '''<br/>        data="cd /storage/tftpboot"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        print(data,stderr.read(),stdout.read())<br/>        sleep(5)<br/>        data="ls -ltr"<br/>        stdin, stdout, stderr = client.exec_command(data)<br/>        stdout=stdout.read()<br/>        stderr=stderr.read()<br/>        print(data,stdout,stderr)<br/>        '''<br/>        print(stdout)<br/>        if dir_name in stdout:<br/>            print("\n Success: The /storage path contains the "+dir_name)<br/>            client.close()<br/>            assert True<br/>    <br/>        else:<br/>            print("\n Failure: The created directory is not present in the "+dir_name)<br/>            client.close()<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:334: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Create FTP user and  check that the /storage path has been updated 
+
+======================================
+
+{ &quot;Error&quot;: &quot;AdmConDataError: None (IBDataConflictError: IB.Data.Conflict:Failed to create home directory &apos;/ftpusers/[CLIENT_USER]&apos;for user &apos;[CLIENT_USER].&apos;)&quot;, 
+  &quot;code&quot;: &quot;Client.Ibap.Data.Conflict&quot;, 
+  &quot;text&quot;: &quot;Failed to create home directory &apos;/ftpusers/[CLIENT_USER]&apos;for user &apos;[CLIENT_USER].&apos;&quot;
+}
+
+ Success: Created FTPuser
+
+    cd /storage/tftpboot/ftpusers
+    ls
+    exit
+    -bash-4.0# 
+-bash-4.0#     cd /storage/tftpboot/ftpusers
+-bash-4.0#     ls
+-bash-4.0#     exit
+logout
+
+
+ Failure: The created directory is not present in the [CLIENT_USER]
+----------------------------- Captured stderr call -----------------------------<br/>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   394    0   296  100    98   1729    572 --:--:-- --:--:-- --:--:--  1720
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_030_Try_connecting_the_master_after_adding_ACL</td>
+          <td class="col-duration">30.15</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_030_Try_connecting_the_master_after_adding_ACL&gt;<br/><br/>    @pytest.mark.run(order=31)<br/>    def test_030_Try_connecting_the_master_after_adding_ACL(self):<br/>        print("\n======================================\n")<br/>        print("Try connecting the master after adding ACL:ANY ALLOW ")<br/>        print("\n======================================\n")<br/>&gt;       FTP.Try_connecting_the_IP_after_adding_ACL_ALLOW_Permission(config.grid_vip)<br/><br/>FTP_TFTP_HTTP.py:329: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1'<br/><br/>    def Try_connecting_the_IP_after_adding_ACL_ALLOW_Permission(IP):<br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect(':')<br/>            child1.sendline(config.client_user)<br/>            child1.expect('Password:')<br/>            child1.sendline(config.client_passwd)<br/>            child1.expect('ftp&gt;')<br/>    <br/>            output= child1.before<br/>    <br/>            if 'Login successful' in output:<br/>                print("\nSucess: Successfully logined in")<br/>                assert True<br/>                child1.close()<br/>            else:<br/>                print("\nFailure: did not log in successfully")<br/>                assert False<br/>                child1.close()<br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: error in login ftp")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:399: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Try connecting the master after adding ACL:ANY ALLOW 
+
+======================================
+
+
+ Failure: error in login ftp
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd5847b8290&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 16480
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;:&apos;)
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_031_delete_FTP_ACL_ANY_ALLOW</td>
+          <td class="col-duration">70.47</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_031_delete_FTP_ACL_ANY_ALLOW&gt;<br/><br/>    @pytest.mark.run(order=32)<br/>    def test_031_delete_FTP_ACL_ANY_ALLOW(self):<br/>        print("\n======================================\n")<br/>        print("Change permission to ALLOW to DENY and connect ftp server")<br/>        print("\n======================================\n")<br/>        FTP.change_permission_to_DENY(0,config.grid_vip,"Any","DENY")<br/>        FTP.change_permission_to_DENY(2,config.grid_member2_vip,"Any","DENY")<br/>        print("\n======================================\n")<br/>        print("\nTry connecting the master after adding ACL:ANY_DENY")<br/>        print("\n======================================\n")<br/>&gt;       FTP.Try_connecting_the_IP_after_adding_ACL_DENY_Permission(config.grid_vip)<br/><br/>FTP_TFTP_HTTP.py:346: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1'<br/><br/>    def Try_connecting_the_IP_after_adding_ACL_DENY_Permission(IP):<br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect('ftp&gt;')<br/>    <br/>            output= child1.before<br/>            if 'Restricted Access Only' in output or 'Service not available' in output:<br/>                print("Restricted Access Only")<br/>                assert True<br/>                child1.close()<br/>            else:<br/>                print("Successfully logined in")<br/>                assert False<br/>                child1.close()<br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: Successfully logined in")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:421: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Change permission to ALLOW to DENY and connect ftp server
+
+======================================
+
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com&quot;
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com&quot;
+
+======================================
+
+
+Try connecting the master after adding ACL:ANY_DENY
+
+======================================
+
+
+ Failure: Successfully logined in
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd5847892d0&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 16564
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;ftp&gt;&apos;)
+</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_032_delete_FTP_ACL_ANY</td>
+          <td class="col-duration">60.50</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_033_Set_FTP_ACLs_network_ALLOW</td>
+          <td class="col-duration">60.67</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_034_validate_FTP_ACLs_added</td>
+          <td class="col-duration">0.12</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_035_Try_connecting_the_master_after_adding_ACL</td>
+          <td class="col-duration">30.14</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_035_Try_connecting_the_master_after_adding_ACL&gt;<br/><br/>    @pytest.mark.run(order=36)<br/>    def test_035_Try_connecting_the_master_after_adding_ACL(self):<br/>        print("\n======================================\n")<br/>        print("Try connecting the master after adding ACL. ")<br/>        print("\n======================================\n")<br/>&gt;       FTP.Try_connecting_the_IP_after_adding_ACL_ALLOW_Permission(config.grid_vip)<br/><br/>FTP_TFTP_HTTP.py:382: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1'<br/><br/>    def Try_connecting_the_IP_after_adding_ACL_ALLOW_Permission(IP):<br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect(':')<br/>            child1.sendline(config.client_user)<br/>            child1.expect('Password:')<br/>            child1.sendline(config.client_passwd)<br/>            child1.expect('ftp&gt;')<br/>    <br/>            output= child1.before<br/>    <br/>            if 'Login successful' in output:<br/>                print("\nSucess: Successfully logined in")<br/>                assert True<br/>                child1.close()<br/>            else:<br/>                print("\nFailure: did not log in successfully")<br/>                assert False<br/>                child1.close()<br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: error in login ftp")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:399: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Try connecting the master after adding ACL. 
+
+======================================
+
+
+ Failure: error in login ftp
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd584791a50&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 16758
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;:&apos;)
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_036_Set_Network_FTP_ACL_configurations_DENY</td>
+          <td class="col-duration">70.43</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_036_Set_Network_FTP_ACL_configurations_DENY&gt;<br/><br/>    @pytest.mark.run(order=37)<br/>    def test_036_Set_Network_FTP_ACL_configurations_DENY(self):<br/>        print("\n======================================\n")<br/>        print("Change permission to ALLOW to DENY and connect ftp server")<br/>        print("\n======================================\n")<br/>        FTP.change_permission_to_DENY(0,config.grid_vip,"10.36.0.0/16","DENY")<br/>        FTP.change_permission_to_DENY(2,config.grid_member2_vip,"10.36.0.0/16","DENY")<br/>        print("\n======================================\n")<br/>        print("\nTry connecting the master after adding ACL:Network_DENY")<br/>        print("\n======================================\n")<br/>&gt;       FTP.Try_connecting_the_IP_after_adding_ACL_DENY_Permission(config.grid_vip)<br/><br/>FTP_TFTP_HTTP.py:399: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1'<br/><br/>    def Try_connecting_the_IP_after_adding_ACL_DENY_Permission(IP):<br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect('ftp&gt;')<br/>    <br/>            output= child1.before<br/>            if 'Restricted Access Only' in output or 'Service not available' in output:<br/>                print("Restricted Access Only")<br/>                assert True<br/>                child1.close()<br/>            else:<br/>                print("Successfully logined in")<br/>                assert False<br/>                child1.close()<br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: Successfully logined in")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:421: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Change permission to ALLOW to DENY and connect ftp server
+
+======================================
+
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com&quot;
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com&quot;
+
+======================================
+
+
+Try connecting the master after adding ACL:Network_DENY
+
+======================================
+
+
+ Failure: Successfully logined in
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd5847a8910&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 16858
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;ftp&gt;&apos;)
+</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_037_delete_FTP_ACL_Network</td>
+          <td class="col-duration">60.52</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_038_Set_FTP_ACLs_network_ALLOW</td>
+          <td class="col-duration">0.10</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_038_Set_FTP_ACLs_network_ALLOW&gt;<br/><br/>    @pytest.mark.run(order=39)<br/>    def test_038_Set_FTP_ACLs_network_ALLOW(self):<br/>        print("\n======================================\n")<br/>        print("Select the network ACLs option.")<br/>        print("\n======================================\n")<br/>&gt;       FTP.Set_FTP_ACLs_to_the_member(0,config.grid_vip,config.client_ip,"ALLOW")<br/><br/>FTP_TFTP_HTTP.py:419: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>obj_index = 0, which_mem = '10.36.171.1', add = '[CLIENT_IP]', permission = 'ALLOW'<br/><br/>    def Set_FTP_ACLs_to_the_member(obj_index,which_mem,add,permission):<br/>    <br/>        get_ref = ib_NIOS.wapi_request('GET', object_type="member:filedistribution")<br/>    <br/>        ref=json.loads(get_ref)[obj_index]['_ref']<br/>        print(ref)<br/>        data = {"ftp_acls": [{"address": add,"permission": permission}]}<br/>        response = ib_NIOS.wapi_request('PUT', ref=ref, fields=json.dumps(data))<br/>        print(response)<br/>        if type(response) == tuple:<br/>            if response[0]==200:<br/>                print("\n Success: Set FTP ACLs on "+which_mem)<br/>                assert True<br/>            else:<br/>                print("\n Failure: did not Set FTP ACLs on "+which_mem)<br/>&gt;               assert False<br/><span class="error">E               AssertionError</span><br/><br/>FTP_suit.py:197: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Select the network ACLs option.
+
+======================================
+
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com
+(400, &apos;{ &quot;Error&quot;: &quot;AdmConDataError: None (IBDataConflictError: IB.Data.Conflict:Invalid address_string \&apos;[CLIENT_IP]\&apos;)&quot;, \n  &quot;code&quot;: &quot;Client.Ibap.Data.Conflict&quot;, \n  &quot;text&quot;: &quot;Invalid address_string \&apos;[CLIENT_IP]\&apos;&quot;\n}&apos;)
+
+ Failure: did not Set FTP ACLs on 10.36.171.1
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_039_validate_FTP_ACLs_added</td>
+          <td class="col-duration">0.04</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_039_validate_FTP_ACLs_added&gt;<br/><br/>    @pytest.mark.run(order=40)<br/>    def test_039_validate_FTP_ACLs_added(self):<br/>    <br/>&gt;       FTP.Validate_FTP_ACLs_is_set_to_the_member(0,config.grid_vip,config.client_ip,"ALLOW")<br/><br/>FTP_TFTP_HTTP.py:426: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>obj_index = 0, which_mem = '10.36.171.1', address = '[CLIENT_IP]', permission = 'ALLOW'<br/><br/>    def Validate_FTP_ACLs_is_set_to_the_member(obj_index,which_mem,address,permission):<br/>        get_ref = ib_NIOS.wapi_request('GET', object_type="member:filedistribution?_return_fields=ftp_acls")<br/>    <br/>&gt;       add=json.loads(get_ref)[obj_index]['ftp_acls'][0]['address']<br/><span class="error">E       IndexError: list index out of range</span><br/><br/>FTP_suit.py:203: IndexError<br/></div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_040_Try_connecting_the_master_after_adding_ACL</td>
+          <td class="col-duration">30.14</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_040_Try_connecting_the_master_after_adding_ACL&gt;<br/><br/>    @pytest.mark.run(order=41)<br/>    def test_040_Try_connecting_the_master_after_adding_ACL(self):<br/>        print("\n======================================\n")<br/>        print("Try connecting the master after adding ACL. ")<br/>        print("\n======================================\n")<br/>&gt;       FTP.Try_connecting_the_IP_after_adding_ACL_ALLOW_Permission(config.grid_vip)<br/><br/>FTP_TFTP_HTTP.py:435: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1'<br/><br/>    def Try_connecting_the_IP_after_adding_ACL_ALLOW_Permission(IP):<br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect(':')<br/>            child1.sendline(config.client_user)<br/>            child1.expect('Password:')<br/>            child1.sendline(config.client_passwd)<br/>            child1.expect('ftp&gt;')<br/>    <br/>            output= child1.before<br/>    <br/>            if 'Login successful' in output:<br/>                print("\nSucess: Successfully logined in")<br/>                assert True<br/>                child1.close()<br/>            else:<br/>                print("\nFailure: did not log in successfully")<br/>                assert False<br/>                child1.close()<br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: error in login ftp")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:399: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Try connecting the master after adding ACL. 
+
+======================================
+
+
+ Failure: error in login ftp
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd5845d9050&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 16960
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;:&apos;)
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_041_Set_ipv4_address_ACL_configurations_DENY</td>
+          <td class="col-duration">0.11</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_041_Set_ipv4_address_ACL_configurations_DENY&gt;<br/><br/>    @pytest.mark.run(order=42)<br/>    def test_041_Set_ipv4_address_ACL_configurations_DENY(self):<br/>        print("\n======================================\n")<br/>        print("Change permission to ALLOW to DENY and connect ftp server")<br/>        print("\n======================================\n")<br/>&gt;       FTP.change_permission_to_DENY(0,config.grid_vip,config.client_ip,"DENY")<br/><br/>FTP_TFTP_HTTP.py:445: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>obj_index = 0, which_mem = '10.36.171.1', add = '[CLIENT_IP]', permission = 'DENY'<br/><br/>    def change_permission_to_DENY(obj_index,which_mem,add,permission):<br/>        get_ref = ib_NIOS.wapi_request('GET', object_type="member:filedistribution")<br/>    <br/>        ref=json.loads(get_ref)[obj_index]['_ref']<br/>        print(ref)<br/>        data = {"ftp_acls": [{"address": add,"permission": permission}]}<br/>        response = ib_NIOS.wapi_request('PUT', ref=ref, fields=json.dumps(data))<br/>        print(response)<br/>        if type(response) == tuple:<br/>            if response[0]==200:<br/>                print("\n Success: Updated FTP ACLs on "+which_mem)<br/>                assert True<br/>            else:<br/>                print("\n Failure: did not Updated FTP ACLs on "+which_mem)<br/>&gt;               assert False<br/><span class="error">E               AssertionError</span><br/><br/>FTP_suit.py:254: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Change permission to ALLOW to DENY and connect ftp server
+
+======================================
+
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com
+(400, &apos;{ &quot;Error&quot;: &quot;AdmConDataError: None (IBDataConflictError: IB.Data.Conflict:Invalid address_string \&apos;[CLIENT_IP]\&apos;)&quot;, \n  &quot;code&quot;: &quot;Client.Ibap.Data.Conflict&quot;, \n  &quot;text&quot;: &quot;Invalid address_string \&apos;[CLIENT_IP]\&apos;&quot;\n}&apos;)
+
+ Failure: did not Updated FTP ACLs on 10.36.171.1
+</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_042_delete_FTP_ACL_address</td>
+          <td class="col-duration">60.46</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="passed results-table-row">
+          <td class="col-result">Passed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_043_enable_anonymous_in_the_grid</td>
+          <td class="col-duration">0.13</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="empty log">No log output captured.</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_044_restricted_from_listing_files_when_FTP_File_list_disable</td>
+          <td class="col-duration">70.54</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_044_restricted_from_listing_files_when_FTP_File_list_disable&gt;<br/><br/>    @pytest.mark.run(order=45)<br/>    def test_044_restricted_from_listing_files_when_FTP_File_list_disable(self):<br/>        print("\n======================================\n")<br/>        print("It should be restricted from listing files, however FTP File Listing is disabled.")<br/>        print("\n======================================\n")<br/>    <br/>        FTP.Set_FTP_ACLs_to_the_member(0,config.grid_vip,"Any","ALLOW")<br/>    <br/>        FTP.Set_FTP_ACLs_to_the_member(2,config.grid_member2_vip,"Any","ALLOW")<br/>        print("\n======================================\n")<br/>        print("Verify that can not view files and directories. ")<br/>        print("\n======================================\n")<br/>&gt;       FTP.check_for_ftp_files_list(0,config.grid_vip)<br/><br/>FTP_TFTP_HTTP.py:480: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>obj_index = 0, IP = '10.36.171.1'<br/><br/>    def check_for_ftp_files_list(obj_index,IP):<br/>        get_ref = ib_NIOS.wapi_request('GET', object_type='member:filedistribution?_return_fields=enable_ftp_filelist')<br/>        getref=json.loads(get_ref)[obj_index]['_ref']<br/>        get_FTP_F=json.loads(get_ref)[obj_index]['enable_ftp_filelist']<br/>        print(get_FTP_F)<br/>    <br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect(':')<br/>            child1.sendline("anonymous")<br/>            child1.expect('ftp&gt;')<br/>            child1.sendline("ls")<br/>            child1.expect('ftp&gt;')<br/>            output= child1.before<br/>    <br/>            if config.client_user in output :<br/>                if get_FTP_F==True:<br/>                    print("Success: Listing files successfully")<br/>                    assert True<br/>                    child1.close()<br/>                else:<br/>                    print("Failure: file which you are looking for is not present permission denied")<br/>                    assert False<br/>                    child1.close()<br/>            elif "Permission denied" in output:<br/>                if get_FTP_F==False:<br/>                    print("Success: restricted from listing files")<br/>                    assert True<br/>                    child1.close()<br/>                else:<br/>                    print("Failure: Allowed listing files")<br/>                    assert False<br/>                    child1.close()<br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: Below, there is a spelling error.")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:462: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+It should be restricted from listing files, however FTP File Listing is disabled.
+
+======================================
+
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com&quot;
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMw:ib-10-35-195-1.infoblox.com&quot;
+
+======================================
+
+Verify that can not view files and directories. 
+
+======================================
+
+True
+
+ Failure: Below, there is a spelling error.
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd584479c50&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 17140
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;:&apos;)
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_045_enbale_FTP_listing_and_look_for_files</td>
+          <td class="col-duration">30.34</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_045_enbale_FTP_listing_and_look_for_files&gt;<br/><br/>    @pytest.mark.run(order=46)<br/>    def test_045_enbale_FTP_listing_and_look_for_files(self):<br/>        print("\n======================================\n")<br/>        print("Enable FTP file list and Verify that can view files and directories. ")<br/>        print("\n======================================\n")<br/>        FTP.enable_ftp_filelist(0)<br/>&gt;       FTP.check_for_ftp_files_list(0,config.grid_vip)<br/><br/>FTP_TFTP_HTTP.py:489: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>obj_index = 0, IP = '10.36.171.1'<br/><br/>    def check_for_ftp_files_list(obj_index,IP):<br/>        get_ref = ib_NIOS.wapi_request('GET', object_type='member:filedistribution?_return_fields=enable_ftp_filelist')<br/>        getref=json.loads(get_ref)[obj_index]['_ref']<br/>        get_FTP_F=json.loads(get_ref)[obj_index]['enable_ftp_filelist']<br/>        print(get_FTP_F)<br/>    <br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect(':')<br/>            child1.sendline("anonymous")<br/>            child1.expect('ftp&gt;')<br/>            child1.sendline("ls")<br/>            child1.expect('ftp&gt;')<br/>            output= child1.before<br/>    <br/>            if config.client_user in output :<br/>                if get_FTP_F==True:<br/>                    print("Success: Listing files successfully")<br/>                    assert True<br/>                    child1.close()<br/>                else:<br/>                    print("Failure: file which you are looking for is not present permission denied")<br/>                    assert False<br/>                    child1.close()<br/>            elif "Permission denied" in output:<br/>                if get_FTP_F==False:<br/>                    print("Success: restricted from listing files")<br/>                    assert True<br/>                    child1.close()<br/>                else:<br/>                    print("Failure: Allowed listing files")<br/>                    assert False<br/>                    child1.close()<br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: Below, there is a spelling error.")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:462: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Enable FTP file list and Verify that can view files and directories. 
+
+======================================
+
+member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com
+&quot;member:filedistribution/b25lLm1lbWJlcl90ZnRwX3Byb3BlcnRpZXMkMA:ib-10-36-171-1.infoblox.com&quot;
+True
+
+ Failure: Below, there is a spelling error.
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd58458b350&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 17183
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;:&apos;)
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_046_Download_files_using_mget</td>
+          <td class="col-duration">30.15</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_046_Download_files_using_mget&gt;<br/><br/>    @pytest.mark.run(order=47)<br/>    def test_046_Download_files_using_mget(self):<br/>        print("\n======================================\n")<br/>        print("Uses mget to download files.")<br/>        print("\n======================================\n")<br/>&gt;       FTP.Download_files_using_mget(config.grid_vip,"upload_file.txt")<br/><br/>FTP_TFTP_HTTP.py:497: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>IP = '10.36.171.1', file_name = 'upload_file.txt'<br/><br/>    def Download_files_using_mget(IP,file_name):<br/>        try:<br/>            child1 = pexpect.spawn('ftp '+IP)<br/>            child1.logfile=sys.stdout<br/>            child1.expect(':')<br/>            child1.sendline("anonymous")<br/>            child1.expect('ftp&gt;')<br/>            child1.sendline('mget '+file_name)<br/>            child1.expect('mget')<br/>            child1.sendline('y')<br/>            child1.expect('ftp&gt;')<br/>            output= child1.before<br/>    <br/>            if 'File send OK' in output:<br/>                print("\nSucess: Successfully Downloaded file")<br/>                assert True<br/>                child1.close()<br/>            else:<br/>                print("\nFailure: Failed to Download file")<br/>                assert False<br/>                child1.close()<br/>    <br/>        except Exception as e:<br/>            child1.close()<br/>            print("\n Failure: Below, there is a spelling error.")<br/>            print("\n================Error====================\n")<br/>            print(e)<br/>&gt;           assert False<br/><span class="error">E           AssertionError</span><br/><br/>FTP_suit.py:525: AssertionError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+Uses mget to download files.
+
+======================================
+
+
+ Failure: Below, there is a spelling error.
+
+================Error====================
+
+Timeout exceeded.
+&lt;pexpect.pty_spawn.spawn object at 0x7fd58458d910&gt;
+command: /usr/bin/ftp
+args: [&apos;/usr/bin/ftp&apos;, &apos;10.36.171.1&apos;]
+buffer (last 100 chars): &apos;&apos;
+
+after: &lt;class &apos;pexpect.exceptions.TIMEOUT&apos;&gt;
+match: None
+match_index: None
+exitstatus: None
+flag_eof: False
+pid: 17220
+child_fd: 101
+closed: False
+timeout: 30
+delimiter: &lt;class &apos;pexpect.exceptions.EOF&apos;&gt;
+logfile: &lt;_pytest.capture.EncodedFile object at 0x7fd5a0a09dd0&gt;
+logfile_read: None
+logfile_send: None
+maxread: 2000
+ignorecase: False
+searchwindowsize: None
+delaybeforesend: 0.05
+delayafterclose: 0.1
+delayafterterminate: 0.1
+searcher: searcher_re:
+    0: re.compile(&apos;:&apos;)
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_047_get_grid_back_and_restore_after_enable_backup_files</td>
+          <td class="col-duration">94.44</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_047_get_grid_back_and_restore_after_enable_backup_files&gt;<br/><br/>    @pytest.mark.run(order=48)<br/>    def test_047_get_grid_back_and_restore_after_enable_backup_files(self):<br/>        print("\n======================================\n")<br/>        print("after turning on backup files and directories, get the grid backup and validate files are present")<br/>        print("\n======================================\n")<br/>    <br/>        FTP.Include_files_and_directories(True)<br/>        FTP.Taking_Grid_Backup_File()<br/>&gt;       FTP.Restore_Grid_Backup_File()<br/><br/>FTP_TFTP_HTTP.py:508: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>FTP_suit.py:577: in Restore_Grid_Backup_File<br/>    log("stop","/infoblox/var/infoblox.log",config.grid_vip)<br/>../../ib_utils/start_stop_logs.py:137: in log_action<br/>    connection=SSH(str(IP))<br/>../../ib_utils/start_stop_logs.py:66: in __init__<br/>    self.client.connect(address, username='root', pkey = mykey)<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;paramiko.client.SSHClient object at 0x7fd5845b7b90&gt;, hostname = '10.36.171.1', port = 22, username = 'root', password = None<br/>pkey = &lt;paramiko.rsakey.RSAKey object at 0x7fd58468dd90&gt;, key_filename = None, timeout = None, allow_agent = True, look_for_keys = True, compress = False<br/>sock = &lt;socket._socketobject object at 0x7fd5845854b0&gt;, gss_auth = False, gss_kex = False, gss_deleg_creds = True, gss_host = None, banner_timeout = None<br/>auth_timeout = None, gss_trust_dns = True, passphrase = None, disabled_algorithms = None<br/><br/>    def connect(<br/>        self,<br/>        hostname,<br/>        port=SSH_PORT,<br/>        username=None,<br/>        password=None,<br/>        pkey=None,<br/>        key_filename=None,<br/>        timeout=None,<br/>        allow_agent=True,<br/>        look_for_keys=True,<br/>        compress=False,<br/>        sock=None,<br/>        gss_auth=False,<br/>        gss_kex=False,<br/>        gss_deleg_creds=True,<br/>        gss_host=None,<br/>        banner_timeout=None,<br/>        auth_timeout=None,<br/>        gss_trust_dns=True,<br/>        passphrase=None,<br/>        disabled_algorithms=None,<br/>    ):<br/>        """<br/>            Connect to an SSH server and authenticate to it.  The server's host key<br/>            is checked against the system host keys (see `load_system_host_keys`)<br/>            and any local host keys (`load_host_keys`).  If the server's hostname<br/>            is not found in either set of host keys, the missing host key policy<br/>            is used (see `set_missing_host_key_policy`).  The default policy is<br/>            to reject the key and raise an `.SSHException`.<br/>    <br/>            Authentication is attempted in the following order of priority:<br/>    <br/>                - The ``pkey`` or ``key_filename`` passed in (if any)<br/>    <br/>                  - ``key_filename`` may contain OpenSSH public certificate paths<br/>                    as well as regular private-key paths; when files ending in<br/>                    ``-cert.pub`` are found, they are assumed to match a private<br/>                    key, and both components will be loaded. (The private key<br/>                    itself does *not* need to be listed in ``key_filename`` for<br/>                    this to occur - *just* the certificate.)<br/>    <br/>                - Any key we can find through an SSH agent<br/>                - Any "id_rsa", "id_dsa" or "id_ecdsa" key discoverable in<br/>                  ``~/.ssh/``<br/>    <br/>                  - When OpenSSH-style public certificates exist that match an<br/>                    existing such private key (so e.g. one has ``id_rsa`` and<br/>                    ``id_rsa-cert.pub``) the certificate will be loaded alongside<br/>                    the private key and used for authentication.<br/>    <br/>                - Plain username/password auth, if a password was given<br/>    <br/>            If a private key requires a password to unlock it, and a password is<br/>            passed in, that password will be used to attempt to unlock the key.<br/>    <br/>            :param str hostname: the server to connect to<br/>            :param int port: the server port to connect to<br/>            :param str username:<br/>                the username to authenticate as (defaults to the current local<br/>                username)<br/>            :param str password:<br/>                Used for password authentication; is also used for private key<br/>                decryption if ``passphrase`` is not given.<br/>            :param str passphrase:<br/>                Used for decrypting private keys.<br/>            :param .PKey pkey: an optional private key to use for authentication<br/>            :param str key_filename:<br/>                the filename, or list of filenames, of optional private key(s)<br/>                and/or certs to try for authentication<br/>            :param float timeout:<br/>                an optional timeout (in seconds) for the TCP connect<br/>            :param bool allow_agent:<br/>                set to False to disable connecting to the SSH agent<br/>            :param bool look_for_keys:<br/>                set to False to disable searching for discoverable private key<br/>                files in ``~/.ssh/``<br/>            :param bool compress: set to True to turn on compression<br/>            :param socket sock:<br/>                an open socket or socket-like object (such as a `.Channel`) to use<br/>                for communication to the target host<br/>            :param bool gss_auth:<br/>                ``True`` if you want to use GSS-API authentication<br/>            :param bool gss_kex:<br/>                Perform GSS-API Key Exchange and user authentication<br/>            :param bool gss_deleg_creds: Delegate GSS-API client credentials or not<br/>            :param str gss_host:<br/>                The targets name in the kerberos database. default: hostname<br/>            :param bool gss_trust_dns:<br/>                Indicates whether or not the DNS is trusted to securely<br/>                canonicalize the name of the host being connected to (default<br/>                ``True``).<br/>            :param float banner_timeout: an optional timeout (in seconds) to wait<br/>                for the SSH banner to be presented.<br/>            :param float auth_timeout: an optional timeout (in seconds) to wait for<br/>                an authentication response.<br/>            :param dict disabled_algorithms:<br/>                an optional dict passed directly to `.Transport` and its keyword<br/>                argument of the same name.<br/>    <br/>            :raises:<br/>                `.BadHostKeyException` -- if the server's host key could not be<br/>                verified<br/>            :raises: `.AuthenticationException` -- if authentication failed<br/>            :raises:<br/>                `.SSHException` -- if there was any other error connecting or<br/>                establishing an SSH session<br/>            :raises socket.error: if a socket error occurred while connecting<br/>    <br/>            .. versionchanged:: 1.15<br/>                Added the ``banner_timeout``, ``gss_auth``, ``gss_kex``,<br/>                ``gss_deleg_creds`` and ``gss_host`` arguments.<br/>            .. versionchanged:: 2.3<br/>                Added the ``gss_trust_dns`` argument.<br/>            .. versionchanged:: 2.4<br/>                Added the ``passphrase`` argument.<br/>            .. versionchanged:: 2.6<br/>                Added the ``disabled_algorithms`` argument.<br/>            """<br/>        if not sock:<br/>            errors = {}<br/>            # Try multiple possible address families (e.g. IPv4 vs IPv6)<br/>            to_try = list(self._families_and_addresses(hostname, port))<br/>            for af, addr in to_try:<br/>                try:<br/>                    sock = socket.socket(af, socket.SOCK_STREAM)<br/>                    if timeout is not None:<br/>                        try:<br/>                            sock.settimeout(timeout)<br/>                        except:<br/>                            pass<br/>                    retry_on_signal(lambda: sock.connect(addr))<br/>                    # Break out of the loop on success<br/>                    break<br/>                except socket.error as e:<br/>                    # Raise anything that isn't a straight up connection error<br/>                    # (such as a resolution error)<br/>                    if e.errno not in (ECONNREFUSED, EHOSTUNREACH):<br/>                        raise<br/>                    # Capture anything else so we know how the run looks once<br/>                    # iteration is complete. Retain info about which attempt<br/>                    # this was.<br/>                    errors[addr] = e<br/>    <br/>            # Make sure we explode usefully if no address family attempts<br/>            # succeeded. We've no way of knowing which error is the "right"<br/>            # one, so we construct a hybrid exception containing all the real<br/>            # ones, of a subclass that client code should still be watching for<br/>            # (socket.error)<br/>            if len(errors) == len(to_try):<br/>&gt;               raise NoValidConnectionsError(errors)<br/><span class="error">E               NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 10.36.171.1</span><br/><br/>/usr/lib/python2.7/site-packages/paramiko/client.py:368: NoValidConnectionsError<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+after turning on backup files and directories, get the grid backup and validate files are present
+
+======================================
+
+grid:filedistribution/b25lLnRmdHBfc3RvcmFnZSQw:Infoblox
+&quot;grid:filedistribution/b25lLnRmdHBfc3RvcmFnZSQw:Infoblox&quot;
+eJytjssKwjAURH+lZG2TXtumj12lCoK0IILLkDaxBvsyjaCI/26z0K0bZ3fPcGfmieR9VPrBjOok
+Sh2gNAYa0iDBEACNIFk46Kbb2UJnY8YpJQQ87FMMEWAgljGhtKwNO6lWMjUQLa9MCTcvj8WuzHIX
+rLylFyTg0zCKieCGV3ySuOIXNOfbm8m+HoTqG9u02hZf3g3CDkN5dsjYfr35GJaRyQyaN5KYbvzP
+FCVs7q839HoD0d1cEw==
+
+https://10.36.171.1/http_direct_file_io/req_id-DOWNLOAD-1111102049136578/database.bak
+[&apos;run.py&apos;, &apos;.cache&apos;, &apos;NIOS_FTP_TFTP_HTTP.py&apos;, &apos;file_1MB.txt&apos;, &apos;file-example_PDF_1MB.pdf&apos;, &apos;file-example_PDF_500_kB.pdf&apos;, &apos;[NIOS-23721] File distribution service status shows red, but the service is still running and serving - Jira.html&apos;, &apos;[NIOS-23721] File distribution service status shows red, but the service is still running and serving - Jira_files&apos;, &apos;py_UTF-8.csv.xlsx&apos;, &apos;FTP_suit.py&apos;, &apos;FTP_TFTP_HTTP.py&apos;, &apos;upload_file.txt&apos;, &apos;__pycache__&apos;, &apos;FTP_TFTP_HTTP_report.xml&apos;, &apos;FTP_TFTP_HTTP_report.html&apos;, &apos;config.py&apos;, &apos;database.bak&apos;, &apos;config.pyc&apos;, &apos;FTP_suit.pyc&apos;, &apos;FTP_report.html&apos;]
+Success: Successfully downloaded the file
+Restore_Grid_Backup_File
+(&apos;check here :&apos;, &apos;tail -f /infoblox/var/infoblox.log &gt;&gt; /root/dump/10.36.171.1_infoblox_var_infoblox.log 2&gt;&amp;1 &amp;&apos;)
+{u&apos;url&apos;: u&apos;https://10.36.171.1/http_direct_file_io/req_id-UPLOAD-1111102052792870/import_file&apos;, u&apos;token&apos;: u&apos;eJytjsEKwjAQRH+l5GyTJtKk9lapgiAqoudQmlgX2iamERTx320QPXpyjm92Z+aB9M2Cu0sPnUZ5\nRDnPKE95yrCYcUbFJEJX144OOntvh5wQmuApx1RQTElgUoHTtZcnaLUEQ5y+SFDxcbfeFmVMgxKW\npEzMWCYSAp017n2NxnBV+UrqvjYK+ibUzFebL++MCqNQWRwKuV8sP0ZgZPDGVY0mvrN/2AEqhP7+\nQc8X/YNaMA==\n&apos;}
+curl -k -u admin:infoblox -H &quot;content-typemultipart-formdata&quot; https://10.36.171.1/http_direct_file_io/req_id-UPLOAD-1111102052792870/import_file -F file=@database.bak
+(&apos;:::::::::::::::::::::::::::::&apos;, &apos;scp -o StrictHostKeyChecking=no -o BatchMode=yes -o UserKnownHostsFile=/dev/null root@[10.36.171.1]:/root/dump/10.36.171.1_infoblox_var_infoblox.log /tmp/&apos;)
+----------------------------- Captured stderr call -----------------------------<br/>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 90 17.2M   90 15.5M    0     0  27.0M      0 --:--:-- --:--:-- --:--:-- 27.0M100 17.2M  100 17.2M    0     0  28.1M      0 --:--:-- --:--:-- --:--:-- 28.1M
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 83 17.2M    0     0   83 14.3M      0  27.9M --:--:-- --:--:-- --:--:-- 27.9M100 17.2M    0     0  100 17.2M      0  10.3M  0:00:01  0:00:01 --:--:-- 10.3M100 17.2M    0     0  100 17.2M      0  10.3M  0:00:01  0:00:01 --:--:-- 10.3M
+ssh: connect to host 10.36.171.1 port 22: No route to host
+</div></td></tr>
+        <tr class="failed results-table-row">
+          <td class="col-result">Failed</td>
+          <td class="col-name">FTP_TFTP_HTTP.py::NIOS_FTP::test_048_get_grid_back_and_restore_after_disable_backup_files</td>
+          <td class="col-duration">3.00</td>
+          <td class="col-links"></td>
+          <td class="extra">
+            <div class="log">self = &lt;FTP_TFTP_HTTP.NIOS_FTP testMethod=test_048_get_grid_back_and_restore_after_disable_backup_files&gt;<br/><br/>    @pytest.mark.run(order=49)<br/>    def test_048_get_grid_back_and_restore_after_disable_backup_files(self):<br/>        print("\n======================================\n")<br/>        print("after turning off backup files and directories, get the grid backup and validate files are present")<br/>        print("\n======================================\n")<br/>    <br/>&gt;       FTP.Include_files_and_directories(False)<br/><br/>FTP_TFTP_HTTP.py:517: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>FTP_suit.py:528: in Include_files_and_directories<br/>    get_ref = ib_NIOS.wapi_request('GET', object_type='grid:filedistribution')<br/>../../ib_utils/ib_NIOS.py:49: in wapi_request<br/>    conn.request(operation, url, fields, request_header)<br/>/usr/lib64/python2.7/httplib.py:1057: in request<br/>    self._send_request(method, url, body, headers)<br/>/usr/lib64/python2.7/httplib.py:1097: in _send_request<br/>    self.endheaders(body)<br/>/usr/lib64/python2.7/httplib.py:1053: in endheaders<br/>    self._send_output(message_body)<br/>/usr/lib64/python2.7/httplib.py:897: in _send_output<br/>    self.send(msg)<br/>/usr/lib64/python2.7/httplib.py:859: in send<br/>    self.connect()<br/>/usr/lib64/python2.7/httplib.py:1270: in connect<br/>    HTTPConnection.connect(self)<br/>/usr/lib64/python2.7/httplib.py:836: in connect<br/>    self.timeout, self.source_address)<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>address = ('10.36.171.1', 443), timeout = &lt;object object at 0x7fd5add21140&gt;, source_address = None<br/><br/>    def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT,<br/>                          source_address=None):<br/>        """Connect to *address* and return the socket object.<br/>    <br/>        Convenience function.  Connect to *address* (a 2-tuple ``(host,<br/>        port)``) and return the socket object.  Passing the optional<br/>        *timeout* parameter will set the timeout on the socket instance<br/>        before attempting to connect.  If no *timeout* is supplied, the<br/>        global default timeout setting returned by :func:`getdefaulttimeout`<br/>        is used.  If *source_address* is set it must be a tuple of (host, port)<br/>        for the socket to bind as a source address before making the connection.<br/>        An host of '' or port 0 tells the OS to use the default.<br/>        """<br/>    <br/>        host, port = address<br/>        err = None<br/>        for res in getaddrinfo(host, port, 0, SOCK_STREAM):<br/>            af, socktype, proto, canonname, sa = res<br/>            sock = None<br/>            try:<br/>                sock = socket(af, socktype, proto)<br/>                if timeout is not _GLOBAL_DEFAULT_TIMEOUT:<br/>                    sock.settimeout(timeout)<br/>                if source_address:<br/>                    sock.bind(source_address)<br/>                sock.connect(sa)<br/>                return sock<br/>    <br/>            except error as _:<br/>                err = _<br/>                if sock is not None:<br/>                    sock.close()<br/>    <br/>        if err is not None:<br/>&gt;           raise err<br/><span class="error">E           error: [Errno 113] No route to host</span><br/><br/>/usr/lib64/python2.7/socket.py:575: error<br/>----------------------------- Captured stdout call -----------------------------<br/>
+======================================
+
+after turning off backup files and directories, get the grid backup and validate files are present
+
+======================================
+
+</div></td></tr></tbody></table></body></html>

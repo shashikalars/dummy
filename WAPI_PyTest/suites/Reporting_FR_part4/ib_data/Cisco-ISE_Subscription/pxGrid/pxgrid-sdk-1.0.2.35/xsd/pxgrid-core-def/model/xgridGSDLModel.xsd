@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--###########################################################################
+     Schema for grid definition language
+##############################################################################-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="xgridPubSubModel.xsd"/>
+	<xs:element name="capabilityRegistration" type="CapabilityRegistration"/>
+	<xs:complexType name="CapabilityRegistration">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="schema" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="package" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:group ref="CapabilityGroup"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="capabilityRegistrationList" type="CapabilityRegistrationList"/>
+	<xs:complexType name="CapabilityRegistrationList">
+		<xs:sequence>
+			<xs:element name="capabilityRegistration" type="CapabilityRegistration" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

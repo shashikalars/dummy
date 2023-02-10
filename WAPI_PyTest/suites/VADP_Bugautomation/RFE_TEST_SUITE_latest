@@ -1,0 +1,1000 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use diagnostics;
+use Term::ANSIColor;
+# While running the IPv6 only cases in IPv6 only mode comment the below line
+#use lib "/import/tools/qa/tools/REA";
+use REA;
+use Expect;
+# While running the IPv6 only cases in IPv6 only mode uncomment the below line
+#use Infoblox qw ( :ipv6connection );
+my $myname="$0";
+$myname=~s/.*\///;
+my ($debug,$sanity)=0;
+my $preparation=1;
+foreach (@ARGV) {
+    if ($_ eq "debug") {
+       print color("red"),"\n Debug is on ... \n",color("reset");
+       $debug=1;
+    }
+    if ($_ eq "skip_preparation") {
+       $preparation=0;
+    }
+}
+
+my $ssh_ip=shift;
+my $ip=shift;
+my $grid_master_ip=$ssh_ip;
+my $subsecond=(shift||"");
+my ($i,$rule_drop_count,$icmpv6_rule_drop_count_solicitation_advertisement,$response_rule_drop_count,$response_rule_alert_count,$dns_amp_ref_alert_count,$ICMPv6_rule_drop_count); 
+my ($session, $rule, $config );
+#my $hostname = "infoblox.localdomain";
+my $hostname = "infoblox.localdomain";
+my @rule_sids;
+my @icmp_v4_sids=(130900100, 130902600, 130902700, 130902800, 130902900, 130903000, 130903100, 130903200, 130903300, 130903400, 130903500);
+my @response_sids=(200000001, 200000002, 200000003);
+my @ntp_v4_sids=(200001050, 200001055, 200001060);
+my @ntp_v6_sids=(200001065, 200001070, 200001075);
+my @icmp_v6_sids=(130900200, 130900700, 130900800, 130900900, 130901000, 130901100, 130901200, 130901300, 130901400, 130901600, 130901700, 130901800, 130901900, 130902000, 130902100, 130902200, 130902300, 130902400, 130902500, 130903100, 130903200, 130901500);
+my @tcp_sids=(130000400);
+my @bgp_v4_sids=(130700550);
+my @bgp_v6_sids=(130700650);
+my @zone_transfer_v4_sids=(130100100,130100300,130100200,130100400);
+my @zone_transfer_v6_sids=(130100101,130100201,130100301,130100401);
+my @dns_amp_ref_sids=(130400100,130400500,130400600);
+my @tunneling=(130000500,130000600);
+my $sudo_prefix='';
+my (@rule_parameters,@response_rule_parameters,@ICMPv6_neighbor_solicitation);
+my @original_rate_limiting_rule_params = (100,10,1,"Rate_Limiting");
+my $PAPI_directory="/tmp/$myname.$$";
+my $forwarder = "10.39.16.160";
+my $forwarder_v6 = "2620:10A:6000:2710::A0";
+my ($ipv6addr,$cidr,$gateway);
+# Expect session related commands initialisation
+my $prompt = "Infoblox >.*";
+my $maintenance_mode = "Maintenance Mode.*>.*";
+my $command_to_maintenancemode = "set maintenancemode";
+my $usernamePrompt = "login: ";
+my $pwPrompt = "admin@.*'s password";
+my $timeout = 60;
+my $username = "admin";
+my $password = "infoblox";
+my ($tpu_flag,$tp_flag,$cliComplete)=0;
+my @Test_Cases = ();
+my $sleep_time="0.235";
+
+if ($ENV{USER} ne 'root') {$sudo_prefix='sudo'}
+
+if (! defined($ssh_ip) || $ssh_ip eq '' || $ssh_ip =~ /help/ ||
+    ! defined($ip) || $ip eq '' || $ip =~ /help/ ||
+    $subsecond !~ /(debug|skip_preparation|^$)/ 
+     ) {
+   print("\n RFE:5376 and RFE:5373 ADP rule validation of v4 or v6 rules\n");
+   print("Usage is as below:\n");
+   print("$myname 10.36.1.142 10.35.1.142 [debug] [skip_preparation] # Optional debug.\n");
+   exit 1;
+}
+
+my $xml_class= "ADP_RFE";
+my $xml_suitename= "RFE_Test_suite";
+my $xml_filename= "RFE_Test_suite" . ".xml";
+
+
+my $tcp_command_axfr="dnsq -ns=$ip -qname=sura.mdu -qtype=axfr -protocol=tcp -wait=0.001;sleep 0.235;";
+$tcp_command_axfr= $tcp_command_axfr x 56;
+
+my $tcp_command_ixfr="dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -protocol=tcp -wait=0.001 -serial=5;sleep 0.235;";
+$tcp_command_ixfr= $tcp_command_ixfr x 56;
+
+my $tcp_dns_tunneling="dnsq -ns $ip -qname abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.foobar.com -qtype TXT -wait 0.01 -protocol tcp;sleep 0.235;";
+$tcp_dns_tunneling = $tcp_dns_tunneling x 56;
+
+my $command = "ssh admin\@$ssh_ip -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
+
+# Prerequisite
+# Tools : python-scapy
+`python -m scapy.all 2>&1 >/dev/null`;
+if ($? != 0) {
+  print " Scapy is required to execute the cases in this test suite. Execute the command 'apt-get install python-scapy' to install it\n";
+  exit 1;
+}
+
+#############################################################################################
+## Get the Perl API                                                                          #
+##############################################################################################
+system("/import/tools/qa/bin/getPAPI $grid_master_ip $PAPI_directory >/dev/null");
+unshift(@INC, "$PAPI_directory");                        # Jump through hoops so this program can
+{eval "require Infoblox";die if $@;Infoblox->import();}  # use the just-now uploaded Perl API.
+
+create_session();
+
+#Initial Preparation 
+initial_preparation() if ($preparation);
+sleep 120;
+
+#Enable amplification and DNS tunneling rules
+  enable_rules(200000001, 200000002, 200000003, 130000500, 130000600, 130400500, 130400600);
+#Disable Default pass/drop rule and DNS protocol anomalies rule
+  disable_rules(140000100,100000050);
+#Smartnic rule disable
+  cli_change("set adp-debug auto-rule 130900300 off","set adp-debug auto-rule 110100500 off","set adp-debug auto-rule 110100900 off","set adp-debug auto-rule 130906100 off","set adp-debug auto-rule 130906000 off","set adp-debug auto-rule 130901500 off","set adp-debug auto-rule 130901600 off");
+publish_changes();
+       run_test(headerprint=>"yes",algorithm=>"Rate_Limiting",description=>"Rate_Limting with 5 seconds timeout");
+       run_test(algorithm=>"Blocking",description=>"Blocking with 5 seconds timeout");
+       run_test(algorithm=>"Rate_Limiting",description=>"Rate_Limiting with subsecond",subsecond=>"subsecond");
+       run_test(algorithm=>"Blocking",description=>"Blocking with subsecond",subsecond=>"subsecond");
+
+print "\n INFO: ...Reverting rule changes...\n";
+
+#Disable amplification and DNS tunneling rules, commented for now as these rules need to be enabled for BAT execution
+#  disable_rules(200000001, 200000002, 200000003, 130000500, 130000600, 130400500, 130400600);
+
+#Enable Default pass/drop rule and DNS protocol anomalies rule and enable 200000004 rule for BAT execution
+  enable_rules(140000100,100000050,200000004);
+	
+#smartnic auto rule enable
+  #cli_change("set adp-debug auto-rule 130900300 on","set adp-debug auto-rule 110100500 on","set adp-debug auto-rule 110100900 on");
+
+sub run_test
+{
+  my $inputs={@_};
+  my $rate_algorithm=$$inputs{"algorithm"};
+  my $subsecond_test;
+  if (defined($$inputs{"subsecond"})) { 
+     $subsecond_test=$$inputs{"subsecond"};
+  }
+  my $additional_description=$$inputs{"description"};
+
+  if (! defined($subsecond_test)) {
+    if($rate_algorithm eq "Rate_Limiting") {
+      @rule_parameters=(3,5,20,"Rate_Limiting");
+      $rule_drop_count="40-47";
+      $icmpv6_rule_drop_count_solicitation_advertisement="95-105"; 
+      @response_rule_parameters=(3,5,2,"Rate_Limiting");
+      $response_rule_alert_count="1-3";
+      $response_rule_drop_count="20-24";
+      $dns_amp_ref_alert_count="8-11";
+      @ICMPv6_neighbor_solicitation=(7,5,1,"Rate_Limiting");
+      $ICMPv6_rule_drop_count="5-8";
+      $sleep_time="0.235";
+    }elsif($rate_algorithm eq "Blocking") {
+      @rule_parameters=(3,5,20,"Blocking");
+      $rule_drop_count="47-53";
+      $icmpv6_rule_drop_count_solicitation_advertisement="102-111"; 
+      @response_rule_parameters=(3,5,2,"Blocking");
+      $response_rule_alert_count="1-3";
+      $response_rule_drop_count="22-26";
+      $dns_amp_ref_alert_count="3-6";
+      @ICMPv6_neighbor_solicitation=(7,5,1,"Blocking");
+      $ICMPv6_rule_drop_count="5-8";
+      $sleep_time="0.180";
+     }
+  }
+
+  if (defined($subsecond_test)) {
+    if($rate_algorithm eq "Rate_Limiting") {
+      @rule_parameters=(3,1,20,"Rate_Limiting");
+      $rule_drop_count="9-14";
+      $icmpv6_rule_drop_count_solicitation_advertisement="65-75"; 
+      @response_rule_parameters=(3,1,2,"Rate_Limiting");
+      $response_rule_alert_count="10-13";
+      $response_rule_drop_count="8-13";
+      $dns_amp_ref_alert_count="41-48";
+      @ICMPv6_neighbor_solicitation=(7,5,1,"Rate_Limiting");
+      $ICMPv6_rule_drop_count="5-8";
+      $sleep_time="0.235";
+    }elsif($rate_algorithm eq "Blocking") {
+      @rule_parameters=(3,1,20,"Blocking");
+      $rule_drop_count="47-53";
+      $icmpv6_rule_drop_count_solicitation_advertisement="95-115"; 
+      @response_rule_parameters=(3,1,2,"Blocking");
+      $response_rule_alert_count="1-3";
+      $response_rule_drop_count="22-26";
+      $dns_amp_ref_alert_count="3-6";
+      @ICMPv6_neighbor_solicitation=(7,5,1,"Blocking");
+      $ICMPv6_rule_drop_count="5-8";
+      $sleep_time="0.180";
+   }
+  }
+
+  my $scapy_ip_method = "IP";
+  my $src_ip = "95.0.0.2";
+ 
+    @rule_sids=(@icmp_v4_sids,@ntp_v4_sids,@response_sids,@tcp_sids,@bgp_v4_sids,@zone_transfer_v4_sids,@dns_amp_ref_sids,@tunneling);
+
+  my $padding = "\\x00" x 4;
+  my $ntp_commands_prefix = "sudo python -c 'from scapy.all import $scapy_ip_method,UDP,NTP,Raw,send; ";
+  $ntp_commands_prefix    = $ntp_commands_prefix . "send($scapy_ip_method(src=\"$src_ip\", ";
+  my $ntp_raw_packet_suffix   = ")/UDP(sport=123,dport=123)/Raw(load=\""; 
+  my $icmp_cmds_prefix = "sudo python -c 'from scapy.all import $scapy_ip_method,send";
+
+  print color ("blue"),"\n ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ \n";
+  print color ("blue"),"\n RATE_ALGORITHM $rate_algorithm TESTING WITH TIMEOUT $rule_parameters[1] SECONDS \n";
+  print color ("blue"),"\n ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ \n",color("reset");
+
+  foreach $i (@rule_sids)
+  {
+   if ($i eq 200000001 || $i eq 200000002||$i eq 200000003) {
+    update_rule($i,@response_rule_parameters);
+    } elsif($i eq 130901500 || $i eq 130901600 || $i eq 130000400) {
+    update_rule($i,@ICMPv6_neighbor_solicitation);
+    }else{
+    update_rule($i,@rule_parameters);
+    }
+  }
+
+  publish_changes();
+
+
+# These test case definitions must come after we parse the IP address input since we use $ip in our commands.
+# Since we use double quotes, be sure to escape Perl-like characters like @ in dig commands and $ and " themselves.
+# Also be aware that the program has a built-in wait between test cases of 5 seconds, which may affect time-sensitive tests.
+
+   
+         @Test_Cases=(
+#Response Rules
+
+                # NXDOMAIN rate limit rule # SID: 200000001
+                {cmd=>"dnsq -ns=$ip -qname=NXDO.foobar   -qtype=a   -repeat=1200 -wait 0.01", rule=>200000001, alert_count=>$response_rule_alert_count, drop_count=>$response_rule_drop_count, post_delay=>20},
+
+                # NXRRSET rate limit rule #SID: 200000002
+                {cmd=>"dnsq -ns=$ip -qname=NXRR.foobar   -qtype=mx  -repeat=1200 -wait 0.01", rule=>200000002, alert_count=>$response_rule_alert_count, drop_count=>$response_rule_drop_count, post_delay=>20},
+
+                # SERVFAIL rate limit rule #SID: 200000003
+                {cmd=>"dnsq -ns=$ip -qname=SRVF.foobar   -qtype=a   -repeat=1200 -wait 0.01", rule=>200000003, alert_count=>$response_rule_alert_count, drop_count=>$response_rule_drop_count, post_delay=>20},
+
+
+
+                # ICMP PING # SID: 130900100
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(), count=56, inter=0.25)'", rule=>130900100, drop_count=>$rule_drop_count},
+   
+                # RATELIMIT PASS ICMP ping responses # SID: 130902600
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=0), count=56, inter=0.25)'", rule=>130902600, drop_count=>$rule_drop_count},
+                
+                # RATELIMIT PASS ICMP router advertisement # SID: 130902700
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=9), count=56, inter=0.25)'", rule=>130902700, drop_count=>$rule_drop_count},
+                
+                # RATELIMIT PASS ICMP router solicitation # SID: 130902800
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=10), count=56, inter=0.25)'", rule=>130902800, drop_count=>$rule_drop_count},
+                
+                # RATELIMIT PASS ICMP time exceeded # SID: 130902900
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=11), count=56, inter=0.25)'", rule=>130902900, drop_count=>$rule_drop_count},
+                
+                # RATELIMIT PASS ICMP parameter problem # SID: 130903000
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=12), count=56, inter=0.25)'", rule=>130903000, drop_count=>$rule_drop_count},
+
+                # RATELIMIT PASS ICMPv6 hop limit exceeded or ICMPv4 network unreachable # SID: 130903100
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=3,code=0), count=56, inter=0.25)'", rule=>130903100, drop_count=>$rule_drop_count},
+
+                # RATELIMIT PASS ICMPv6 fragment reassembly time exceeded or ICMPv4 host unreachable # SID: 130903200
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=3,code=1), count=56, inter=0.25)'", rule=>130903200, drop_count=>$rule_drop_count},
+
+                # RATELIMIT PASS ICMP protocol unreachable # SID: 130903300 
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=3,code=2), count=56, inter=0.25)'", rule=>130903300, drop_count=>$rule_drop_count},
+                
+                # RATELIMIT PASS ICMP port unreachable # SID: 130903400
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=3,code=3), count=56, inter=0.25)'", rule=>130903400, drop_count=>$rule_drop_count},
+                
+                # RATELIMIT PASS ICMP fragmentation needed # SID: 130903500
+		{cmd=>"$icmp_cmds_prefix,ICMP; send(IP(dst=\"$ip\")/ICMP(type=3,code=4), count=56, inter=0.25)'", rule=>130903500, drop_count=>$rule_drop_count},
+
+#NTP Rules
+
+	       	# RATELIMIT PASS NTPQ IPv4 requests # SID: 200001050
+		{cmd=>"sudo mz -c 56 -t udp -A 1.1.1.1 -B $ip sp=5678,dp=123,p=16-01-00-01 -d 250msec", rules=>{200001050=> {drop_count=>$rule_drop_count}}},
+
+                # RATELIMIT PASS NTP TIME IPv4 requests # SID: 200001055
+		{cmd=>"sudo mz -c 56 -t udp -A 1.1.1.1 -B $ip sp=5678,dp=123,p=e3-00-04-fa -d 250msec", rules=>{200001055=> {drop_count=>$rule_drop_count}}},
+
+                # RATELIMIT PASS NTP private mode IPv4 requests # SID: 200001060
+		{cmd=>"sudo mz -c 56 -t udp -A 1.1.1.1 -B $ip sp=5678,dp=123,p=17-00-01-00 -d 250msec", rules=>{200001060=> {drop_count=>$rule_drop_count}}},
+#TCP Rule
+		# WARN & BLOCK high rate inbound TCP DNS queries # SID:130000400
+		{cmd=>"$icmp_cmds_prefix,TCP; send(IP(dst=\"$ip\")/TCP(dport=53, flags=\"S\", seq=10000), count=56, inter=0.125)'", rule=>130000400, drop_count=>$ICMPv6_rule_drop_count},
+
+#Zone transfer rules
+
+		#RATELIMIT PASS UDP DNS AXFR zone transfer requests # SID:130100100
+		{cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=axfr -repeat=55 -wait=0.01 -repeat_delay=250", rule=>130100100, drop_count=>$rule_drop_count, post_delay=>10},
+
+		#RATELIMIT PASS IPv4 TCP DNS AXFR zone transfer requests #SID: 130100200
+#		{cmd=>"`$tcp_command_axfr`", rule=>130100200, drop_count=>$rule_drop_count, post_delay=>10},
+                {cmd=>"for i in `seq 1 56`;do dnsq -ns=$ip -qname=sura.mdu -qtype=axfr -protocol=tcp -wait=0.001;sleep $sleep_time;done", rule=>130100200, drop_count=>$rule_drop_count, post_delay=>10},
+
+		#RATELIMIT PASS UDP DNS IXFR zone transfer requests # SID:130100300
+		{cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -repeat=55 -serial=5 -wait=0.01 -repeat_delay=250", rule=>130100300, drop_count=>$rule_drop_count, post_delay=>10},
+
+		#RATELIMIT PASS IPv4 TCP DNS IXFR zone transfer requests #SID: 130100400
+#		{cmd=>"`$tcp_command_ixfr`", rule=>130100400, drop_count=>$rule_drop_count, post_delay=>10},
+                {cmd=>"for i in `seq 1 56`;do dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -protocol=tcp -wait=0.001 -serial=5;sleep $sleep_time;done", rule=>130100400, drop_count=>$rule_drop_count, post_delay=>10},
+
+
+# DNS Amplication and reflection rules
+
+                #WARN & DROP DoS DNS possible reflection/amplification attack attempts  # SID:130400100 
+		{cmd=>"dnsq -ns=$ip -qname=abc -qtype=any -edns0 -repeat=55 -wait=0.01 -repeat_delay=250", rule=>130400100, alert_count=>$dns_amp_ref_alert_count, drop_count=>$rule_drop_count},
+
+		#RATELIMIT PASS UDP DNS root requests with additional RRs  # SID:130400500
+		{cmd=>"dnsq -ns=$ip -qname=. -qtype=A -edns0 -repeat=55 -wait=0.01 -repeat_delay=250", rule=>130400500, drop_count=>$rule_drop_count},
+
+		#RATELIMIT PASS UDP DNS root requests # SID:130400600
+		{cmd=>"dnsq -ns=$ip -qname=. -qtype=A -repeat=55 -wait=0.01 -repeat_delay=250", rule=>130400600, drop_count=>$rule_drop_count},
+
+#DNS Tunneling rule
+
+                #RATELIMIT UDP high rate inbound large DNS queries (anti tunneling)  # SID: 130000500
+		{cmd=>"dnsq -ns=$ip -qname=abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.foobar.com -qtype=TXT -repeat=55 -wait=0.01 -repeat_delay=250", rule=>130000500, alert_count=>$dns_amp_ref_alert_count, drop_count=>$rule_drop_count},
+
+                #RATELIMIT TCP high rate inbound large DNS queries (anti tunneling) # SID: 130000600
+#		{cmd=>"`$tcp_dns_tunneling`", rule=>130000600, alert_count=>$dns_amp_ref_alert_count, drop_count=>$rule_drop_count, post_delay=>10},
+		{cmd=>"for i in `seq 1 56`;do dnsq -ns $ip -qname abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.foobar.com -qtype TXT -wait 0.001 -protocol tcp;sleep $sleep_time;done", rule=>130000600, alert_count=>$dns_amp_ref_alert_count, drop_count=>$rule_drop_count, post_delay=>10},
+
+#BGP Rule
+		#RATELIMIT PASS BGP IPv4 peer TCP connection attempts # SID:130700550
+		{cmd=>"$icmp_cmds_prefix,TCP; send(IP(src=\"3.4.5.9\", dst=\"$ip\")/TCP(dport=179, flags=\"S\", seq=10000), count=56, inter=0.25)'", rule=>130700550, drop_count=>$rule_drop_count, post_delay=>10},);
+
+
+
+
+
+
+
+
+
+
+
+
+# Remove BGP case if it's only IPv6 mode as BGP is not supported in v6 only mode
+#  splice(@Test_Cases,30,1) if ($grid_master_ip =~ /^[a-fA-f0-9]{1,4}:[a-fA-f0-9:]*$/);
+  #my $test = REA->new(ssh_ip=>$ssh_ip, test_ip=>$ip, rules_filename=>"NIOS", test_cases=>\@Test_Cases, skip_DNS_prereq_checks=>1);
+  my $test = REA->new(ssh_ip=>$ssh_ip, test_ip=>$ip, rules_filename=>"NIOS", test_cases=>\@Test_Cases, skip_DNS_prereq_checks=>1, ignore_extra_alerts => 1, ignore_extra_drops => 1);
+  unless ($test) {die "$myname: Could not configure test environment to $ip\n"}
+
+  $test->print_header() if($$inputs{'headerprint'} eq "print") ;                          # Print a nice summary.
+  $test->execute_test_cases();                    # Run through our test cases.
+  $test->evaluate();                              # Determine PASS or FAIL for each test case.
+  $test->summarize("$xml_class","$xml_suitename","$$.$xml_filename","$additional_description");                             # Print summary of passed, failed, and total test cases.
+  print "\n";
+}
+
+my $test;
+$test = REA->new(ssh_ip=>$ssh_ip, test_ip=>$ip, rules_filename=>"NIOS", test_cases=>\@Test_Cases, strict_source_IP_checking=>1);
+unless ($test) {die "$myname: Could not configure test environment to $ip\n"}
+$test->summary_generate_junit_report("$$.$xml_filename","$xml_filename","$xml_class","$xml_suitename");
+
+# Reverting rule changes
+foreach $i (@rule_sids) {
+  update_rule($i,@original_rate_limiting_rule_params);
+}
+publish_changes();
+
+=cc
+#Disable zone transfer to enable DROP rules for BAT execution
+my @result = $session->get(
+    object => "Infoblox::Grid::DNS",
+    name   => "Infoblox"
+            );
+ unless( @result ){
+            die("Get grid DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+                          }
+my $grid_dns = $result[0];
+         if ($grid_dns) {
+                         $grid_dns->allow_transfer([undef]);
+                         }
+$session->modify($grid_dns) or die("Modify grid DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+sleep 5;
+restart_services();
+=cut
+
+#############################################################################################
+#   Update rule with given parameters 
+#############################################################################################
+
+sub update_rule
+{
+  my $rule_id=shift;
+  my @rule_params=@_;
+  ($rule) = $session->get(object => 'Infoblox::Grid::ThreatProtection::Rule', sid =>$rule_id);
+  print "\n DEBUG: Updating rule parameters of rule: $rule_id \n" if $debug;
+  my $config = $rule->config();
+  die "SID $rule_id rule config not found\n" unless ref($config);
+  my ($RATE_FILTER_COUNT,$DROP_INTERVAL,$EVENTS_PER_SECOND,$RATE_ALGORITHM)=@rule_params[0..3];
+  my $PACKETS_PER_SECOND=$RATE_FILTER_COUNT;
+
+  foreach my $param (@{$config->{params}}) {
+    if ($param->name() eq 'RATE_FILTER_COUNT') {
+      if ($param->value() != $RATE_FILTER_COUNT) {
+	print "   Changing rule $rule_id RATE_FILTER_COUNT to $RATE_FILTER_COUNT\n" if $debug;
+	$param->value($RATE_FILTER_COUNT);
+      }
+    } elsif($param->name() eq 'PACKETS_PER_SECOND') {
+      if ($param->value() != $PACKETS_PER_SECOND) {
+	print "   Changing rule $rule_id PACKETS_PER_SECOND to $PACKETS_PER_SECOND\n" if $debug;
+	$param->value($PACKETS_PER_SECOND);
+      }
+    } elsif ($param->name() eq 'DROP_INTERVAL') {
+      if ($param->value() != $DROP_INTERVAL) {
+       print "   Changing rule $rule_id DROP_INTERVAL to $DROP_INTERVAL\n" if $debug;
+	$param->value($DROP_INTERVAL);
+      }
+    } elsif ($param->name() eq 'EVENTS_PER_SECOND') {
+      if ($param->value() != $EVENTS_PER_SECOND) {
+	print "   Changing rule $rule_id EVENTS_PER_SECOND to $EVENTS_PER_SECOND\n" if $debug;
+	$param->value($EVENTS_PER_SECOND);
+      }
+    } elsif ($param->name() eq 'RATE_ALGORITHM') {
+      if ($param->value() ne $RATE_ALGORITHM) {
+	print "   Changing rule $rule_id RATE_ALGORITHM' to '$RATE_ALGORITHM'.\n" if $debug;
+	$param->value($RATE_ALGORITHM);
+      }
+    }
+  }
+
+#Submit for modification
+  $session->modify($rule);
+  print "   Modified rule SID: $rule_id\n" if $debug;
+
+}
+
+# Enable rules
+
+sub enable_rules 
+{
+  foreach (@_) {
+   my $rule_modify = $session->get(object => 'Infoblox::Grid::ThreatProtection::Rule',
+                         sid =>$_);
+      unless(ref($rule_modify)){ warn "SID $_ not found\n"; next;}
+  $rule_modify->disable('false');
+  $session->modify($rule_modify);
+  print " DEBUG: Enabling rule sid:$_ \n" if $debug;
+  }
+}
+
+# Disable rules 
+
+sub disable_rules
+{
+  foreach (@_) {
+  my $rule_modify = $session->get(object => 'Infoblox::Grid::ThreatProtection::Rule',
+                         sid =>$_);
+     unless(ref($rule_modify)){ warn "SID $_ not found\n"; next;}
+  $rule_modify->disable('true');
+  $session->modify($rule_modify);
+  print " DEBUG: Disabling rule sid:$_ \n" if $debug; 
+  }
+}
+
+sub create_session
+{
+#############################################################################################
+# Connect to the GUI, automatically redirecting to the grid master if this is a member.     #
+#############################################################################################
+  $session = Infoblox::Session->new('master'=>$grid_master_ip, 'username'=>'admin', 'password'=>'infoblox');
+  if (ref($session) ne 'Infoblox::Session') {die "Failed to create session to $grid_master_ip\n"}
+  my $return_code = $session->status_code();
+  my $response = $session->status_detail();
+
+  if ($return_code != 0) {
+    if ($response =~ /This server \(.*\) is not a grid master. The current grid master is: \[?([0-9a-f\.:]*)\]?/i) {
+      my $new_grid_master_ip=$1;
+      my $master_addressing_mode;
+      if ($new_grid_master_ip =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/) {
+          $master_addressing_mode='4';
+         } elsif ($new_grid_master_ip =~ /^[a-fA-f0-9]{1,4}:[a-fA-f0-9:]*$/) {
+                  $master_addressing_mode='6';
+                 }
+    $grid_master_ip=$new_grid_master_ip;                  # Silently follow the redirect
+    $session = Infoblox::Session->new('master'=>$grid_master_ip, 'username'=>'admin', 'password'=>'infoblox', 'timeout' => 600);
+    $return_code = $session->status_code();
+    $response = $session->status_detail();
+    } else {die "Failed to connect to the $grid_master_ip grid master.  return_code=$return_code and response=$response.\n"}
+  }
+  if (ref($session) ne 'Infoblox::Session') {die "$myname failed to get Infoblox::Session.\n"}
+}
+
+#Publish Rule Changes
+sub publish_changes
+{
+  $session->publish_changes(services => 'ATP', sequential_delay => 1, member_order => 'SIMULTANEOUSLY')or die ("publish changes failed $!");
+  print " DEBUG: Publishing changes... \n" if $debug;
+  sleep 60;
+}
+
+# From maintenance mode execute the commands
+
+sub cli_change
+{
+  my $exp = Expect->spawn($command) or die "Cannot spawn $command: $!\n";
+  $cliComplete=0;
+  my ($count,$prompt_count,$tp_license,$tp_update_license)=0;
+  my @smartnic_rule_change=@_;
+  $tp_license=1 if (($smartnic_rule_change[0] =~ /temp_license/) && ($smartnic_rule_change[1] eq "TP_LICENSE"));
+  $tp_update_license=1 if (($smartnic_rule_change[0] =~ /temp_license/) && ($smartnic_rule_change[1] eq "TP_UPDATE_LICENSE"));
+
+  while(!$cliComplete) {
+        $exp->expect(
+            $timeout,
+            [ qr/$usernamePrompt/       => sub { my $exp = shift;
+                                                $exp->send("$username\n");
+                                                exp_continue; } ],
+            [ qr/$pwPrompt/             => sub { my $exp = shift;
+                                                $exp->send("$password\n");
+                                                exp_continue; } ],
+	    [ qr/Are you sure you want to continue connecting*/             => sub { my $exp = shift;
+	                                                                 $exp->send("yes\n");
+                                                                          exp_continue; } ],
+            [ qr/$prompt/               => sub { my $exp = shift;
+                                                 $prompt_count++;
+						 if (($smartnic_rule_change[0] =~ /temp_license/) && ($prompt_count == 1)){
+						 $exp->send(" $smartnic_rule_change[0]\n") ;
+						 sleep(5);
+						 exp_continue;
+	                                          }elsif($smartnic_rule_change[0] =~ /set smartnic/) {
+                                                  $exp->send("$command_to_maintenancemode\n");
+					          exp_continue;
+						  } elsif($smartnic_rule_change[0] =~ /show license/) {
+						    $exp->send(" $smartnic_rule_change[0]\n");
+						    sleep(5);
+						    my @options = $exp->expect(5);
+						    license_check($options[3]);
+						    sleep(5);
+						    $exp->send("exit\n\n");
+						    $cliComplete=1;
+                                                  }else {
+						       $exp->send("exit\n\n");
+                                                       $cliComplete=1;
+                                                          }
+                                                } ],
+
+	    [ qr/Are you sure you want to do this*/             => sub { my $exp = shift;
+	                                                                 $exp->send("y\n");
+									 $count++;
+									 $cliComplete=1 if ($count ==2);
+                                                                          exp_continue; } ],
+            [ qr/Restart UI now*/             => sub { my $exp = shift;
+	                                               $exp->send("y\n");
+						       exp_continue; } ],
+
+            [ qr/Select license.*or q to quit*/             => sub { my $exp = shift;
+						       my @options = $exp->before();
+						       if ($tp_license) {
+						       $options[0] =~ m/(\d+)\. Add Threat Protection license/;
+						       $exp->send("$1\n");
+						       exp_continue;
+						       }elsif ($tp_update_license) {
+						       $options[0] =~ m/(\d+)\. Add Threat Protection Update license/;
+						       $exp->send("$1\n");
+						       exp_continue;
+						       }
+                                                      } ],
+
+	    [ qr/$maintenance_mode/     => sub { my $exp = shift;
+			                          foreach (@smartnic_rule_change) {
+                                                    $exp->send("$_\n");
+                                                    sleep(5);
+                                                    }													
+                                                    $exp->send("exit\n\n");
+						    $cliComplete=1;
+                                                } ],
+		);
+  }	
+  $exp->soft_close();
+  sleep(5);
+}
+
+# Restore database as part of initial setup
+sub initial_preparation 
+{
+#Enable remote console and support access
+
+  my $grid = $session->get(
+     object => "Infoblox::Grid",
+     name   => "Infoblox"
+  );
+ unless ($grid) {
+     die("Get Grid failed: ", $session->status_code() . ":" . $session->status_detail());
+  }
+  $grid->remote_console_access("true");;
+  $grid->support_access("true");
+  $session->modify($grid) or die("Modify Grid failed: ", $session->status_code() . ":" . $session->status_detail());
+  sleep 5;
+  print "\n DEBUG: Enabling remote console and support access \n" if $debug;
+  restart_services();
+
+  addkeys();
+
+#Threat protection and Threat protection update temp license installation 
+  cli_change("show license");
+  if (!$tp_flag){
+  cli_change("set temp_license","TP_LICENSE");
+  sleep 180;
+  print "\n";
+  create_session();
+  } else {
+   print "\n INFO: Threat Protection license is already installed \n\n";
+  }
+
+  if (!$tpu_flag) {
+  cli_change("set temp_license","TP_UPDATE_LICENSE");
+  sleep 30;
+  print "\n";
+  } else {
+     print "\n INFO: Threat Protection update license is already installed \n\n";
+  }
+
+
+#upload ruleset if none exists
+  ruleset_check();
+ 
+#Add Forwarder, enable recursion, logging categories and allow tranfer at Grid level
+  my @result = $session->get(
+    object => "Infoblox::Grid::DNS",
+    name   => "Infoblox"
+            );
+         unless( @result ){
+            die("Get grid DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+                          }
+  my $grid_dns = $result[0];
+         if ($grid_dns) {
+                         $grid_dns->allow_recursive_query("true");
+                         $grid_dns->logging_categories(["general", "client", "config", "database", "dnssec", "lame_servers", "network", "notify", "queries", "resolver", "security", "update", "xfer_in", "xfer_out", "update_security", "queries"]);
+                         $grid_dns->allow_transfer(["any"]);
+                         }
+  $session->modify($grid_dns) or die("Modify grid DNS failed: ", $session->status_code() . ":" . $session->status_detail()); 
+  sleep 5;
+  restart_services();
+  ntp_configuration();
+
+#Member DNS properties
+  my $member_dns = $session->get(
+    object => "Infoblox::Grid::Member::DNS",
+        name   => "$hostname"
+            );
+            unless ($member_dns) {
+                die("get member DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+                        }
+# Grid member object 
+  my @retrieved_objs = $session->get(
+     object => "Infoblox::Grid::Member",
+     name   => "infoblox.localdomain"
+     );
+  my $grid_member = $retrieved_objs[0];
+  unless ($grid_member) {
+     die("Get grid member object failed: ", $session->status_code() . ":" . $session->status_detail());
+  }
+
+  if($grid_member->config_addr_type() eq "BOTH") {
+    $grid_dns->forwarders(["$forwarder","$forwarder_v6"]);
+    $grid_dns->forward_only("true");
+    $member_dns->enable_dns("true");
+    $member_dns->use_lan_ipv6_port("true");
+    print "\n DEBUG: Enable DNS service \n" if $debug;
+    $session->modify($member_dns) or die("modify member DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+    $session->modify($grid_dns) or die("Modify grid DNS failed: ", $session->status_code() . ":" . $session->status_detail()); 
+    sleep 5;
+    restart_services();
+    bgp_configuration("v4_v6");
+  }
+
+  if($grid_member->config_addr_type() eq "IPv6") {
+    $grid_dns->forwarders(["$forwarder_v6"]);
+    $grid_dns->forward_only("true");
+    $member_dns->use_lan_ipv6_port("true");
+    $member_dns->enable_dns("true");
+    print "\n DEBUG: Enable DNS service \n" if $debug;
+    $session->modify($member_dns) or die("modify member DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+    $session->modify($grid_dns) or die("Modify grid DNS failed: ", $session->status_code() . ":" . $session->status_detail()); 
+    restart_services();
+  }
+
+  if($grid_member->config_addr_type() eq "IPv4") {
+    $member_dns->enable_dns("true");
+    $session->modify($member_dns) or die("modify member DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+    $grid_dns->forwarders(["$forwarder"]);
+    $grid_dns->forward_only("true");
+    $session->modify($grid_dns) or die("Modify grid DNS failed: ", $session->status_code() . ":" . $session->status_detail()); 
+    restart_services();
+    bgp_configuration("v4");
+  }
+
+  restart_services();
+  sleep 120;
+}
+
+# NTP Configuration
+sub ntp_configuration
+{
+  print "\n Configuring NTP settings ... \n";
+  my $ntp_server = Infoblox::Grid::NTPServer->new(
+     address        => "10.0.2.2",
+     );
+
+  my $ntpac2 = Infoblox::Grid::NTPAccess->new(
+                                             address => "any",
+                                             service => "Time and NTP control",
+                                            );
+  my $grid = $session->get(
+        object  => "Infoblox::Grid",
+        name    => "Infoblox"
+      );
+      unless ($grid) {
+          die("get Grid failed:" , $session->status_code(), $session->status_detail());
+      }
+  $grid->enable_ntp("true");
+  $grid->ntp_server([$ntp_server]);
+  $grid->ntp_access_list([$ntpac2]);
+
+#Modify grid object
+  $session->modify($grid) or die("modify Grid failed:" , $session->status_code(), $session->status_detail());
+  my $grid_member = $session->get(
+     object => "Infoblox::Grid::Member",
+     name   => "infoblox.localdomain");
+
+#Get enable ntp flag
+  my $enable_ntp = $grid_member->enable_ntp();
+
+#Modify enable ntp flag
+  $grid_member->enable_ntp("true");
+  $session->modify($grid_member);
+  sleep 50;
+}
+
+sub bgp_configuration
+{
+  my $mode=shift;
+#Get grid member through session
+  my @retrieved_objs = $session->get(
+     object => "Infoblox::Grid::Member",
+     name   => $hostname
+     );
+  my $grid_member = $retrieved_objs[0];
+  unless ($grid_member) {
+     die("Get grid member object failed: ", $session->status_code() . ":" . $session->status_detail());
+  }
+
+  if ($mode eq "v4") { 
+   print "\n DEBUG: Configuring v4 BGP settings... this might take a while \n" if $debug;
+   my $interface_obj_v4 = Infoblox::Grid::Member::Interface->new(
+         subnet_mask => "255.255.255.255",
+         anycast     => "true",
+         enable_bgp =>  "true",
+         ipv4addr    => "3.4.5.8",
+         interface   => "LOOPBACK",
+   );
+
+#Construct a BGP v4 neighbor
+  my $neighbor_v4 = Infoblox::Grid::Member::BGP::Neighbor->new(
+     neighbor_ip           => "3.4.5.9",
+     remote_as             => 1234,
+     interface             => "LAN_HA",
+   );
+
+#Construct a BGP AS
+  my $autonomous_system = Infoblox::Grid::Member::BGP::AS->new(
+     as          => 269,
+     neighbors       => [ $neighbor_v4 ]
+  );
+
+  $grid_member->additional_ip_list([$interface_obj_v4]);
+  $grid_member->bgp_as([$autonomous_system]);
+  $session->modify($grid_member) or die("Modify Member BGP settings failed", $session->status_code() . ":" . $session->status_detail());
+  } elsif ($mode eq "v4_v6") {
+   $ipv6addr=$grid_member->ipv6addr();
+   $gateway=$grid_member->ipv6_gateway();
+   $cidr=$grid_member->ipv6_cidr();
+   print "\n DEBUG: Configuring v4 and v6 BGP settings... this might take a while \n" if $debug;
+
+  my $interface_obj_v4 = Infoblox::Grid::Member::Interface->new(
+         subnet_mask => "255.255.255.255",
+         anycast     => "true",
+         enable_bgp =>  "true",
+         ipv4addr    => "3.4.5.8",
+         interface   => "LOOPBACK",
+  );
+
+  my $interface_obj_v6 = Infoblox::Grid::Member::Interface->new(
+         cidr => "128",
+         anycast     => "true",
+         enable_bgp =>  "true",
+         ipv6addr    => "125::2",
+         interface   => "LOOPBACK",
+  );
+
+  my $interface_obj_v6_unit_ip = Infoblox::Grid::Member::Interface->new(
+    'gateway' => $gateway,
+    'ipv6addr' => $ipv6addr, 
+    'cidr' => $cidr,
+    'interface' => 'LAN_HA'
+
+  );
+
+  my $neighbor_v4 = Infoblox::Grid::Member::BGP::Neighbor->new(
+     neighbor_ip           => "3.4.5.9",
+     remote_as             => 1234,
+     interface             => "LAN_HA",
+  );
+
+#Construct a BGP v6 neighbor
+  my $neighbor_v6 = Infoblox::Grid::Member::BGP::Neighbor->new(
+     neighbor_ip           => "125::3",
+     remote_as             => 1234,
+     interface             => "LAN_HA",
+  );
+
+#Construct a BGP AS
+  my $autonomous_system = Infoblox::Grid::Member::BGP::AS->new(
+     as          => 269,
+     neighbors       => [ $neighbor_v4,$neighbor_v6 ]
+  );
+
+# Configure BGP on the Grid Member object
+  $grid_member->additional_ip_list([$interface_obj_v4,$interface_obj_v6,$interface_obj_v6_unit_ip]);
+  $grid_member->bgp_as([$autonomous_system]);
+  $session->modify($grid_member) or die("Modify Member BGP settings failed", $session->status_code() . ":" . $session->status_detail());
+  } elsif ($mode eq "v6") {
+  $ipv6addr=$grid_member->ipv6addr();
+  $gateway=$grid_member->ipv6_gateway();
+  $cidr=$grid_member->ipv6_cidr();
+
+  print "\n DEBUG: Configuring v6 BGP settings... this might take a while \n" if $debug;
+
+  my $interface_obj_v6 = Infoblox::Grid::Member::Interface->new(
+         cidr => "128",
+         anycast     => "true",
+         enable_bgp =>  "true",
+         ipv6addr    => "125::2",
+         interface   => "LOOPBACK",
+  );
+
+  my $interface_obj_v6_unit_ip = Infoblox::Grid::Member::Interface->new(
+    'gateway' => $gateway,
+    'ipv6addr' => $ipv6addr,
+    'cidr' => $cidr,
+    'interface' => 'LAN_HA'
+
+  );
+
+  my $neighbor_v6 = Infoblox::Grid::Member::BGP::Neighbor->new(
+     neighbor_ip           => "125::3",
+     remote_as             => 1234,
+     interface             => "LAN_HA",
+   );
+
+#Construct a BGP AS
+  my $autonomous_system = Infoblox::Grid::Member::BGP::AS->new(
+     as          => 269,
+     neighbors       => [$neighbor_v6 ]
+  );
+
+# Configure BGP on the Grid Member object
+  $grid_member->additional_ip_list([$interface_obj_v6,$interface_obj_v6_unit_ip]);
+  $grid_member->bgp_as([$autonomous_system]);
+  $session->modify($grid_member) or die("Modify Member BGP settings failed", $session->status_code() . ":" . $session->status_detail());
+  }
+
+  #$session->modify($grid_member) or die("Modify Member BGP settings failed", $session->status_code() . ":" . $session->status_detail());
+  sleep 200;
+  create_session();
+
+# Add the BGP configuration to the member 
+  my $member_dns = $session->get(
+    object => "Infoblox::Grid::Member::DNS",
+        name   => "$hostname"
+            );
+            unless ($member_dns) {
+                die("get member DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+             }
+  $member_dns->additional_ip_list(["3.4.5.8","125::2"]) if ($mode eq "v4_v6");
+  $member_dns->additional_ip_list(["125::2"]) if ($mode eq "v6");
+  $member_dns->additional_ip_list(["3.4.5.8"]) if ($mode eq "v4");
+
+  $session->modify($member_dns) or die("modify member DNS failed: ", $session->status_code() . ":" . $session->status_detail());
+  sleep 20;
+}
+
+sub ruleset_check
+{
+  my ($ruleset,$version,$file);
+
+# Enable threat protection service
+  print $hostname;
+  print "==============================";
+  my $tp_service = $session->get(
+    object => "Infoblox::Grid::Member::ThreatProtection",
+    grid_member   => "$hostname"
+    );
+  unless ($tp_service) {
+    die("get member TP failed: ", $session->status_code() . ":" . $session->status_detail());
+  }
+  $tp_service->enable_service("true");
+  $session->modify($tp_service) or die("modify member TP failed: ", $session->status_code() . ":" . $session->status_detail());
+  print "\n INFO: Enabling TP Service \n";
+  sleep 20;
+
+  eval{
+   $ruleset = $session->search(
+     'object' => 'Infoblox::Grid::ThreatProtection::Ruleset',
+      );
+  $version= $ruleset->version();
+  print $version;
+  print '**********************';
+  };
+
+  print $@;
+  print "-------------------------------------";
+  if ($@) {
+   print "\n INFO: Ruleset is not uploaded.\n";
+   $file=`/bin/ls -tr *.bin2 | tail -1`;
+   chomp($file);
+   if ($file =~ /(No such file|^$)/) {
+    print "bin2 file is not present in the current directory.. Please upload the file and retry...  Abort\n";
+    exit 0;
+   } else { 
+   print "\n INFO: Uploading ruleset $file \n";
+#Import ruleset
+  $session->import_data(
+		  type=>'threat_protection_rule_update',
+		  path => $file);
+  warn " Import ruleset Return code: ", $session->status_code(), " Detail: ",  $session->status_detail(),"\n";
+  publish_changes();
+   }
+  } else {
+   print "\n INFO: Ruleset $version is already uploaded \n";
+   } 
+  print "\n DEBUG: disable_multiple_dns_tcp_request option  \n" if $debug;
+  my $grid_tp = $session->get(
+    object => "Infoblox::Grid::ThreatProtection");
+  $grid_tp->disable_multiple_dns_tcp_request('false');
+  $session->modify($grid_tp) or die("modify grid TP settings failed: ", $session->status_code() . ":" . $session->status_detail());
+  restart_services();
+}
+
+sub addkeys
+{
+  my $SSH_FLAGS="-q -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=15";
+  my $cmd_output=`ssh $SSH_FLAGS root\@$ssh_ip ls -ld /infoblox 2>/dev/null`;
+  if ($? == 0) {
+  if ($debug) {print "\n DEBUG: I can already ssh to $ssh_ip, so I don't have to use addkeys.\n"}
+  } else {
+  print "\n INFO: Calling addkeys $ssh_ip ...\n";
+  `addkeys $ssh_ip`;
+  if ($? == 0) {
+    system("/usr/bin/ssh $SSH_FLAGS root\@$ssh_ip date");
+    if ($? == 0) {
+      if ($debug) {print " DEBUG:    addkeys was successful.\n"}
+    } else {
+      die " addkeys apparently failed.  If not using the grid's VIP (usually LAN, but maybe MGMT), then you have to do the addkeys yourself first.\n";
+    }
+  } else {
+    die " addkeys failed.  If not using the grid's VIP (usually LAN, but maybe MGMT), then you have to do the addkeys yourself first.\n";
+  }
+ }
+ sleep 20;
+}
+
+# Restart services
+sub restart_services
+{
+  print "\n DEBUG: Restarting services \n" if $debug;
+  $session->restart(
+     delay_between_members => 4,
+     force_restart => "true",
+     );
+  sleep 15;
+}
+
+#License install check
+sub license_check
+{
+foreach (@_) {
+ if ($_ =~ m/(Threat Protection Update)/) {
+   $tpu_flag=1;
+  }
+ if ($_ =~ m/(Threat Protection)/) {
+   $tp_flag=1;
+  }
+ }
+}
+

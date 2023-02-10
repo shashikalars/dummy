@@ -1,0 +1,14 @@
+{
+  "REPORTS VALIDATION/test_MG_DCVM_reports.py::DCVM_reports::test_1": true, 
+  "REPORTS VALIDATION/test_MG_DCVM_reports.py::DCVM_reports::test_2": true, 
+  "REPORTS VALIDATION/test_MG_DCVM_reports.py::DCVM_reports::test_3": true, 
+  "REPORTS VALIDATION/test_MG_DCVM_reports.py::DCVM_reports::test_4": true, 
+  "REPORTS VALIDATION/test_MG_DCVM_reports.py::DCVM_reports::test_5": true, 
+  "REPORTS VALIDATION/test_MG_IPAM_prediction_dashboard.py::IPAM_prediction_dashboard::test_1": true, 
+  "REPORTS VALIDATION/test_MG_IPAM_prediction_dashboard.py::IPAM_prediction_dashboard::test_2": true, 
+  "REPORTS VALIDATION/test_MG_IP_DHCP_usage_report.py::IP_DHCP_usage_report::test_1": true, 
+  "REPORTS VALIDATION/test_MG_IP_DHCP_usage_report.py::IP_DHCP_usage_report::test_2": true, 
+  "REPORTS VALIDATION/test_MG_flex_grid_licencing_features_enabled_report.py::Flex_member_reports::test_1": true, 
+  "REPORTS VALIDATION/test_MG_ipam_reports.py::IPAM_reports::test_2": true, 
+  "REPORTS VALIDATION/test_MG_ipam_reports.py::IPAM_reports::test_4": true
+}

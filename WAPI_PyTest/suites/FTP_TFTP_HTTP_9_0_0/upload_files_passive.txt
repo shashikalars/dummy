@@ -1,0 +1,15 @@
+"1. Configure a grid with 2 members 
+2. Enabled the option 'Allow Upload to Grid Members' in Grid File distribution properties. 
+3. Started http (File distribution) service all members.
+4. Upload few files (around 400 MB), Delete files and uploaded again on master and noticed File distribution percentage shows correctly.
+5. disabled the option 'Allow Upload to Grid Members' in Grid File distribution properties and upload/deleted few files File distribution percentage shows correctly.
+6. Again Enabled the option 'Allow Upload to Grid Members' in Grid File distribution properties and uploaded few files.This time noticed difference in  File distribution percentage.
+"
+"1-Configured Grid with member using above mentioned build.
+2-Started the DNS & HTTP/TFTP services for all the members.
+3-Uploaded the newly generated certificate.it's uploaded successfully.--->certificate needs
+3-Add one AD server in the Grid.
+4-Started the Captive portal service on the member.
+5-Captive portal service started successfully.
+6-But for member HTTP service getting below error message.
+        Hard Disk: 0% - An HTTP file distribution daemon failure has occurred. (9.0.0 build not getting validate the same)"

@@ -1,0 +1,7 @@
+2017-11-20 22:25:48,928 - root(8152) - INFO - SETUP METHOD
+2017-11-20 22:25:48,968 - root(8152) - INFO - Request finished successfully with response code: 200 OK
+2017-11-20 22:25:49,021 - root(8152) - INFO - Request finished successfully with response code: 200 OK
+2017-11-20 22:25:49,062 - root(8152) - INFO - Request finished successfully with response code: 200 OK
+2017-11-20 22:25:49,063 - root(8152) - INFO - ------------------------------Test Case 1 Execution Started------------------------------
+2017-11-20 22:25:49,100 - root(8152) - INFO - Request finished successfully with response code: 400 Bad Request
+2017-11-20 22:25:49,101 - root(8152) - INFO - TEAR DOWN METHOD

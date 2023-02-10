@@ -1,0 +1,20 @@
+<ServiceRequest>
+  <data>
+    <Report>
+        <name>was_scan_nios-9.0.0-48144-2022-09-30-11-13</name>
+        <format>CSV</format>
+        <type>WAS_SCAN_REPORT</type>
+        <config>
+          <scanReport>
+            <target>
+              <scans>
+                <WasScan>
+                  <id>34227250</id>
+                </WasScan>
+              </scans>
+            </target> 
+          </scanReport>
+        </config>
+    </Report>
+</data>
+</ServiceRequest>

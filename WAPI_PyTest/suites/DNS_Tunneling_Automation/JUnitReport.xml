@@ -1,0 +1,2634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite classname="DNS_TUNNELING" disabled="0" errors="0" failures="30" hostname="infoblox.localdomain" id="1" name="DNS Tunneling PCAPS and PROGRAMS" package="" skipped="0" tests="106" time="16943" timestamp="2017-12-13T11:08:51
+">
+		<properties>
+			<property name="NIOS Version" value="8.3.0-EA-364489"/>
+			<property name="DNST detection threshold value" value="default"/>
+			<property name="PCAP Player" value="JAVASERVER"/>
+			<property name="Hardware Type" value="PT-4000"/>
+		</properties>
+		<testcase id="1" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-03-no-key.pcap" status="PASSED" time="101">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-03-no-key.pcap'
+INFO: Updating the global forwarders
+INFO: Restarting services 
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-03-no-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9924510539602751
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="2" classname="DNS_TUNNELING.PASS" name="DNScat-p-CNAME-newpcap-cli-104.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-CNAME-newpcap-cli-104.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-CNAME-newpcap-cli-104.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9998149099934059
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="3" classname="DNS_TUNNELING.FAIL" name="iodine_SRV_exfil.pcap" status="FAILED" time="536">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_SRV_exfil.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_SRV_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="4" classname="DNS_TUNNELING.FAIL" name="dns2tcp-ssh-06-incorrect-key-newpcap.pcap" status="FAILED" time="436">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-06-incorrect-key-newpcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap dns2tcp-ssh-06-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="5" classname="DNS_TUNNELING.PASS" name="DNScat-p-CNAME-newpcap-svr-104.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-CNAME-newpcap-svr-104.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-CNAME-newpcap-svr-104.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9997979456058202
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="6" classname="DNS_TUNNELING.PASS" name="tcpoverdns-0001.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'tcpoverdns-0001.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcpoverdns-0001.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9987401143605712
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="7" classname="DNS_TUNNELING.PASS" name="your-freedom-dns-tunneling-3-via-infoblox-tunneled-web-traffic.pcap" status="PASSED" time="72">
+			<system-out>						
+INFO: Replaying the pcap file 'your-freedom-dns-tunneling-3-via-infoblox-tunneled-web-traffic.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap your-freedom-dns-tunneling-3-via-infoblox-tunneled-web-traffic.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.s11.1yf.de is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.s11.1yf.de is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.s11.1yf.de 
+INFO: Classification_confidence: 0.9934475126975522
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.s11.1yf.de"/>
+			</properties>
+		</testcase>
+		<testcase id="8" classname="DNS_TUNNELING.PASS" name="tcp-over-dns-1005.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'tcp-over-dns-1005.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcp-over-dns-1005.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9961269217876074
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="9" classname="DNS_TUNNELING.PASS" name="splitbrain-socksproxy-session-3.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-socksproxy-session-3.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-socksproxy-session-3.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-3319.down.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Blackdomain *.id-3319.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-3319.down.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-3319.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-3319.down.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-3319.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9759393244502995
+INFO: Classification_confidence: 0.9971180557585784
+INFO: Classification_confidence: 0.9894857086917135
+INFO: Classification_confidence: 0.9991018262597536
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-3319.down.sshdns.splitbrain.tunnel.srt.blox,*.id-3319.up.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="10" classname="DNS_TUNNELING.PASS" name="splitbrain-socksproxy-session-5.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-socksproxy-session-5.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-socksproxy-session-5.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-59.down.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Blackdomain *.id-59.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.id-59.down.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-59.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-59.down.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-59.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9971900198547592
+INFO: Classification_confidence: 0.9991088945631326
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.id-59.down.sshdns.splitbrain.tunnel.srt.blox,*.id-59.up.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="11" classname="DNS_TUNNELING.PASS" name="tcp-over-dns-1004.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'tcp-over-dns-1004.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcp-over-dns-1004.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9985624604318188
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="12" classname="DNS_TUNNELING.PASS" name="99ce6a526de8e9b37b2678efe6edc879-2.pcap.pcap" status="PASSED" time="166">
+			<system-out>						
+INFO: Replaying the pcap file '99ce6a526de8e9b37b2678efe6edc879-2.pcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap 99ce6a526de8e9b37b2678efe6edc879-2.pcap.pcap on Server and initiating the tunneling traffic...
+INFO: Blackdomain *.58523.images.moviedyear.net is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.58523.images.moviedyear.net is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Deleting the blacklist domain: *.58523.images.moviedyear.net 
+INFO: Classification_confidence: 0.9984335676000873
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.58523.images.moviedyear.net"/>
+			</properties>
+		</testcase>
+		<testcase id="13" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-13-correct-key.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-13-correct-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-13-correct-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9955570569909206
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="14" classname="DNS_TUNNELING.PASS" name="DNScat-p-CNAME-newpcap-cli-105.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-CNAME-newpcap-cli-105.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-CNAME-newpcap-cli-105.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~3 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9837647341766051
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="3"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="15" classname="DNS_TUNNELING.PASS" name="OzymanDNS-newpcap-cli-102.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'OzymanDNS-newpcap-cli-102.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap OzymanDNS-newpcap-cli-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-32604.up.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Blackdomain *.id-32604.down.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~11 seconds
+INFO: Added RPZ blacklist domain *.id-32604.up.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-32604.down.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-32604.up.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-32604.down.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9837574243735872
+INFO: Classification_confidence: 0.9921996152541754
+INFO: Classification_confidence: 0.9657033683313301
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="11"/>
+				<property name="Blacklist domains" value="*.id-32604.up.sshdns.ozymandns.tunnel.srt.blox,*.id-32604.down.sshdns.ozymandns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="16" classname="DNS_TUNNELING.FAIL" name="dns2tcp-ssh-09-incorrect-key-newpcap.pcap" status="FAILED" time="435">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-09-incorrect-key-newpcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap dns2tcp-ssh-09-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="17" classname="DNS_TUNNELING.PASS" name="ozymandns-3.pcap" status="PASSED" time="167">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-3.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-3.pcap on Server and initiating the tunneling traffic...
+INFO: Blackdomain *.id-19009.down.sshdns.tunnel.aerialsolutions.us is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Blackdomain *.id-19009.up.sshdns.tunnel.aerialsolutions.us is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.id-19009.down.sshdns.tunnel.aerialsolutions.us is matching with query domains
+INFO: Added RPZ blacklist domain *.id-19009.up.sshdns.tunnel.aerialsolutions.us is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Deleting the blacklist domain: *.id-19009.down.sshdns.tunnel.aerialsolutions.us 
+INFO: Deleting the blacklist domain: *.id-19009.up.sshdns.tunnel.aerialsolutions.us 
+INFO: Classification_confidence: 0.9992831454714806
+INFO: Classification_confidence: 0.9980780126961897
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.id-19009.down.sshdns.tunnel.aerialsolutions.us,*.id-19009.up.sshdns.tunnel.aerialsolutions.us"/>
+			</properties>
+		</testcase>
+		<testcase id="18" classname="DNS_TUNNELING.PASS" name="iodine_direct_TXT.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_direct_TXT.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_direct_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.sub.disa.pw is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.sub.disa.pw is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.sub.disa.pw 
+INFO: Classification_confidence: 0.9999239851680821
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.sub.disa.pw"/>
+			</properties>
+		</testcase>
+		<testcase id="19" classname="DNS_TUNNELING.FAIL" name="iodine_MX.pcap" status="FAILED" time="441">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_MX.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~30 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="20" classname="DNS_TUNNELING.PASS" name="DNScat-p-Mixed-newpcap-svr-107.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-Mixed-newpcap-svr-107.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-svr-107.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9998166372808577
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="21" classname="DNS_TUNNELING.PASS" name="DNScat-p-CNAME-newpcap-svr-105.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-CNAME-newpcap-svr-105.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-CNAME-newpcap-svr-105.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~3 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9823163149137779
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="3"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="22" classname="DNS_TUNNELING.PASS" name="splitbrain-socksproxy-session-7.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-socksproxy-session-7.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-socksproxy-session-7.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-55726.down.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Blackdomain *.id-55726.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.id-55726.down.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-55726.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-55726.down.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-55726.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9894579835916091
+INFO: Classification_confidence: 0.9897399221263303
+INFO: Classification_confidence: 0.9997684775334906
+INFO: Classification_confidence: 0.999125192191079
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.id-55726.down.sshdns.splitbrain.tunnel.srt.blox,*.id-55726.up.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="23" classname="DNS_TUNNELING.FAIL" name="iodine-ping-ssh-dnsonly.pcap" status="FAILED" time="430">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine-ping-ssh-dnsonly.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine-ping-ssh-dnsonly.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="24" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-multiple-sessions-02.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-multiple-sessions-02.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-multiple-sessions-02.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9707748058007047
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="25" classname="DNS_TUNNELING.FAIL" name="iodine-proto-5.02-direct_NULL.pcap" status="FAILED" time="444">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine-proto-5.02-direct_NULL.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine-proto-5.02-direct_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="26" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-ssh-session-2.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-ssh-session-2.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-ssh-session-2.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-14624.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Blackdomain *.id-14624.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.id-14624.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-14624.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-14624.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-14624.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9854595966777848
+INFO: Classification_confidence: 0.9798113940255622
+INFO: Classification_confidence: 0.9883097134101999
+INFO: Classification_confidence: 0.9743041446263747
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.id-14624.down.sshdns.ozyman.tunnel.srt.blox,*.id-14624.up.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="27" classname="DNS_TUNNELING.FAIL" name="iodine_TXT.pcap" status="FAILED" time="443">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_TXT.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~30 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_TXT.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="28" classname="DNS_TUNNELING.FAIL" name="iodine_direct_MX.pcap" status="FAILED" time="434">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_direct_MX.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_direct_MX.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="29" classname="DNS_TUNNELING.FAIL" name="iodine_A.pcap" status="FAILED" time="443">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_A.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~30 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_A.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="30" classname="DNS_TUNNELING.PASS" name="OzymanDNS-newpcap-cli-svr-103.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'OzymanDNS-newpcap-cli-svr-103.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap OzymanDNS-newpcap-cli-svr-103.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-51104.down.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Blackdomain *.id-51104.up.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-51104.down.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-51104.up.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-51104.down.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-51104.up.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9766701353196323
+INFO: Classification_confidence: 0.9894475015121487
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-51104.down.sshdns.ozymandns.tunnel.srt.blox,*.id-51104.up.sshdns.ozymandns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="31" classname="DNS_TUNNELING.PASS" name="iodine_CNAME_exfil.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_CNAME_exfil.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_CNAME_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.sub.disa.pw is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.sub.disa.pw is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.sub.disa.pw 
+INFO: Classification_confidence: 0.9997559580719908
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.sub.disa.pw"/>
+			</properties>
+		</testcase>
+		<testcase id="32" classname="DNS_TUNNELING.PASS" name="TUNS-pcap05-NetCat.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'TUNS-pcap05-NetCat.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap TUNS-pcap05-NetCat.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tuns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.tuns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tuns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9825195644575175
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.tuns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="33" classname="DNS_TUNNELING.PASS" name="dns2tcp-complete-all-SSH-01a.pcap" status="PASSED" time="160">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-complete-all-SSH-01a.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-complete-all-SSH-01a.pcap on Server and initiating the tunneling traffic...
+INFO: Waited for 120 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: It's a negative test case and blacklist domain is not added into RPZ as expected
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="34" classname="DNS_TUNNELING.PASS" name="tcp-over-dns-1001.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'tcp-over-dns-1001.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcp-over-dns-1001.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.997512662426936
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="35" classname="DNS_TUNNELING.PASS" name="99ce6a526de8e9b37b2678efe6edc879-1.pcap.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file '99ce6a526de8e9b37b2678efe6edc879-1.pcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap 99ce6a526de8e9b37b2678efe6edc879-1.pcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.58523.images.moviedyear.net is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.58523.images.moviedyear.net is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.58523.images.moviedyear.net 
+INFO: Classification_confidence: 0.9984743643715138
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.58523.images.moviedyear.net"/>
+			</properties>
+		</testcase>
+		<testcase id="36" classname="DNS_TUNNELING.FAIL" name="iodine_MX_exfil.pcap" status="FAILED" time="537">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_MX_exfil.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_MX_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="37" classname="DNS_TUNNELING.PASS" name="DNScat2-pcap-01.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat2-pcap-01.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat2-pcap-01.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9999999999999999
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="38" classname="DNS_TUNNELING.PASS" name="DNScat-53-newpcap-svr-102.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-53-newpcap-svr-102.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-53-newpcap-svr-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9770607068759032
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="39" classname="DNS_TUNNELING.FAIL" name="Iodine-newpcap-101.pcap" status="FAILED" time="1261">
+			<system-out>						
+INFO: Replaying the pcap file 'Iodine-newpcap-101.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap Iodine-newpcap-101.pcap on Server and initiating the tunneling traffic...
+INFO: Waited for 120 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="40" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-14-correct-key.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-14-correct-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-14-correct-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9928957327629484
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="41" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-15-correct-key.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-15-correct-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-15-correct-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~8 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9854592061937968
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="8"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="42" classname="DNS_TUNNELING.PASS" name="TUNS-pcap02-FTP.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'TUNS-pcap02-FTP.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap TUNS-pcap02-FTP.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tuns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.tuns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tuns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9998038104966496
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.tuns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="43" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-02-no-key.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-02-no-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-02-no-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9940152473329145
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="44" classname="DNS_TUNNELING.PASS" name="DNScat-p-CNAME-newpcap-cli-103.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-CNAME-newpcap-cli-103.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-CNAME-newpcap-cli-103.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9996803586010672
+INFO: Classification_confidence: 0.9998164041384996
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="45" classname="DNS_TUNNELING.PASS" name="DNScat-53-newpcap-svr-101.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-53-newpcap-svr-101.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-53-newpcap-svr-101.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9875153396593181
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="46" classname="DNS_TUNNELING.PASS" name="your-freedom-dns-tunneling-2-via-infoblox.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'your-freedom-dns-tunneling-2-via-infoblox.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap your-freedom-dns-tunneling-2-via-infoblox.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.s17.1yf.de is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~3 seconds
+INFO: Added RPZ blacklist domain *.s17.1yf.de is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.s17.1yf.de 
+INFO: Classification_confidence: 0.9935115189415176
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="3"/>
+				<property name="Blacklist domains" value="*.s17.1yf.de"/>
+			</properties>
+		</testcase>
+		<testcase id="47" classname="DNS_TUNNELING.PASS" name="OzymanDNS-newpcap-cli-101.pcap" status="PASSED" time="176">
+			<system-out>						
+INFO: Replaying the pcap file 'OzymanDNS-newpcap-cli-101.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap OzymanDNS-newpcap-cli-101.pcap on Server and initiating the tunneling traffic...
+INFO: Blackdomain *.id-28604.up.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.id-28604.up.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Deleting the blacklist domain: *.id-28604.up.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9997425756369507
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.id-28604.up.sshdns.ozymandns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="48" classname="DNS_TUNNELING.PASS" name="tcpoverdns-0005.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'tcpoverdns-0005.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcpoverdns-0005.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9984517954421035
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="49" classname="DNS_TUNNELING.FAIL" name="iodine_SRV.pcap" status="FAILED" time="436">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_SRV.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~30 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~10 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="50" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-socksproxy-session-6.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-socksproxy-session-6.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-socksproxy-session-6.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-45717.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Blackdomain *.id-45717.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-45717.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-45717.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-45717.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-45717.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9991664364973687
+INFO: Classification_confidence: 0.9967622205831967
+INFO: Classification_confidence: 0.9991404231132321
+INFO: Classification_confidence: 0.9899043844856013
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-45717.up.sshdns.ozyman.tunnel.srt.blox,*.id-45717.down.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="51" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-socksproxy-session-3.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-socksproxy-session-3.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-socksproxy-session-3.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Blackdomain *.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Blackdomain *.id-3112.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~8 seconds
+INFO: Blackdomain *.id-3112.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~9 seconds
+INFO: Added RPZ blacklist domain *.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-3112.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-3112.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-3112.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-3112.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9943029067288041
+INFO: Classification_confidence: 0.9749245714398828
+INFO: Classification_confidence: 0.9948310923755594
+INFO: Classification_confidence: 0.9965834512571154
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="9"/>
+				<property name="Blacklist domains" value="*.down.sshdns.ozyman.tunnel.srt.blox,*.up.sshdns.ozyman.tunnel.srt.blox,*.id-3112.down.sshdns.ozyman.tunnel.srt.blox,*.id-3112.up.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="52" classname="DNS_TUNNELING.PASS" name="tcpoverdns-0002.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'tcpoverdns-0002.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcpoverdns-0002.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9860323471750002
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="53" classname="DNS_TUNNELING.FAIL" name="dns2tcp-ssh-07-incorrect-key-newpcap.pcap" status="FAILED" time="445">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-07-incorrect-key-newpcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~30 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap dns2tcp-ssh-07-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="54" classname="DNS_TUNNELING.FAIL" name="iodine_NULL.pcap" status="FAILED" time="447">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_NULL.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~30 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_NULL.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="55" classname="DNS_TUNNELING.PASS" name="splitbrain-ssh-session-1.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-ssh-session-1.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-ssh-session-1.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-13875.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-13875.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-13875.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9934084545468771
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-13875.up.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="56" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-05-no-key.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-05-no-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-05-no-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~2 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9869945098932014
+INFO: Classification_confidence: 0.9923904081358356
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.tunnel.srt.blox,*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="57" classname="DNS_TUNNELING.PASS" name="OzymanDNS-newpcap-cli-svr-102.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'OzymanDNS-newpcap-cli-svr-102.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap OzymanDNS-newpcap-cli-svr-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-32604.down.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Blackdomain *.id-32604.up.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.id-32604.down.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-32604.up.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-32604.down.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-32604.up.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.977719352918609
+INFO: Classification_confidence: 0.9990940679247005
+INFO: Classification_confidence: 0.970890535219241
+INFO: Classification_confidence: 0.9912052321148137
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.id-32604.down.sshdns.ozymandns.tunnel.srt.blox,*.id-32604.up.sshdns.ozymandns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="58" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-multiple-sessions-01.pcap" status="PASSED" time="225">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-multiple-sessions-01.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-multiple-sessions-01.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap dns2tcp-ssh-multiple-sessions-01.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap dns2tcp-ssh-multiple-sessions-01.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap dns2tcp-ssh-multiple-sessions-01.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~3 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9973981567992032
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="3"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="59" classname="DNS_TUNNELING.FAIL" name="iodine_direct_CNAME.pcap" status="FAILED" time="447">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_direct_CNAME.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_direct_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="60" classname="DNS_TUNNELING.PASS" name="iodine_A_exfil.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_A_exfil.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_A_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.sub.disa.pw is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.sub.disa.pw is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.sub.disa.pw 
+INFO: Classification_confidence: 0.9999634371620074
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.sub.disa.pw"/>
+			</properties>
+		</testcase>
+		<testcase id="61" classname="DNS_TUNNELING.PASS" name="TUNS-pcap03-FTP.pcap" status="PASSED" time="157">
+			<system-out>						
+INFO: Replaying the pcap file 'TUNS-pcap03-FTP.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap TUNS-pcap03-FTP.pcap on Server and initiating the tunneling traffic...
+INFO: Waited for 120 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: It's a negative test case and blacklist domain is not added into RPZ as expected
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="62" classname="DNS_TUNNELING.FAIL" name="iodine_CNAME.pcap" status="FAILED" time="441">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_CNAME.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_CNAME.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="63" classname="DNS_TUNNELING.FAIL" name="iodine_TXT_exfil.pcap" status="FAILED" time="536">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_TXT_exfil.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_TXT_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="64" classname="DNS_TUNNELING.PASS" name="DNScat-p-Mixed-newpcap-svr-106.pcap" status="PASSED" time="224">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-Mixed-newpcap-svr-106.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-svr-106.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-svr-106.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-svr-106.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-svr-106.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9858836866100245
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="65" classname="DNS_TUNNELING.PASS" name="splitbrain-socksproxy-session-6.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-socksproxy-session-6.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-socksproxy-session-6.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-15739.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.id-15739.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-15739.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9963997306617766
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.id-15739.up.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="66" classname="DNS_TUNNELING.PASS" name="your-freedom-dns-tunneling-2-direct-connect.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'your-freedom-dns-tunneling-2-direct-connect.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap your-freedom-dns-tunneling-2-direct-connect.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.s07.1yf.de is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~9 seconds
+INFO: Added RPZ blacklist domain *.s07.1yf.de is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.s07.1yf.de 
+INFO: Classification_confidence: 0.9827418570960996
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="9"/>
+				<property name="Blacklist domains" value="*.s07.1yf.de"/>
+			</properties>
+		</testcase>
+		<testcase id="67" classname="DNS_TUNNELING.PASS" name="00e8272cf571e4423a374ae1b98cddb9.pcap.pcap" status="PASSED" time="167">
+			<system-out>						
+INFO: Replaying the pcap file '00e8272cf571e4423a374ae1b98cddb9.pcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap 00e8272cf571e4423a374ae1b98cddb9.pcap.pcap on Server and initiating the tunneling traffic...
+INFO: Blackdomain *.58523.images.moviedyear.net is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.58523.images.moviedyear.net is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Deleting the blacklist domain: *.58523.images.moviedyear.net 
+INFO: Classification_confidence: 0.9983327803194129
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.58523.images.moviedyear.net"/>
+			</properties>
+		</testcase>
+		<testcase id="68" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-socksproxy-session-1.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-socksproxy-session-1.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-socksproxy-session-1.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-49420.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Blackdomain *.id-49420.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.id-49420.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-49420.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-49420.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-49420.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9925348184533629
+INFO: Classification_confidence: 0.9991530753101721
+INFO: Classification_confidence: 0.9920555994767204
+INFO: Classification_confidence: 0.9991269686241553
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.id-49420.down.sshdns.ozyman.tunnel.srt.blox,*.id-49420.up.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="69" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-ssh-session-1.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-ssh-session-1.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-ssh-session-1.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-26218.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Blackdomain *.id-26218.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.id-26218.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-26218.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-26218.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-26218.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9922570767218986
+INFO: Classification_confidence: 0.992743480322555
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.id-26218.down.sshdns.ozyman.tunnel.srt.blox,*.id-26218.up.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="70" classname="DNS_TUNNELING.FAIL" name="dns2tcp-ssh-10-incorrect-key-newpcap.pcap" status="FAILED" time="436">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-10-incorrect-key-newpcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap dns2tcp-ssh-10-incorrect-key-newpcap.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="71" classname="DNS_TUNNELING.PASS" name="tcp-over-dns-1002.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'tcp-over-dns-1002.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcp-over-dns-1002.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9968771819718083
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="72" classname="DNS_TUNNELING.PASS" name="splitbrain-socksproxy-session-2.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-socksproxy-session-2.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-socksproxy-session-2.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-33877.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Blackdomain *.id-33877.down.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-33877.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-33877.down.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-33877.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-33877.down.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9991044819185303
+INFO: Classification_confidence: 0.9972207974494356
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-33877.up.sshdns.splitbrain.tunnel.srt.blox,*.id-33877.down.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="73" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-socksproxy-session-2.pcap" status="PASSED" time="62">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-socksproxy-session-2.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-socksproxy-session-2.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-4484.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~2 seconds
+INFO: Blackdomain *.id-4484.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~2 seconds
+INFO: Added RPZ blacklist domain *.id-4484.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-4484.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-4484.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-4484.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9990667642511863
+INFO: Classification_confidence: 0.9966682995240495
+INFO: Classification_confidence: 0.9991680309802873
+INFO: Classification_confidence: 0.9997980092780443
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="2"/>
+				<property name="Blacklist domains" value="*.id-4484.down.sshdns.ozyman.tunnel.srt.blox,*.id-4484.up.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="74" classname="DNS_TUNNELING.PASS" name="your-freedom-dns-tunneling-1-via-infoblox.pcap" status="PASSED" time="65">
+			<system-out>						
+INFO: Replaying the pcap file 'your-freedom-dns-tunneling-1-via-infoblox.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap your-freedom-dns-tunneling-1-via-infoblox.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.s07.1yf.de is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.s07.1yf.de is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.s07.1yf.de 
+INFO: Classification_confidence: 0.9894407047948608
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.s07.1yf.de"/>
+			</properties>
+		</testcase>
+		<testcase id="75" classname="DNS_TUNNELING.PASS" name="DNScat-53-newpcap-cli-101.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-53-newpcap-cli-101.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-53-newpcap-cli-101.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.960531085252456
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="76" classname="DNS_TUNNELING.PASS" name="splitbrain-socksproxy-session-1.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-socksproxy-session-1.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-socksproxy-session-1.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-16701.down.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~3 seconds
+INFO: Blackdomain *.id-16701.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.id-16701.down.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-16701.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-16701.down.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-16701.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.999714034068611
+INFO: Classification_confidence: 0.9966215018768987
+INFO: Classification_confidence: 0.9924225805464806
+INFO: Classification_confidence: 0.9991643267698282
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.id-16701.down.sshdns.splitbrain.tunnel.srt.blox,*.id-16701.up.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="77" classname="DNS_TUNNELING.FAIL" name="Iodine-newpcap-102.pcap" status="FAILED" time="434">
+			<system-out>						
+INFO: Replaying the pcap file 'Iodine-newpcap-102.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap Iodine-newpcap-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="78" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-socksproxy-session-5.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-socksproxy-session-5.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-socksproxy-session-5.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-45952.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Blackdomain *.id-45952.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-45952.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-45952.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-45952.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-45952.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9938737532645509
+INFO: Classification_confidence: 0.9991147538515172
+INFO: Classification_confidence: 0.9997806538379561
+INFO: Classification_confidence: 0.999144809146725
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-45952.down.sshdns.ozyman.tunnel.srt.blox,*.id-45952.up.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="79" classname="DNS_TUNNELING.PASS" name="25d3c3964586803af53a67a4059eff31-1.pcap.pcap" status="PASSED" time="166">
+			<system-out>						
+INFO: Replaying the pcap file '25d3c3964586803af53a67a4059eff31-1.pcap.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap 25d3c3964586803af53a67a4059eff31-1.pcap.pcap on Server and initiating the tunneling traffic...
+INFO: Blackdomain *.58523.images.moviedyear.net is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~8 seconds
+INFO: Added RPZ blacklist domain *.58523.images.moviedyear.net is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Deleting the blacklist domain: *.58523.images.moviedyear.net 
+INFO: Classification_confidence: 0.9985540647756298
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="8"/>
+				<property name="Blacklist domains" value="*.58523.images.moviedyear.net"/>
+			</properties>
+		</testcase>
+		<testcase id="80" classname="DNS_TUNNELING.PASS" name="splitbrain-socksproxy-session-4.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'splitbrain-socksproxy-session-4.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap splitbrain-socksproxy-session-4.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-8374.down.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Blackdomain *.id-8374.up.sshdns.splitbrain.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-8374.down.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-8374.up.sshdns.splitbrain.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-8374.down.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-8374.up.sshdns.splitbrain.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9997932619818605
+INFO: Classification_confidence: 0.9991554623954509
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-8374.down.sshdns.splitbrain.tunnel.srt.blox,*.id-8374.up.sshdns.splitbrain.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="81" classname="DNS_TUNNELING.PASS" name="your-freedom-dns-tunneling-1-direct-connect.pcap" status="PASSED" time="67">
+			<system-out>						
+INFO: Replaying the pcap file 'your-freedom-dns-tunneling-1-direct-connect.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap your-freedom-dns-tunneling-1-direct-connect.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.s07.1yf.de is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~8 seconds
+INFO: Added RPZ blacklist domain *.s07.1yf.de is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.s07.1yf.de 
+INFO: Classification_confidence: 0.9934480037379712
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="8"/>
+				<property name="Blacklist domains" value="*.s07.1yf.de"/>
+			</properties>
+		</testcase>
+		<testcase id="82" classname="DNS_TUNNELING.PASS" name="DNScat-p-Mixed-newpcap-cli-107.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-Mixed-newpcap-cli-107.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-cli-107.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9998047323864113
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="83" classname="DNS_TUNNELING.PASS" name="DNScat-53-newpcap-cli-102.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-53-newpcap-cli-102.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-53-newpcap-cli-102.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9728812688182669
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="84" classname="DNS_TUNNELING.FAIL" name="iodine_NULL_exfil.pcap" status="FAILED" time="534">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_NULL_exfil.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 3 .......
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 4 .......
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 5 .......
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 6 .......
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 7 .......
+INFO: Replaying the pcap iodine_NULL_exfil.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Waited for 20 seconds and the black domain is not present in the database
+ERROR: Blacklist domain NOT found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="85" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-04-no-key.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-04-no-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-04-no-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9973795832446894
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="86" classname="DNS_TUNNELING.PASS" name="iodine_direct_SRV.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'iodine_direct_SRV.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap iodine_direct_SRV.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.sub.disa.pw is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.sub.disa.pw is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.sub.disa.pw 
+INFO: Classification_confidence: 0.9998193635422473
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.sub.disa.pw"/>
+			</properties>
+		</testcase>
+		<testcase id="87" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-11-correct-key.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-11-correct-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-11-correct-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9932085463438617
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="88" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-01-no-key.pcap" status="PASSED" time="173">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-01-no-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-01-no-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap dns2tcp-ssh-01-no-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap dns2tcp-ssh-01-no-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9925231702868202
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="89" classname="DNS_TUNNELING.PASS" name="ozymandns-sshdns-socksproxy-session-4.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'ozymandns-sshdns-socksproxy-session-4.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap ozymandns-sshdns-socksproxy-session-4.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-41115.down.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Blackdomain *.id-41115.up.sshdns.ozyman.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.id-41115.down.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-41115.up.sshdns.ozyman.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-41115.down.sshdns.ozyman.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-41115.up.sshdns.ozyman.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9997858491541911
+INFO: Classification_confidence: 0.9991258284576281
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.id-41115.down.sshdns.ozyman.tunnel.srt.blox,*.id-41115.up.sshdns.ozyman.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="90" classname="DNS_TUNNELING.PASS" name="dns2tcp-ssh-12-correct-key.pcap" status="PASSED" time="116">
+			<system-out>						
+INFO: Replaying the pcap file 'dns2tcp-ssh-12-correct-key.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap dns2tcp-ssh-12-correct-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap dns2tcp-ssh-12-correct-key.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dns2tcp.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~3 seconds
+INFO: Added RPZ blacklist domain *.dns2tcp.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dns2tcp.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9973360426679777
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="3"/>
+				<property name="Blacklist domains" value="*.dns2tcp.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="91" classname="DNS_TUNNELING.PASS" name="DNScat-p-Mixed-newpcap-cli-106.pcap" status="PASSED" time="171">
+			<system-out>						
+INFO: Replaying the pcap file 'DNScat-p-Mixed-newpcap-cli-106.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-cli-106.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 1 .......
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-cli-106.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Clearing DNS cache
+INFO: Retry 2 .......
+INFO: Replaying the pcap DNScat-p-Mixed-newpcap-cli-106.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.dnscat.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~4 seconds
+INFO: Added RPZ blacklist domain *.dnscat.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.dnscat.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9882668369822374
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="4"/>
+				<property name="Blacklist domains" value="*.dnscat.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="92" classname="DNS_TUNNELING.PASS" name="OzymanDNS-newpcap-cli-103.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'OzymanDNS-newpcap-cli-103.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap OzymanDNS-newpcap-cli-103.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.id-51104.down.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Blackdomain *.id-51104.up.sshdns.ozymandns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~6 seconds
+INFO: Added RPZ blacklist domain *.id-51104.down.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Added RPZ blacklist domain *.id-51104.up.sshdns.ozymandns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.id-51104.down.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Deleting the blacklist domain: *.id-51104.up.sshdns.ozymandns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9927218306547365
+INFO: Classification_confidence: 0.9912094455531164
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="6"/>
+				<property name="Blacklist domains" value="*.id-51104.down.sshdns.ozymandns.tunnel.srt.blox,*.id-51104.up.sshdns.ozymandns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="93" classname="DNS_TUNNELING.PASS" name="your-freedom-dns-tunneling-3-via-infoblox-tunneled-web-traffic-no-edns.pcap" status="PASSED" time="65">
+			<system-out>						
+INFO: Replaying the pcap file 'your-freedom-dns-tunneling-3-via-infoblox-tunneled-web-traffic-no-edns.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap your-freedom-dns-tunneling-3-via-infoblox-tunneled-web-traffic-no-edns.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.s11.1yf.de is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~2 seconds
+INFO: Added RPZ blacklist domain *.s11.1yf.de is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.s11.1yf.de 
+INFO: Classification_confidence: 0.9939133774263547
+INFO: Classification_confidence: 0.9966197216531618
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="2"/>
+				<property name="Blacklist domains" value="*.s11.1yf.de"/>
+			</properties>
+		</testcase>
+		<testcase id="94" classname="DNS_TUNNELING.PASS" name="tcpoverdns-0003.pcap" status="PASSED" time="63">
+			<system-out>						
+INFO: Replaying the pcap file 'tcpoverdns-0003.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcpoverdns-0003.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~7 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9974172435971409
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="7"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="95" classname="DNS_TUNNELING.PASS" name="tcp-over-dns-1003.pcap" status="PASSED" time="64">
+			<system-out>						
+INFO: Replaying the pcap file 'tcp-over-dns-1003.pcap'
+INFO: Replaying with JAVA Pcap player with Server command mode
+INFO: Replaying the pcap tcp-over-dns-1003.pcap on Server and initiating the tunneling traffic...
+INFO: Pcap player execution got completed in ~20 seconds
+INFO: Blackdomain *.tcp-over-dns.tunnel.srt.blox is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.tcp-over-dns.tunnel.srt.blox is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Killing the process: Server daemon PcapServerClient is not running on the server.. nothing to do
+INFO: Deleting the blacklist domain: *.tcp-over-dns.tunnel.srt.blox 
+INFO: Classification_confidence: 0.9944254640424981
+INFO: Clearing DNS cache			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.tcp-over-dns.tunnel.srt.blox"/>
+			</properties>
+		</testcase>
+		<testcase id="96" classname="DNS_TUNNELING.FAIL" name="IODINE_CNAME_move_to_whitelist_test" status="FAILED" time="137">
+			<system-out>						
+INFO: Running move to whitelist test
+INFO: Updating the global forwarders
+INFO: Restarting services 
+INFO: .... Initiating the Server daemon process ....
+INFO:INFO: Server daemon iodined is running on server 
+INFO: Running 'iodine -P infoblox t.iodine.com -r -T CNAME -O Base32 -I 5 -M 200' on the client
+INFO: Blacklist domain is not found
+INFO: Clearing DNS cache			</system-out>			<failure message=" " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=" "/>
+			</properties>
+		</testcase>
+		<testcase id="97" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_cname_record" status="FAILED" time="37">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="98" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_dnst57_tc_155" status="FAILED" time="36">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="99" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_dnst57_tc_147" status="FAILED" time="98">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="100" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_dnst57_tc_139" status="FAILED" time="36">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="101" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_srv_record" status="FAILED" time="97">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="102" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_txt_record" status="FAILED" time="34">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="103" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_dnst57_tc_131" status="FAILED" time="98">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="104" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_dnst57_tc_203" status="FAILED" time="36">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="105" classname="DNS_TUNNELING.FAIL" name="rea_dnst_query_mx_record" status="FAILED" time="99">
+			<system-out>						
+ERROR: Black domain is not present in the database			</system-out>			<failure message="
+ERROR: Blacklist domain NOT found in DB " type="ERROR"/>
+			<properties>
+				<property name="Detection time" value="0"/>
+				<property name="Blacklist domains" value=""/>
+			</properties>
+		</testcase>
+		<testcase id="106" classname="DNS_TUNNELING.PASS" name="rea_dnst_query_dnst57_tc_187" status="PASSED" time="44">
+			<system-out>						
+INFO: Blackdomain *.up.sshdns.com is added in RPZ
+INFO: Time elapsed for blackdomain addition into RPZ: ~5 seconds
+INFO: Added RPZ blacklist domain *.up.sshdns.com is matching with query domains
+INFO: Blacklist domain found in DB
+INFO: Deleting the blacklist domain: *.up.sshdns.com 
+INFO: Classification_confidence: 0.9918442045005653			</system-out>			<properties>
+				<property name="Detection time" value="5"/>
+				<property name="Blacklist domains" value="*.up.sshdns.com"/>
+			</properties>
+		</testcase>
+	</testsuite>
+</testsuites>

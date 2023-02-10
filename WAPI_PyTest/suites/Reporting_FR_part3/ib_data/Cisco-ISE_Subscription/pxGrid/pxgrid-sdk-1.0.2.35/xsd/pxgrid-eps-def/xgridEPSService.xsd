@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/eps" xmlns:xgrid="http://www.cisco.com/pxgrid" xmlns:xgridNet="http://www.cisco.com/pxgrid/net" targetNamespace="http://www.cisco.com/pxgrid/eps" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<!-- ###############################################################################
+     Capability Definition
+     ############################################################################### -->
+	<xs:complexType name="EndpointProtectionServiceCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="Operation">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="sendMitigationActionByGID"/>
+			<xs:enumeration value="sendMitigationActionByIP"/>
+			<xs:enumeration value="sendMitigationActionByMAC"/>
+			<xs:enumeration value="getMitigationActionStatusByMAC"/>
+			<xs:enumeration value="getMitigationActionStatusByGID"/>
+			<xs:enumeration value="getMitigationActionStatusByIP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MitigationAction">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="quarantine"/>
+			<xs:enumeration value="unquarantine"/>
+			<xs:enumeration value="shutdown"/>
+			<xs:enumeration value="terminate"/>
+			<xs:enumeration value="reAuthenticate"/>
+			<xs:enumeration value="portBounce"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MitigationActionStatus">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="initiated"/>
+			<xs:enumeration value="inProgress"/>
+			<xs:enumeration value="complete"/>
+			<xs:enumeration value="failed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+	<xs:complexType name="BaseMitigationActionRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="mitigationAction" type="MitigationAction" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: sendMitigationActionByIDRequest
+	Description: sends a request for a mitigation action for a device identified by GID
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="sendMitigationActionByGIDRequest" type="SendMitigationActionByGIDRequest"/>
+	<xs:complexType name="SendMitigationActionByGIDRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMitigationActionRequest">
+				<xs:sequence>
+					<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: sendMitigationActionByIPRequest
+	Description: sends a request for a mitigation action for a device identified by IP Interface
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="sendMitigationActionByIPRequest" type="SendMitigationActionByIPRequest"/>
+	<xs:complexType name="SendMitigationActionByIPRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMitigationActionRequest">
+				<xs:sequence>
+					<xs:element name="ipInterface" type="xgrid:IPInterfaceIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: sendMitigationActionByMACRequest
+	Description: sends a request for a mitigation action for a device identified by MAC Address
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="sendMitigationActionByMACRequest" type="SendMitigationActionByMACRequest"/>
+	<xs:complexType name="SendMitigationActionByMACRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMitigationActionRequest">
+				<xs:sequence>
+					<xs:element name="macInterface" type="xgrid:MACAddress" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getMitigationActionStatusByMACRequest
+	Description: gets the status of the last mitigation request if it is asynchronous processed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getMitigationActionStatusByMACRequest" type="GetMitigationActionStatusByMACRequest"/>
+	<xs:complexType name="GetMitigationActionStatusByMACRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMitigationActionRequest">
+				<xs:sequence>
+					<xs:element name="macInterface" type="xgrid:MACAddress" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getMitigationActionStatusByGIDRequest
+	Description: gets the status of the last mitigation request if it is asynchronous processed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getMitigationActionStatusByGIDRequest" type="GetMitigationActionStatusByGIDRequest"/>
+	<xs:complexType name="GetMitigationActionStatusByGIDRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMitigationActionRequest">
+				<xs:sequence>
+					<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getMitigationActionStatusByIPRequest
+	Description: gets the status of the last mitigation request if it is asynchronous processed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getMitigationActionStatusByIPRequest" type="GetMitigationActionStatusByIPRequest"/>
+	<xs:complexType name="GetMitigationActionStatusByIPRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMitigationActionRequest">
+				<xs:sequence>
+					<xs:element name="ipInterface" type="xgrid:IPInterfaceIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: sendMitigationActionResponse
+		Description: Response to the mitigation action request with status of request. Returned for all sendMitigationBy***Request methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="sendMitigationActionResponse" type="SendMitigationActionResponse"/>
+	<xs:complexType name="SendMitigationActionResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<!-- depending on the type of request one of the next 3 elements are returned -->
+					<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="ipInterface" type="xgrid:IPInterfaceIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="macInterface" type="xgrid:MACAddress" minOccurs="0" maxOccurs="1"/>
+					<!-- this is only returned if its a get response -->
+					<xs:element name="mitigationAction" type="MitigationAction" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="mitigationStatus" type="MitigationActionStatus" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getMitigationActionStatusResponse
+		Description: Response to the mitigation action status request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getMitigationActionStatusResponse" type="GetMitigationActionStatusResponse"/>
+	<xs:complexType name="GetMitigationActionStatusResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<!-- depending on the type of request one of the next 3 elements are returned -->
+					<xs:element name="gid" type="xgrid:ObjectIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="ipInterface" type="xgrid:IPInterfaceIdentifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="macInterface" type="xgrid:MACAddress" minOccurs="0" maxOccurs="1"/>
+					<!-- this is only returned if its a get response -->
+					<xs:element name="mitigationAction" type="MitigationAction" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="mitigationStatus" type="MitigationActionStatus" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

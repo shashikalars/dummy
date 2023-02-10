@@ -1,0 +1,16 @@
+New in 1.0.2
+ * Added Adaptive Network Control (ANC) support
+   ANC provides ability for external device to trigger network control actions
+   New model XML schema xgridANCService.xsd
+   Java wrapper pxgrid-anc-client.jar to ease use of new model
+   New Sample code ANCActions.java to perform different ANC actions
+    
+ * Added Topic Extensibility feature
+   Provides ability to add new topics
+   New Sample ProposeCapability.java to add new topic
+   New Sample GenericClient.java to send generic messages
+ 
+ * Added Service Exchange Platform (SXP) support
+   Provides ability to subscribe and query SXP entries
+   New sample SXPBindingSubscribe and SXPBindingDownload
+   

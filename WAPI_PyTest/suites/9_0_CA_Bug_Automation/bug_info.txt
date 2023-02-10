@@ -1,0 +1,10 @@
+STEPS TO REPRODUCE
+
+>>  NIOS-86741 <<
+
+1. Configure a SA grid
+2. ssh admin@grid_ip
+3. execute CLI command "rotate log syslog" and validate for this message - "The selected log file has been rotated to syslog.0.gz"
+ 
+
+

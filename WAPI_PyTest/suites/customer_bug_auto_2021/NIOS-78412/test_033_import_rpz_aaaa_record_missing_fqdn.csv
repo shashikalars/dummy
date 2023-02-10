@@ -1,0 +1,2 @@
+header-responsepolicyaaaarecord,address*,_new_address,fqdn*,_new_fqdn,comment,disabled,parent_zone,ttl,view
+responsepolicyaaaarecord,3333::3331,,,,,FALSE,com.zone,,default

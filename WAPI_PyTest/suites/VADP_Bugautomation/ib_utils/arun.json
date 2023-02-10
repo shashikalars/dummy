@@ -1,0 +1,9 @@
+{
+"BGP":{
+"local_as":331,
+"remote_as":221
+},
+"OSPF":{
+"area_id":"0.0.0.12"
+}
+}

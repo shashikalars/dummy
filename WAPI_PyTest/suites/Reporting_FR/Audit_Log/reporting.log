@@ -1,0 +1,124 @@
+2021-01-20 03:20:18,968 - reporting - INFO - ---------------START:Audit Log Events---------------
+2021-01-20 03:20:18,970 - reporting - INFO - Preparation for Auditlog Report
+2021-01-20 03:20:18,971 - reporting - INFO - Add SuperUser Group 'audit_group'
+2021-01-20 03:20:19,079 - reporting - INFO - Add admin 'audit' under 'audit_group'
+2021-01-20 03:20:19,125 - reporting - INFO - Add zone 'audit.com'
+2021-01-20 03:20:19,241 - reporting - INFO - Add zone 'audit1.com' from 'audit' user
+2021-01-20 03:20:19,369 - reporting - INFO - Add RR's say arecord.audit.com/2.2.2.2'
+2021-01-20 03:20:19,496 - reporting - INFO - Add RR's say arecord.audit1.com/2.2.2.2' from user 'audit'
+2021-01-20 03:20:19,678 - reporting - INFO - Modify RR's
+2021-01-20 03:20:20,040 - reporting - INFO - Delete Zones
+2021-01-20 03:20:20,269 - reporting - INFO - Delete Add UserGroup and AdminUser
+2021-01-20 03:20:20,499 - reporting - INFO - Creating input in json format
+2021-01-20 03:20:20,500 - reporting - INFO - [
+    {
+        "Action": "Created",
+        "Admin": "audit",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default address=2.2.2.2  address=\"2.2.2.2\",fqdn=\"arecord.audit1.com\"",
+        "Object Name": "arecord.audit1.com",
+        "Object Type": "A Record"
+    },
+    {
+        "Action": "Created",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default address=2.2.2.2  address=\"2.2.2.2\",fqdn=\"arecord.audit.com\"",
+        "Object Name": "arecord.audit.com",
+        "Object Type": "A Record"
+    },
+    {
+        "Action": "Created",
+        "Admin": "audit",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default  fqdn=\"audit1.com\",view=DnsView:default,grid_primaries=[[grid_member=Member:ib-10-35-159-1.infoblox.com,stealth=False]]",
+        "Object Name": "audit1.com",
+        "Object Type": "Authoritative Zone"
+    },
+    {
+        "Action": "Created",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default  fqdn=\"audit.com\",view=DnsView:default,grid_primaries=[[grid_member=Member:ib-10-35-159-1.infoblox.com,stealth=False]]",
+        "Object Name": "audit.com",
+        "Object Type": "Authoritative Zone"
+    },
+    {
+        "Action": "Created",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "groups=[AdminGroup:.audit_group],name=\"audit\",password=\"******\"",
+        "Object Name": "audit",
+        "Object Type": "Admin Member"
+    },
+    {
+        "Action": "Created",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "can_access_cloud_api=False,can_access_gui=True,can_access_papi=True,can_access_taxii=False,name=\"audit_group\",roles=[Role:DNS Admin],superuser=False",
+        "Object Name": "audit_group",
+        "Object Type": "Admin Group"
+    },
+    {
+        "Action": "Modified",
+        "Admin": "audit",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default address=2.2.2.2  fqdn:\"arecord.audit1.com\"->\"arecord_modified.audit1.com\"",
+        "Object Name": "arecord_modified.audit1.com",
+        "Object Type": "A Record"
+    },
+    {
+        "Action": "Modified",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default address=2.2.2.2  fqdn:\"arecord.audit.com\"->\"arecord_modified.audit.com\"",
+        "Object Name": "arecord_modified.audit.com",
+        "Object Type": "A Record"
+    },
+    {
+        "Action": "Deleted",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Object Name": "audit_group",
+        "Object Type": "Admin Group"
+    },
+    {
+        "Action": "Deleted",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Object Name": "audit",
+        "Object Type": "Admin Member"
+    },
+    {
+        "Action": "Deleted",
+        "Admin": "audit",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default exclude_subobj=False",
+        "Object Name": "audit1.com",
+        "Object Type": "Authoritative Zone"
+    },
+    {
+        "Action": "Deleted",
+        "Admin": "admin",
+        "Execution Status": "Normal",
+        "Member": "ib-10-35-159-1.infoblox.com",
+        "Message": "DnsView=default exclude_subobj=False",
+        "Object Name": "audit.com",
+        "Object Type": "Authoritative Zone"
+    }
+]
+2021-01-20 03:20:20,502 - reporting - INFO - Wait for 10 min for report update
+2021-01-20 03:30:20,603 - reporting - INFO - TestCase:test_1_audit_log_events_validate_add_modify_delete_events
+2021-01-20 03:30:20,618 - reporting - ERROR - search operation failed due to [Errno 2] No such file or directory: 'report.json'
+2021-01-20 03:30:20,661 - reporting - INFO - ---------------END:Audit Log Events---------------

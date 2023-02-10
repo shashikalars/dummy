@@ -1,0 +1,2 @@
+header-tlsarecord,certificate_data*,_new_certificate_data,certificate_usage*,fqdn*,_new_fqdn,matched_type*,selector*,comment,creator,disabled,name,ttl,view
+tlsarecord,AA,,1,_443._tcp.tlsa_csv.rfe_10324.com,,0,0,,STATIC,FALSE,tlsa_csv._tcp._443,,default

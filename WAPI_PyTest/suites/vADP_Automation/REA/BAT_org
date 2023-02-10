@@ -1,0 +1,477 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use diagnostics;
+#use lib "/import/qaddi/vADP_Automation";
+#use lib "/import/qaddi/API_Automation_09_09_21/WAPI_PyTest/suites/vADP_Automation";
+use lib "~/API_Automation_09_09_21/WAPI_PyTest/suites/vADP_Automation";
+use REA;
+
+my $myname="$0";
+$myname=~s/.*\///;
+
+my $ssh_ip=shift;
+my $ip=shift;
+my $rules_file=shift;
+my $sudo_prefix='';
+my $ping_command = 'ping';	
+my $nping_command = 'nping';
+my $mode = 'IP';
+my $src_addr = "1.1.1.1";
+if ($ENV{USER} ne 'root') {$sudo_prefix='sudo'}
+
+if (! defined($ssh_ip) || $ssh_ip eq '' || $ssh_ip =~ /help/ || 
+    ! defined($ip) || $ip eq '' || $ip =~ /help/ ||
+    ! defined($rules_file) || $rules_file eq '' || $rules_file =~ /help/) {
+    print "This program will execute a basic subset of test cases to quickly validate a NIOS rule set.\n";
+    print "To run, provide the appliance's SSH IP address, the test IP Address, and optionally, the rules file to test.\n";
+    print "E.G.     $myname 10.36.0.154 10.34.9.51 /import/qaddi/Olympic-Proj/ET_Rules/latest_et_rules_file.txt\n";
+    print "To test against the currently loaded rules, specify the literal \"NIOS\" instead of a rules file name.\n";
+    exit 1;
+}
+
+if ($ip =~ /^[\da-f:]*$/) {
+    print "\nExecuting REA over LAN V6 Interface Automation\n\n";
+    $ping_command = 'ping6 ';
+    $nping_command = 'nping -6 ';
+    $mode = 'IPv6';
+    $src_addr = "0:0:0:0:0:ffff:101:101";
+} else {
+    print "\nExecuting REA Automation\n\n";
+}
+
+# These test case definitions must come after we parse the IP address input since we use $ip in our commands.
+# Since we use double quotes, be sure to escape Perl-like characters like @ in dig commands and $ and " themselves.
+# Also be aware that the program has a built-in wait between test cases of 5 seconds, which may affect time-sensitive tests.
+
+                # EARLY DROP DoS packets with same source and destination IP # SID: 110000100
+my @Test_Cases=({cmd=>"$sudo_prefix python -c 'from scapy.all import *;send($mode(dst=\"$ip\", src=\"$ip\"), count=10)'", rule=>110000100, skip_syslog_check=>1},
+
+                # EARLY DROP DoS UDP packets with same source and destination IP # SID: 110000200
+                {cmd=>"$sudo_prefix $nping_command --udp --source-ip $ip -c 1 $ip", rule=>110000200, skip_syslog_check=>1},
+
+                # EARLY DROP DoS TCP packets with same source and destination IP # SID: 110000300
+                {cmd=>"$sudo_prefix $nping_command --tcp --source-ip $ip -c 1 $ip", rule=>110000300, skip_syslog_check=>1},
+
+                # EARLY DROP TCP non-DNS query # SID: 130000700
+                {cmd=>"dnsq -ns=$ip -qname=205.234.19.100 -opcode=1 -protocol=tcp -wait=0.1", rule=>130000700},
+                {cmd=>"dnsq -ns=$ip -qname=205.234.19.100 -opcode=2 -protocol=tcp -wait=0.1", rule=>130000700},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qr=0 -opcode=5 -protocol=tcp -wait=0.1", rule=>130000700},
+
+                # EARLY DROP TCP query multiple questions # SID: 130000800
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=0   -wait=0.1 -protocol=tcp", rule=>130000800},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=1   -wait=0.1 -protocol=tcp", rule=>'', fail_if_match=>'Connection timed out', pass_if_match=>', 1 Answer,'},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=2   -wait=0.1 -protocol=tcp", rule=>130000800},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=255 -wait=0.1 -protocol=tcp", rule=>130000800},
+
+                # EARLY DROP DNS named author attempts # SID: 110100100
+                {cmd=>"dig +retries=0 \@$ip authors.bind. chaos txt", rule=>110100100, pass_if_match=>'no servers could be reached'},
+
+                # EARLY DROP DNS named version attempts # SID: 110100200
+                {cmd=>"dig +retries=0 \@$ip version.bind. chaos txt", rule=>110100200, pass_if_match=>'no servers could be reached'},
+
+                # EARLY DROP UDP MALWARE backdoor # SID: 110100300
+                {cmd=>"dnsq -ns=$ip -arcount=45 -qname='|17 a4 66 86 f0 6c bb 9c|'", rule=>110100300},
+
+                # EARLY DROP UDP question name too long # SID: 110100400
+                {cmd=>"dnsq -ns=$ip -qname=12345678901234567890123456789012345678901234567890.12345678901234567890123456789012345678901234567890.12345678901234567890123456789012345678901234567890.12345678901234567890123456789012345678901234567890.12345678901234567890123456789012345678901234567890.1234. -wait=0.1", rule=>110100400, pass_if_match=>'You got no response from your'},
+
+                # EARLY DROP UDP DNS label too long # SID: 110100500
+                {cmd=>"dnsq -ns=$ip -qname='|04|foo|03|com|00|' -wait=0.1", rule=>110100500, pass_if_match=>'You got no response from your'},
+
+                # EARLY DROP UDP query invalid question count # SID: 110100600
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=0   -wait=0.1", rule=>110100600, pass_if_match=>'You got no response from your'},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=1"          , rule=>'', fail_if_match=>'You got no response from your', pass_if_match=>', 1 Answer,'},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=2   -wait=0.1", rule=>110100600, pass_if_match=>'You got no response from your'},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qdcount=255 -wait=0.1", rule=>110100600, pass_if_match=>'You got no response from your'},
+
+                # EARLY DROP UDP query invalid question class # SID: 110100700
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qclass=0   -wait=0.1", rule=>110100700, pass_if_match=>'You got no response from your'},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qclass=2   -wait=0.1", rule=>110100700, pass_if_match=>'You got no response from your'},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qclass=255 -wait=0.1", rule=>110100700, pass_if_match=>'You got no response from your'},
+
+                # EARLY UDP drop query invalid question string # SID: 110100800
+                {cmd=>"dnsq -ns=$ip -qname='|14|foo|00|' -wait=0.1", rule=>110100800, pass_if_match=>'You got no response from your'},
+
+                # EARLY DROP UDP query multiple questions # SID: 110100900
+                # Cases with different Opcodes [Only passes 0 & 4]
+                {cmd=>"dnsq -ns=$ip -qname=205.234.19.100 -opcode=1 -wait=0.1", rule=>110100900}, # Inverse Query
+                {cmd=>"dnsq -ns=$ip -qname=205.234.19.100 -opcode=2 -wait=0.1", rule=>110100900}, # Server Status
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qr=0 -opcode=5 -wait=0.1", rule=>110100900}, # DNS Update
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qr=0 -opcode=6 -wait=0.1", rule=>110100900}, # Unassigned Opcode
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qr=1 -opcode=6 -wait=0.1", rule=>110100900}, # Unassigned Opcode with QR bit set to 1
+
+                # DROP UDP invalid DNS IXFR query with zero Authority # SID: 130100500
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -serial 21 -nscount=0 -wait=0.1", rule=>130100500},
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -serial 21 -nscount=2 -wait=0.1", rule=>130100500},
+
+                # DROP UDP invalid DNS query with Authority # SID: 110100850
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -nscount=2 -wait=0.1", rule=>110100850},
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -nscount=0 -wait=0.1", rule=>''},
+
+                ###############################################################################################################
+                # Most rules don't interfere with each other, i.e. if you get blocked due to violating rule A, you are not    #
+                # blocked for any other rule.  The exception is for these 4 response checking rules (200000001-200000004).    #
+                # When you get blocked due to any of these rules, you are completely(!) blocked, for 5 seconds by default.    #
+                # That means these test cases need post_delay=>5 so as to not screw up the next test case.                    #
+                ###############################################################################################################
+                # NXDOMAIN rate limit rule # SID: 200000001 - Settings are 600 PACKETS_PER_SECOND, 5 second DROP_INTERVAL, 3 EVENTS_PER_SECOND=>2, and Rate_Limiting
+                {cmd=>"dnsq -ns=$ip -qname=NXDO.foobar -repeat=610 -wait 0.003", rule=>200000001, alert_count=>1, drop_count=>'2-3', post_delay=>5},
+
+                # NXRRSET rate limit rule #SID: 200000002 - Settings are 600 PACKETS_PER_SECOND, 5 second DROP_INTERVAL, 3 EVENTS_PER_SECOND, and Rate_Limiting
+                {cmd=>"dnsq -ns=$ip -qname=NXRR.foobar -qtype=mx -repeat=610 -wait 0.003", rule=>200000002, alert_count=>1, drop_count=>'2-3', post_delay=>5},
+
+                # SERVFAIL rate limit rule #SID: 200000003 - Settings are 600 PACKETS_PER_SECOND, 5 second DROP_INTERVAL, 3 EVENTS_PER_SECOND, and Rate_Limiting
+                {cmd=>"dnsq -ns=$ip -qname=SRVF.foobar -repeat=610 -wait 0.003", rule=>200000003, alert_count=>1, drop_count=>'2-3', post_delay=>5},
+
+                # DNSTUNNELING rate limit rule #SID: 200000004 - Settings are 600 PACKETS_PER_SECOND, 5 second DROP_INTERVAL, 3 EVENTS_PER_SECOND, packet size 40, and Rate_Limiting
+                #                          010X04 tells REA_dns to return 4 TXT records of 10-characters each.
+                {cmd=>"dnsq -ns=$ip -qname=010X04.foobar -qtype=txt -repeat=610 -wait 0.003", rule=>200000004, alert_count=>1, drop_count=>'2-3', post_delay=>5},
+
+                # DROP MALWARE Trojan Downloader # SID: 130300300
+                {cmd=>"dnsq -ns=$ip -qname 10charname.empty.empty.cmd_exe.uploading.com", rule=>130300300},
+                
+                # DROP MALWARE possible Hiloti # SID: 130300400
+                {cmd=>"dnsq -ns=$ip -qname cmd_exe", rule=>130300400},
+                
+                # DROP TCP invalid DNS IXFR query with zero or more than one Authority # SID: 130100600
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -serial 21 -nscount=2   -protocol=tcp -wait=0.1", rule=>130100600},
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -serial 21 -nscount=0   -protocol=tcp -wait=0.1", rule=>130100600},
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr -serial 21 -nscount=257 -protocol=tcp -wait=0.1", rule=>130100600},
+
+                # MALWARE Non-DNS or Non-Compliant DNS traffic on DNS port AD bit set on Query # SID: 130300500 # Removed; Refer NIOS-46296
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -ad=1 -opcode=0 -wait=0.1 -protocol=tcp", rule=>''},
+                {cmd=>"dnsq -ns=$ip -qname=foo.com. -qr=0 -opcode=5 -aa=0 -tc=0 -rd=0 -protocol=tcp -wait=0.1", rule=>130000700},
+
+                # DROP ICMP large packets # SID: 130400200
+                {cmd=>"$ping_command -c 1 -s 1000 $ip", rule=>130400200},
+
+                # DROP UDP DNS AXFR zone transfer requests # SID: 130200100
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=axfr", rule=>130200100, alert_count=>0, drop_count=>1},
+
+                # DROP TCP DNS AXFR zone transfer requests # SID: 130200200
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=axfr -protocol=tcp", rule=>130200200, alert_count=>0, drop_count=>1},
+
+                # DROP UDP DNS IXFR zone transfer requests # SID: 130200300
+                # Note: Remove '-ancount' options from this command
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr  -serial=5 -ancount=1", rule=>130200300, alert_count=>0, drop_count=>1},
+
+                # DROP TCP DNS IXFR zone transfer requests # SID: 130200400
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=ixfr  -serial=5 -protocol=tcp", rule=>130200400, alert_count=>0, drop_count=>1},
+
+                # IPv6 Loopback Address Spoofing # SID: 5090006 #
+
+                # IPv6 Loopback Address Spoofing # SID: 5090007 - OLYMPIC-628 #
+
+                # DNS A record # SID: 130500100
+                {cmd=>"dig +retries=0 \@$ip sura.mdu A", rule=>''},
+
+                # DNS AAAA record # SID: 130500200
+                {cmd=>"dig +retries=0 \@$ip sura.mdu AAAA", rule=>''},
+                
+                # DNS CNAME record # SID: 130500300
+                {cmd=>"dig +retries=0 \@$ip sura.mdu CNAME", rule=>''},
+
+                # DNS DS record # SID: 130500400
+                {cmd=>"dig +retries=0 \@$ip sura.mdu DS", rule=>''},
+
+                # DNS PTR record # SID: 130500500
+                {cmd=>"dig +retries=0 \@$ip sura.mdu PTR", rule=>''},
+
+                # DNS NS record # SID: 130500600
+                {cmd=>"dig +retries=0 \@$ip sura.mdu NS", rule=>''},
+
+                # DNS NSEC record # SID: 130500700
+                {cmd=>"dig +retries=0 \@$ip sura.mdu NSEC", rule=>''},
+
+                # DNS NSEC3 record # SID: 130500800
+                {cmd=>"dig +retries=0 \@$ip sura.mdu NSEC3", rule=>''},
+
+                # DNS NSEC3PARAM record # SID: 130500900
+                {cmd=>"dig +retries=0 \@$ip sura.mdu NSEC3PARAM", rule=>''},
+
+                # DNS MX record # SID: 130501000
+                {cmd=>"dig +retries=0 \@$ip sura.mdu MX", rule=>''},
+
+                # DNS SRV record # SID: 130501100
+                {cmd=>"dig +retries=0 \@$ip sura.mdu SRV", rule=>''},
+
+                # DNS TXT record # SID: 130501200
+                {cmd=>"dig +retries=0 \@$ip sura.mdu TXT", rule=>''},
+
+                # DNS DNAME record # SID: 130501300
+                {cmd=>"dig +retries=0 \@$ip sura.mdu DNAME", rule=>''},
+
+                # DNS RRSIG record # SID: 130501400
+                {cmd=>"dig +retries=0 \@$ip sura.mdu RRSIG", rule=>''},
+
+                # DNS NAPTR record # SID: 130501500
+                {cmd=>"dig +retries=0 \@$ip sura.mdu NAPTR", rule=>''},
+
+                # DNS DNSKEY record # SID: 130501600
+                {cmd=>"dig +retries=0 \@$ip sura.mdu DNSKEY", rule=>''},
+
+                # DNS SPF record # SID: 130501700
+                {cmd=>"dig +retries=0 \@$ip sura.mdu SPF", rule=>''},
+
+                # DNS DHCID record # SID: 130501800
+                {cmd=>"dig +retries=0 \@$ip sura.mdu DHCID", rule=>''},
+
+                # DNS SOA record # SID: 130501900
+                {cmd=>"dig +retries=0 \@$ip sura.mdu SOA", rule=>''},
+                
+                # DNS SIG record # SID: 130502000
+                {cmd=>"dig +retries=0 \@$ip sura.mdu SIG", rule=>''},
+
+                # DNS LOC record # SID: 130502100
+                {cmd=>"dig +retries=0 \@$ip sura.mdu LOC", rule=>''},
+
+                # DNS SSHFP record # SID: 130502200
+                {cmd=>"dig +retries=0 \@$ip sura.mdu SSHFP", rule=>''},
+
+                # DNS IPSECKEY record # SID: 130502300
+                {cmd=>"dig +retries=0 \@$ip sura.mdu IPSECKEY", rule=>''},
+
+                # DNS TKEY record # SID: 130502400
+                {cmd=>"dig +retries=0 \@$ip sura.mdu TKEY", rule=>''},
+
+                # DNS TSIG record # SID: 130502500
+                {cmd=>"dig +retries=0 \@$ip sura.mdu TSIG", rule=>''},
+
+                # DNS TA record # SID: 130502600
+                {cmd=>"dnsq -ns=$ip -qname=sura.mdu -qtype=32768", rule=>''},
+                
+                # DNS DLV record # SID: 130502700
+                {cmd=>"dig +retries=0 \@$ip sura.mdu DLV", rule=>''},
+
+                # DNS ANY record # SID: 130502800
+                {cmd=>"dig +noedns +retries=0 \@$ip sura.mdu ANY", rule=>''},
+
+                # DNS A record TCP # SID: 130502900
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu A", rule=>''},
+
+                # DNS AAAA record TCP # SID: 130503000
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu AAAA", rule=>''},
+                
+                # DNS CNAME record TCP # SID: 130503100
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu CNAME", rule=>''},
+
+                # DNS DS record TCP # SID: 130503200
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu DS", rule=>''},
+
+                # DNS PTR record TCP # SID: 130503300
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu PTR", rule=>''},
+
+                # DNS NS record TCP # SID: 130503400
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu NS", rule=>''},
+
+                # DNS NSEC record TCP # SID: 130503500
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu NSEC", rule=>''},
+
+                # DNS NSEC3 record TCP # SID: 130503600
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu NSEC3", rule=>''},
+
+                # DNS NSEC3PARAM record TCP # SID: 130503700
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu NSEC3PARAM", rule=>''},
+
+                # DNS MX record TCP # SID: 130503800
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu MX", rule=>''},
+
+                # DNS SRV record TCP # SID: 130503900
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu SRV", rule=>''},
+
+                # DNS TXT record TCP # SID: 130504000
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu TXT", rule=>''},
+
+                # DNS DNAME record TCP # SID: 130504100
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu DNAME", rule=>''},
+
+                # DNS RRSIG record TCP # SID: 130504200
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu RRSIG", rule=>''},
+
+                # DNS NAPTR record TCP # SID: 130504300
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu NAPTR", rule=>''},
+
+                # DNS DNSKEY record TCP # SID: 130504400
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu DNSKEY", rule=>''},
+
+                # DNS SPF record TCP # SID: 130504500
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu SPF", rule=>''},
+
+                # DNS DHCID record TCP # SID: 130504600
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu DHCID", rule=>''},
+
+                # DNS SOA record TCP # SID: 130504700
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu SOA", rule=>''},
+                
+                # DNS SIG record TCP # SID: 130504800
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu SIG", rule=>''},
+
+                # DNS LOC record TCP # SID: 130504900
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu LOC", rule=>''},
+
+                # DNS SSHFP record TCP # SID: 130505000
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu SSHFP", rule=>''},
+
+                # DNS IPSECKEY record TCP # SID: 130505100
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu IPSECKEY", rule=>''},
+
+                # DNS TKEY record TCP # SID: 130505200
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu TKEY", rule=>''},
+
+                # DNS TSIG record TCP # SID: 130505300
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu TSIG", rule=>''},
+
+                # DNS TA record TCP # SID: 130505400
+                {cmd=>"dnsq -protocol=tcp -ns=$ip -qname=sura.mdu -qtype=32768",  rule=>''},
+
+                # DNS DLV record TCP # SID: 130505500
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu DLV", rule=>''},
+
+                # DNS ANY record TCP # SID: 130505600
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip sura.mdu ANY", rule=>''},
+
+                # DROP BGP header length shorter than spec # SID: 130700100
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff0012\" $ip", rule=>130700100},
+
+                # DROP BGP # SID: 130800100, which is enabled when BGP is NOT enabled.
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK $ip", rule=>130800100},
+
+                # DROP BGP header length longer than spec # SID: 130700200, which is enabled when BGP is enabled.
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff0fff01\" $ip", rule=>130700200, count=>0},  # Length 4095
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff100001\" $ip", rule=>130700200, count=>0},  # Length 4096
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff100101\" $ip", rule=>130700200, count=>1},  # Length 4097
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffffffff01\" $ip", rule=>130700200, count=>1},  # Length 65535
+                
+                # DROP BGP spoofed connection reset attempts # SID: 130700300, which is enabled when BGP is enabled.
+                
+                # DROP BGP invalid type 0 # SID: 130700400, which is enabled when BGP is enabled.
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff001300\" $ip", rule=>130700400},
+                
+                # DROP BGP invalid type bigger than 5 # SID: 130700500, which is enabled when BGP is enabled.
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff001301\" $ip", rule=>130700500, count=>0},  # Type 1
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff001302\" $ip", rule=>130700500, count=>0},  # Type 2
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff001304\" $ip", rule=>130700500, count=>0},  # Type 4
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff001305\" $ip", rule=>130700500, count=>0},  # Type 5
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff001306\" $ip", rule=>130700500, count=>1},  # Type 6
+                {cmd=>"$sudo_prefix $nping_command -c 1 --tcp -p 179 --flags ACK --data \"ffffffffffffffffffffffffffffffff0013ff\" $ip", rule=>130700500, count=>1},  # Type 255
+
+                # Potential DDoS related domains category - SID 120600xxx: These rules filters UDP, type A queries.
+                # Potential DDoS related domains category: Mixed case queries should still trigger these rules.
+                {cmd=>"dig +retries=0 +time=1 \@$ip 33oK.cOm A", rule=>'120600047', pass_if_match=>'no servers could be reached'},
+
+                # Potential DDoS related domains category: Tests Event Filter = 10
+                {cmd=>"dnsq -ns=$ip -qname=namepu.com -wait 0.001 -repeat 33", rule=>120600533, count=>10},
+
+                # Potential DDoS related domains category: Negative case. The 120600xxx rules should not trigger when using TCP.
+                {cmd=>"dig +retries=0 +tcp \@$ip foo.namepu.com. A", rule=>'120600533', drop_count=>0, fail_if_match=>'no servers could be reached'},
+
+                # Potential DDoS related domains category: The 120600xxx rules should also trigger for non-A Query Type.
+                {cmd=>"dig +retries=0 \@$ip bar.ts777.net AAAA", rule=>'120600544', pass_if_match=>'no servers could be reached'},
+
+                # DROP UDP DNS Unexpected # SID: 140000100
+                {cmd=>"dig +retries=0 \@$ip google.com AFSDB", rule=>140000100}, # Unpopular Query
+
+                # DROP TCP DNS Unexpected # SID: 140000200
+                {cmd=>"dig +time=1 +tcp +retries=0 \@$ip google.com AFSDB", rule=>140000200}, # Unpopular Query
+
+                # Below rules silently drops the packets because count=-1 in Event Filter
+                # Need to find a better way to check, whether the packet is really dropped
+                # DROP TCP Unexpected # SID: 140000500
+                {cmd=>"$sudo_prefix $nping_command --tcp --dest-ip $ip --dest-port 9595 --data-string Unexpected -c 1", rule=>''},
+
+                # DROP UDP Unexpected # SID: 140000600
+                {cmd=>"$sudo_prefix $nping_command --udp --dest-ip $ip --dest-port 9595 --data-string Unexpected -c 1", rule=>''},
+
+                # DROP ICMP Unexpected # SID: 140000700
+                {cmd=>"$sudo_prefix $nping_command --icmp --icmp-type time -c 1 $ip", rule=>''},
+                
+                # DROP Unexpected Protocol # SID: 140000800
+                {cmd=>"$sudo_prefix python -c 'from scapy.all import *;send($mode(dst=\"$ip\", src=\"$src_addr\"), count=10)'", rule=>''},
+    );
+print "shassssssssssssss---------------------";
+`python -m scapy.all 2>&1 >/dev/null`;
+if ($? != 0) {
+  my $msg="This system is missing the python-scapy module, so expect the python-scapy test cases to fail.";
+  if (`uname -a | grep -i ubuntu`) {
+    if ($ENV{USER} eq 'root') {print STDERR "$msg Try apt-get install python-scapy\n\n"}
+			 else {print STDERR "$msg Try sudo apt-get install python-scapy\n\n"}
+  } else {
+    if ($ENV{USER} eq 'root') {print STDERR "$msg Try yum -y install scapy\n\n"}
+                         else {print STDERR "$msg Try sudo yum -y install scapy\n\n"}
+  }
+}
+print "_____________________________________________________fdf";
+my $test;
+$test = REA->new(ssh_ip=>$ssh_ip, test_ip=>$ip, rules_filename=>$rules_file, test_cases=>\@Test_Cases, strict_source_IP_checking=>1);
+unless ($test) {die "$myname: Could not configure test environment to $ip\n"}
+
+print "_____________________________________________________";
+if ($rules_file !~ /^NIOS/) {$test->load_rules()}
+
+$test->tweak_rule_settings(#120600533=>{EVENTS_PER_SECOND=>10},
+                           200000001=>{PACKETS_PER_SECOND=>600, DROP_INTERVAL=>5, EVENTS_PER_SECOND=>3, RATE_ALGORITHM=>'Rate_Limiting'},
+                           200000002=>{PACKETS_PER_SECOND=>600, DROP_INTERVAL=>5, EVENTS_PER_SECOND=>3, RATE_ALGORITHM=>'Rate_Limiting'},
+                           200000003=>{PACKETS_PER_SECOND=>600, DROP_INTERVAL=>5, EVENTS_PER_SECOND=>3, RATE_ALGORITHM=>'Rate_Limiting'},
+                           200000004=>{PACKETS_PER_SECOND=>600, DROP_INTERVAL=>5, EVENTS_PER_SECOND=>3, PACKET_SIZE=>40, RATE_ALGORITHM=>'Rate_Limiting'});
+
+$test->print_header();                          # Print a nice summary.
+$test->execute_test_cases();                    # Run through our test cases.
+$test->restore_rule_settings();                 # If we tweaked any rules, restore them.
+$test->evaluate();                              # Determine PASS or FAIL for each test case.
+print "==============================================";
+#############################################################################################
+#  Loop through all my test cases for any that are unchecked.  We should have 3, the        #
+#  ones that spoof the source IP address to be the same as the destination IP address.      #
+#############################################################################################
+for (my $test_case_index=0; $test_case_index<$test->{Total_Test_Cases}; $test_case_index++) {
+  my $test_case_number=$test_case_index+1;
+
+  if ($test->{test_cases}[$test_case_index]{Status} eq 'UNCHECKED') {
+    my $syslog_pattern='';
+       if ($test->{test_cases}[$test_case_index]{cmd} =~ /scapy.*dst.*$ip.*src.*$ip/              ) {$syslog_pattern = 'threat-protect-log.*\|110000100\|.* act="DROP" '}
+    elsif ($test->{test_cases}[$test_case_index]{cmd} =~ /$nping_command --udp --source-ip $ip -c 1 $ip/) {$syslog_pattern = 'threat-protect-log.*\|110000200\|.* act="DROP" '}
+    elsif ($test->{test_cases}[$test_case_index]{cmd} =~ /$nping_command --tcp --source-ip $ip -c 1 $ip/) {$syslog_pattern = 'threat-protect-log.*\|110000300\|.* act="DROP" '}
+    else {
+      print "I don't know how to evaluate test case # $test_case_number.  Sorry.\n";
+      next;
+    };
+
+    open(SYSLOG, "<$$.messages") || die "Couldn't open /var/log/syslog from $test->{ssh_ip}\n";
+    my $line_number=0;
+    while (<SYSLOG>) {
+      $line_number++;
+      if ($line_number < $test->{test_cases}[$test_case_index]{syslog_Starting_Line}) {next}
+      if ($line_number > $test->{test_cases}[$test_case_index]{syslog_Ending_Line}) {last}
+
+      #######################################################################################
+      # Do we see the expected threat-protect-log line in syslog yet?                       #
+      #######################################################################################
+      if (/$syslog_pattern/) {
+        $test->{test_cases}[$test_case_index]{Status} = 'PASS';
+
+        if ($test->{test_cases}[$test_case_index]{Reason} ne '') {
+             if ($test_case_number < 10 ) {$test->{test_cases}[$test_case_index]{Reason}.="\n                   - "}
+          elsif ($test_case_number < 100) {$test->{test_cases}[$test_case_index]{Reason}.="\n                    - "}
+                                     else {$test->{test_cases}[$test_case_index]{Reason}.="\n                     - "}
+        }
+        $test->{test_cases}[$test_case_index]{Reason} .= "Found /$syslog_pattern/.";
+        last;
+      }
+    }
+    close SYSLOG;
+    if ($test->{test_cases}[$test_case_index]{Status} eq 'UNCHECKED') {
+      $test->{test_cases}[$test_case_index]{Status} = 'FAIL';
+
+      if ($test->{test_cases}[$test_case_index]{Reason} ne '') {
+           if ($test_case_number < 10 ) {$test->{test_cases}[$test_case_index]{Reason}.="\n                   - "}
+        elsif ($test_case_number < 100) {$test->{test_cases}[$test_case_index]{Reason}.="\n                    - "}
+                                   else {$test->{test_cases}[$test_case_index]{Reason}.="\n                     - "}
+      }
+      $test->{test_cases}[$test_case_index]{Reason} .= "Failed to find /$syslog_pattern/.  Ooops.";
+    }
+  }
+}
+
+$test->summarize();                  # Print summary of passed, failed, and total test cases.

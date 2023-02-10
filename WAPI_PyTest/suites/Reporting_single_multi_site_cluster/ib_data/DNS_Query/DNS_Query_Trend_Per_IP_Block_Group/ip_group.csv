@@ -1,0 +1,4 @@
+header-ipblockgroup,name*,_new_name,comment
+header-ipblock,address_string*,_new_address_string,group*,_new_group,comment
+ipblockgroup,group5,,Reporting Automation
+ipblock,10.120.20.92,,group5,,Reporting Automation

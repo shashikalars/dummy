@@ -1,0 +1,79 @@
+Processing -F /import/builds/proj/nios_vsecure_dns/NIOS_7.3.0_324822_2016-04-19-15-08-03_x86_64/nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova option:
+Calling ensure_image_is_uploaded(/import/builds/proj/nios_vsecure_dns/NIOS_7.3.0_324822_2016-04-19-15-08-03_x86_64/nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova, 'vnios')
+Checking if the vnios build nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova exists via get_build_info -f nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova -p vnios 2>&1 | grep -qi ERROR
+   Global options: Real image: 
+                   Virtual image: nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova
+                   -A Both IPv4 and IPv6
+                   -a 4 = IPv4
+                   -c madhuk
+                   -h VIRTUAL
+                   -N public
+                   -M mgmt
+                   -L NO
+Getting lab info for Host vm-05-10 ...
+After parsing and defaulting the grid master specs, we have
+   $vnode[0]->{count} = 1
+   $vnode[0]->{addressing_mode} = Both IPv4 and IPv6
+   $vnode[0]->{grid_communication_mode} = IPv4
+   $vnode[0]->{contact} = madhuk
+   $vnode[0]->{image} = nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova
+   $vnode[0]->{resource_group} = 
+   $vnode[0]->{hardware_type} = VIRTUAL
+   $vnode[0]->{LAN_tag} = public
+   $vnode[0]->{MGMT_tag} = mgmt
+   $vnode[0]->{LAN2_tag} = NO
+   $vnode[0]->{UNIT_1_ID} = vm-05-10
+
+Wed Apr 20 02:46:55 2016 Running on madhuk-vm (10.120.20.102) as madhuk
+Wed Apr 20 02:46:55 2016 Pool: /tmp/, Tag: VADP1, Lease ID: 3799231004
+Wed Apr 20 02:46:55 2016 Building a Standalone Grid Master with no HA pair members and no standalone members for a total of 1 system.
+
+   Node     Type Hardware Type Image To Be Installed                               Unit1    Unit2 LAN    MGMT LAN2 Addr G.C.
+=========== ==== ============= =================================================== ======== ===== ====== ==== ==== ==== ====
+Grid Master SA   VIRTUAL       nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova vm-05-10 ----- public mgmt NO   Both IPv4
+
+Getting lab info for Subnet public ...
+Wed Apr 20 02:46:56 2016 Using the 10.35.0.0 public network for LAN.
+Getting lab info for Subnet mgmt ...
+Wed Apr 20 02:46:57 2016 Using the 10.36.0.0 mgmt network for MGMT.
+SA Vnode0 already has vm-05-10 allocated.
+Wed Apr 20 02:46:57 2016 Standalone Grid Master IP = 10.35.131.5 and 2620:010A:6000:2400:0000:0000:0000:8305 on the public network.
+                                           MGMT IP = 10.36.131.5 and 2620:010A:6000:2500:0000:0000:0000:8305
+
+VN PN Type Lab Unit Interface Tag    IPv4        IPv6                                    Hostname                 
+== == ==== ======== ========= ====== =========== ======================================= =========================
+0  0  SA   vm-05-10 MGMT      mgmt   10.36.131.5 2620:010A:6000:2500:0000:0000:0000:8305 master.vadp1.infoblox.com
+   0                LAN       public 10.35.131.5 2620:010A:6000:2400:0000:0000:0000:8305                          
+
+################################################################################
+#  config_grid is calling reset_grid to install NIOS and configure your grid.  #
+#  If NIOS installs fail,  restart with  reset_grid -P /tmp/ -T VADP1 -U       #
+#  If configuration fails, restart with  reset_grid -P /tmp/ -T VADP1          #
+################################################################################
+Wed Apr 20 02:46:59 2016 reset_grid calling sak.pl -P /tmp/ -T VADP1 'echo $ID $image $VNODE $UNIT $OWNER'
+Wed Apr 20 02:47:06 2016 reset_grid calling upgrade_test_system -H vm-05-10 -f nios-7.3.0-324822-2016-04-19-15-08-03-160G-1410.ova  > /tmp/reset_grid.22023 2>&1
+Wed Apr 20 02:47:06 2016 reset_grid waiting for the installs to complete
+Wed Apr 20 03:00:31 2016 Install #1 (of 1) complete for vm-05-10
+Wed Apr 20 03:00:32 2016 All installs completed.  reset_grid waiting 90 seconds for all nodes to boot.
+Wed Apr 20 03:02:02 2016 reset_grid calling setup_grid to configure grid ...
+Wed Apr 20 03:02:02 2016 reset_grid calling /import/tools/qa/bin/setup_grid -P /tmp/ -T VADP1 
+setup_grid calling initpool($pooldir, 'open', madhuk ...
+setup_grid calling checktag(/tmp/,VADP1,'mustexist') ...
+setup_grid calling xmlrwlock(/tmp//VADP1, $grid_desc, 'read_unlock')
+Wed Apr 20 03:02:04 2016 setup_grid purging any stale keys in current user's known_hosts file by calling purge_knownhosts ~/.ssh/known_hosts `/import/tools/qa/bin/sak.pl -u -P /tmp/ -T VADP1 'echo $ID $IPADDR $HA_1_IP $HA_2_IP $SHARED_IP $MGMT_IPADDR $LAN2_IPADDR $IPV6ADDR $HA_1_IPV6 $HA_2_IPV6 $SHARED_IPV6 $MGMT_IPV6ADDR $LAN2_IPV6ADDR'`
+Wed Apr 20 03:02:09 2016 setup_grid setting VLAN for all network interfaces on each pnode by calling sak.pl -u -P /tmp/ -T VADP1 -A ALL sakA.setvlan&
+Wed Apr 20 03:02:09 2016 setup_grid setting up the network for your Standalone grid master by calling sak.pl -u -P /tmp/ -T VADP1 -A master0 sakA.setnet
+Wed Apr 20 03:05:10 2016 setup_grid calling "grid_info 10.35.131.5" until the grid master comes online ...
+Wed Apr 20 03:05:34 2016 setup_grid: The initial grid master is online at 10.35.131.5 after 24 seconds ...
+Wed Apr 20 03:05:34 2016 setup_grid downloading the Perl API from 10.35.131.5 into /tmp//VADP1
+Wed Apr 20 03:05:35 2016 setup_grid configuring the standalone grid master by calling sak.pl -u -P /tmp/ -T VADP1 -V master 'sakV.setupsa'
+Wed Apr 20 03:05:44 2016 setup_grid is waiting for the 1 node to come online.
+Wed Apr 20 03:05:54 2016 setup_grid doing /import/tools/qa/bin/grid_info -P /tmp/ -T VADP1 2>/dev/null | egrep -c 'ONLINE|NA'
+Wed Apr 20 03:07:16 2016 setup_grid saw the 1 node has come online after 92 seconds.
+Wed Apr 20 03:07:56 2016 setup_grid pushing your public ssh key to all nodes by calling addkeys VADP1 -P /tmp/
+Wed Apr 20 03:08:07 2016 setup_grid pushing the standard root public ssh key to all nodes by calling addkeys VADP1 /import/tools/qa/bin/RootKey.pub -P /tmp/
+Wed Apr 20 03:08:19 2016 setup_grid configuring LAN2 if used by calling sak.pl -C -u -P /tmp/ -T VADP1 -V ALL sakV.configure_LAN2
+Wed Apr 20 03:08:27 2016 setup_grid not erasing /tmp/setup_grid.22183 so you can check it out.
+Wed Apr 20 03:08:27 2016 Setup Complete
+Wed Apr 20 03:08:27 2016 reset_grid successfully reset and rebuilt configuration
+Wed Apr 20 03:08:27 2016 reset_grid backing up database to /tmp//VADP1/database.tar.gz

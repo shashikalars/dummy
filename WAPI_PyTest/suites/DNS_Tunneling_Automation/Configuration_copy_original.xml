@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This is Configuration File-->
+<START>
+<SYSTEM_CONFIG>
+<GRID_IP></GRID_IP>
+<DUT_LAN1_IP>10.34.148.34</DUT_LAN1_IP>
+<DUT_LAN2_IP>10.34.160.34</DUT_LAN2_IP>
+<DUT_MGMT_IP>10.36.1.130</DUT_MGMT_IP>
+<DUT_FQDN>infoblox.localdomain</DUT_FQDN>
+<TUNS_LAN_IP>10.34.148.2</TUNS_LAN_IP>
+<TUNS_MGMT_IP>10.36.201.12</TUNS_MGMT_IP>
+<TUNS_FQDN>tunserver.com</TUNS_FQDN>
+<!--
+<TUNC_MGMT_IP>10.36.116.12</TUNC_MGMT_IP>
+<TUNC_LAN_IP>10.34.160.10</TUNC_LAN_IP>
+-->
+<TUNC_MGMT_IP>10.36.198.14</TUNC_MGMT_IP>
+<TUNC_LAN_IP>10.34.160.10</TUNC_LAN_IP>
+<PCAPPLAYER>JAVASERVER</PCAPPLAYER>
+<DNST_DETECTION_THRESHOLD>default</DNST_DETECTION_THRESHOLD>
+<RPZ_ZONE></RPZ_ZONE>
+</SYSTEM_CONFIG>
+
+<FORWARDERS>
+<PCAP_LISTENING_IP>10.34.148.7</PCAP_LISTENING_IP>
+<IODINE_LISTENING_IP>10.34.148.2</IODINE_LISTENING_IP>
+<IODINE_CNAME_LISTENING_IP>10.34.148.2</IODINE_CNAME_LISTENING_IP>
+<DNS2TCP_LISTENING_IP>10.34.148.5</DNS2TCP_LISTENING_IP>
+<OZYMANDNS_LISTENING_IP>10.34.148.3</OZYMANDNS_LISTENING_IP>
+<TCPOVERDNS_LISTENING_IP>10.34.148.6</TCPOVERDNS_LISTENING_IP>
+<SPLITBRAIN_LISTENING_IP>10.34.148.4</SPLITBRAIN_LISTENING_IP>
+<DNSCATP_LISTENING_IP>10.34.148.8</DNSCATP_LISTENING_IP>
+</FORWARDERS>
+
+
+<WHITELIST>
+<whitelist></whitelist>
+<whitelistdomains></whitelistdomains>
+<movetowhitelist>IODINE_CNAME</movetowhitelist>
+</WHITELIST>
+
+<NEGATIVE_TESTS>
+<testcases>dns2tcp-complete-all-SSH-01a.pcap,TUNS-pcap03-FTP.pcap</testcases>
+</NEGATIVE_TESTS>
+
+<IODINE>
+<server_command>iodined -l TUNS_LAN_IP -n TUNS_LAN_IP -P infoblox 20.20.20.1 t.iodine.com</server_command>
+<client_commands>iodine -P infoblox t.iodine.com -r</client_commands>
+<client_commands>scp root@20.20.20.1:/etc/motd junk.file</client_commands>
+<client_commands>ssh -D 9050 -N -C root@20.20.20.1 &amp;</client_commands>
+<client_commands>proxychains curl http://www.yahoo.com -o - | wc -l</client_commands>
+<forward_zone_name>t.iodine.com</forward_zone_name>
+<server_daemon>iodined</server_daemon>
+<client_processes>iodine</client_processes>
+</IODINE>
+
+<IODINE_CNAME>
+<server_command>iodined -l TUNS_LAN_IP -n TUNS_LAN_IP -P infoblox 20.20.20.1 t.iodine.com</server_command>
+<client_commands>iodine -P infoblox t.iodine.com -r -T CNAME -O Base32 -I 5 -M 200</client_commands>
+<forward_zone_name>t.iodine.com</forward_zone_name>
+<server_daemon>iodined</server_daemon>
+<client_processes>iodine</client_processes>
+</IODINE_CNAME>
+
+<DNS2TCP>
+<server_command>/usr/local/bin/dns2tcpd</server_command>
+<client_commands>dns2tcpc -z dns2tcp.com -k infoblox -r ssh -l 2222 DUT_LAN2_IP &amp;</client_commands>
+<client_commands>ssh -D 9050 -N -C root@127.0.0.1 -p 2222 &amp;</client_commands>
+<client_commands>ssh -p 2222 root\@127.0.0.1</client_commands>
+<client_commands>scp -P 2222 root\@127.0.0.1:/etc/motd junk.file</client_commands>
+<client_commands>proxychains curl http://www.yahoo.com -o - | wc -l</client_commands>
+<forward_zone_name>dns2tcp.com</forward_zone_name>
+<server_daemon>dns2tcpd</server_daemon>
+<client_processes>dns2tcpc</client_processes>
+</DNS2TCP>
+
+<OZYMANDNS>
+<server_command>./nomde.pl -l OZYMANDNS_LISTENING_IP -i OZYMANDNS_LISTENING_IP t.ozymandns.com</server_command>
+<client_commands>ssh -C -o ProxyCommand="./droute.pl sshdns.t.ozymandns.com" root@localhost</client_commands>
+<client_commands>ssh -D 9050 -N -C root@127.0.0.1 -o ProxyCommand="./droute.pl sshdns.t.ozymandns.com." &amp;</client_commands>
+<client_commands>proxychains curl http://www.yahoo.com -o - | wc -l</client_commands>
+<forward_zone_name>ozymandns.com</forward_zone_name>
+<server_daemon>nomde</server_daemon>
+<client_processes>droute</client_processes>
+<client_processes>droute</client_processes>
+</OZYMANDNS>
+
+<TCPOVERDNS>
+<server_command>java -jar /root/tcp-over-dns-server.jar --domain t.tcpoverdns.com --dns-address TCPOVERDNS_LISTENING_IP --forward-port 22</server_command>
+<client_commands>java -jar /root/tcp-over-dns-client.jar --domain t.tcpoverdns.com --listen-port 2222 &amp;</client_commands>
+<client_commands>ssh localhost -p 2222</client_commands>
+<client_commands>ssh -D 9050 -N -C root@127.0.0.1 -p 2222 &amp;</client_commands>
+<client_commands>proxychains curl http://www.yahoo.com | wc -l</client_commands>
+<forward_zone_name>t.tcpoverdns.com</forward_zone_name>
+<server_daemon>tcp-over-dns-server</server_daemon>
+<client_processes>tcp-over-dns-client</client_processes>
+</TCPOVERDNS>
+
+<SPLITBRAIN>
+<server_command>/opt/dnstunnel/dnstunneld.init start</server_command>
+<client_commands>ssh -C -o ProxyCommand="/opt/dnstunnel/dnstunnelc -v sshdns.t.splitbrain.com" root@localhost &amp;</client_commands>
+<client_commands>ssh -D 9050 -N -C root@127.0.0.1 -o StrictHostKeyChecking=no -o ProxyCommand="/opt/dnstunnel/dnstunnelc -v sshdns.t.splitbrain.com" &amp;</client_commands>
+<client_commands>proxychains curl http://yahoo.com -o - | wc -l</client_commands>
+<forward_zone_name>t.splitbrain.com</forward_zone_name>
+<server_daemon>SCREEN</server_daemon>
+<client_processes>ssh -C -o ProxyCommand</client_processes>
+<client_processes>dnstunnelc</client_processes>
+<client_processes>dnstunnelc</client_processes>
+</SPLITBRAIN>
+
+<DNSCATP>
+<server_command>pppd persist noauth nodetach silent 20.1.1.1:20.1.1.2 pty \"/root/dnscat-0.02/DNScatServer -o \'dnscat-p.com\' -A \'3600,ns1.,root.,20041031,86400,7200,604800,0\' -a -l DNSCATP_LISTENING_IP \"</server_command>
+<client_commands>pppd noauth nodetach pty "/root/dnscat-0.02/DNScatClient -o dnscat-p.com" &amp;</client_commands>
+<client_commands>ssh 20.1.1.1</client_commands>
+<client_commands>pppd noauth nodetach pty "/root/dnscat-0.02/DNScatClient -o dnscat-p.com" &amp;</client_commands>
+<client_commands>scp -p 20.1.1.1:/etc/motd remote.motd</client_commands>
+<client_commands>ssh -D 9050 -N -C root@20.1.1.1 &amp;</client_commands>
+<client_commands>proxychains curl http://rick.jasperfamily.org/cgi-bin/acronym.pl</client_commands>
+<forward_zone_name>dnscat-p.com</forward_zone_name>
+<server_daemon>pppd</server_daemon>
+<client_processes>pppd</client_processes>
+</DNSCATP>
+
+<rea_dnst_query_txt_record>
+<query>for i in `seq 1 10`; do dig @DUT_LAN1_IP 100R02.$i.tcp_txt.com txt;done</query>
+<expected>positive</expected>
+</rea_dnst_query_txt_record>
+
+<rea_dnst_query_cname_record>
+<query>for i in `seq 1 10`; do dig @DUT_LAN1_IP 226L01TTL-0.$i.tcp_cname.com cname;done</query>
+<expected>positive</expected>
+</rea_dnst_query_cname_record>
+
+<rea_dnst_query_mx_record>
+<query>for i in `seq 1 10`; do dig @DUT_LAN1_IP 226L01TTL-0.$i.tcp_mx.com mx;done</query>
+<expected>positive</expected>
+</rea_dnst_query_mx_record>
+
+<rea_dnst_query_srv_record>
+<query>for i in `seq 1 10`; do dig @DUT_LAN1_IP 226L01TTL-0.$i.tcp_srv.com srv;done</query>
+<expected>positive</expected>
+</rea_dnst_query_srv_record>
+
+<rea_dnst_query_dnst57_tc_131>
+<query>for i in `seq 1 10`; do dig +short @DUT_LAN1_IP gu$i.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.$i.rea131_dns.com TXT;done</query>
+<expected>positive</expected>
+</rea_dnst_query_dnst57_tc_131>
+
+<rea_dnst_query_dnst57_tc_139>
+<query>for i in `seq 1 10`; do dig +tcp +short @DUT_LAN1_IP gu$i.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.$i.rea139_dns.com TXT;done</query>
+<expected>positive</expected>
+</rea_dnst_query_dnst57_tc_139>
+
+<rea_dnst_query_dnst57_tc_147>
+<query>for i in `seq 1 10`; do dig @DUT_LAN1_IP gu$i.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.$i.rea_dns147.com TXT;done</query>
+<expected>positive</expected>
+</rea_dnst_query_dnst57_tc_147>
+
+<rea_dnst_query_dnst57_tc_155>
+<query>for i in `seq 1 10`; do dig +tcp @DUT_LAN1_IP gu$i.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234123.$i.rea_dns155.com TXT;done</query>
+<expected>positive</expected>
+</rea_dnst_query_dnst57_tc_155>
+
+<rea_dnst_query_dnst57_tc_187>
+<query>for i in `seq 1 10`; do dig +short +tcp @DUT_LAN1_IP $i.aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyy$i.defjklmnopqrstuvwxyz1234efghijklmnopqrstuvwxyz13$i.up.sshdns.com txt;done</query>
+<expected>positive</expected>
+</rea_dnst_query_dnst57_tc_187>
+
+<rea_dnst_query_dnst57_tc_203>
+<query>for i in `seq 1 10`; do dig +tcp +short @DUT_LAN1_IP $i.aabbccddeeffgghhiijjkkllmmn.aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyy.abc$i.klmnopqrstuvwxADDFDSDSDFyz1234efghijklmnopqrstuvwxyz13$i.$i.rea_dns203.com txt;done</query>
+<expected>positive</expected>
+</rea_dnst_query_dnst57_tc_203>
+
+<BUGS>
+<dns2tcp-ssh-08-incorrect-key.pcap>DNST-319</dns2tcp-ssh-08-incorrect-key.pcap>
+</BUGS>
+
+</START>
+

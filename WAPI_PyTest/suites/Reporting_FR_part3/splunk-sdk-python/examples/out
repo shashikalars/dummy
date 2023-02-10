@@ -1,0 +1,135 @@
+NETWORK=10.34.220.0
+LEASE_ID=1460849528
+LEASE_STATUS=leased
+LEASE_HELD=3 days, 6 hours, 54 minutes
+LEASE_LEFT=1 day, 17 hours, 5 minutes from now
+
+HOST=eng-lab-1261
+RESOURCE_GROUP=engineering
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 27 minutes
+LEASE_LEFT=3 days, 9 hours, 32 minutes from now
+
+HOST=eng-lab-1303
+RESOURCE_GROUP=engineering
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 27 minutes
+LEASE_LEFT=3 days, 9 hours, 32 minutes from now
+
+HOST=eng-lab-305
+RESOURCE_GROUP=engineering
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 26 minutes
+LEASE_LEFT=3 days, 9 hours, 33 minutes from now
+
+HOST=eng-lab-307
+RESOURCE_GROUP=engineering
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 26 minutes
+LEASE_LEFT=3 days, 9 hours, 33 minutes from now
+
+VIP=10.35.20.3
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 15 minutes
+LEASE_LEFT=3 days, 9 hours, 44 minutes from now
+
+VIP=10.35.20.4
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 15 minutes
+LEASE_LEFT=3 days, 9 hours, 44 minutes from now
+
+VIP=10.35.20.5
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 15 minutes
+LEASE_LEFT=3 days, 9 hours, 44 minutes from now
+
+VRID=2
+LEASE_ID=1461002359
+LEASE_STATUS=leased
+LEASE_HELD=1 day, 12 hours, 15 minutes
+LEASE_LEFT=3 days, 9 hours, 44 minutes from now
+
+HOST=vm-11-04d
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-16-04d
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-17-04d
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-01-05d
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-01-06a
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-01-06b
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=reserved
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-01-06c
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-03-05a
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-04-05a
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-06-05a
+RESOURCE_GROUP=engineering
+LEASE_ID=1461100966
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 3 minutes
+LEASE_LEFT=4 days, 15 hours, 56 minutes from now
+
+HOST=vm-04-09
+RESOURCE_GROUP=engineering
+LEASE_ID=1461101040
+LEASE_STATUS=leased
+LEASE_HELD=9 hours, 2 minutes
+LEASE_LEFT=4 days, 14 hours, 57 minutes from now
+

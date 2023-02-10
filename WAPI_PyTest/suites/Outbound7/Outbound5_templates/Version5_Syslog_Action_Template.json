@@ -1,0 +1,24 @@
+{
+    "version": "5.0",
+    "name": "Version5_Syslog_Action_Template",
+    "type": "SYSLOG_EVENT",
+    "event_type": ["RPZ","ADP","DNS_RECORD","DNS_ZONE"],
+    "action_type": "Some Action",
+    "comment": "ADP Events",
+    "content_type": "application/json",
+    "vendor_identifier": "syslog",
+    "steps":
+    [
+   {
+         "operation": "NOP",
+         "body": "${XC:DEBUG:{E:}}"
+      }, 
+        {
+            "name": "syslog_send",
+            "operation": "SYSLOG_SEND_EVENT",
+            "body_list": [
+                "\"Syslog_data\": \"${E::values{}}\", "
+            ]
+        }
+    ]
+}

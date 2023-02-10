@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="xgridCmnMethods.xsd"/>
+	<xs:include schemaLocation="../model/xgridNodeModel.xsd"/>
+	<!-- Node Methods -->
+	<xs:element name="connectRequest" type="ConnectRequest"/>
+	<!-- for poc just use a user for credentials but this needs to support other types of credentials to authenticate to the grid
+		also this causes a reference to the userModel.xsd which is really not a common schema file. so we need to refactor it -->
+	<xs:complexType name="Credentials">
+		<xs:sequence>
+			<xs:element name="userName" type="UserIdentity" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="groups" minOccurs="0">
+                                <xs:complexType>
+                                        <xs:sequence>
+                                                <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                        </xs:sequence>
+                                </xs:complexType>
+                        </xs:element>			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ConnectRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="giNodeInfo" type="GINodeInfo"/>
+					<xs:element name="giCredentials" type="Credentials"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="connectResponse" type="ConnectResponse"/>
+	<xs:complexType name="ConnectResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1">
+					<xs:element name="approvalStatus" type="ConnectionApprovalStatus" minOccurs="0" maxOccurs="1" default="approved"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- ###############################################################################
+     Notifications Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: ConnectionUpdateNotification
+		Description: Updates the client of a connection state change
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="connectionUpdateNotification" type="ConnectionUpdateNotification"/>
+	<xs:complexType name="ConnectionUpdateNotification">
+		<xs:complexContent>
+			<xs:extension base="BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="connectionState" type="NodeState" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

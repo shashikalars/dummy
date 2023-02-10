@@ -1,0 +1,45 @@
+#!/usr/bin/expect
+
+set ip [ lindex $argv 0]
+set cmd [ lindex $argv 1]
+
+send_user "ssh as admin\n";
+send_user "IP Address: $ip\n"
+
+set timeout 60
+set login 1
+set mode 0
+
+if {[string match "*debug*" $cmd]} {
+	send_user "This is a debug command. Setting Maintenancemode On\n";
+	set mode 1
+}
+
+spawn ssh admin@$ip
+        expect {
+                eof { send_user "Connection Terminated\n"; exit 1 }
+
+                "continue connecting (yes/no)?" {
+                        send "yes\r";
+                        exp_continue;
+                }
+                "assword:" {
+                        send "infoblox\r";
+                        exp_continue;
+                }
+                "Infoblox >" {
+			if { $mode == 1 } {
+				send "set maintenancemode on\r";
+				set mode 0
+				exp_continue;
+			}
+                        if { $login == 1 } {
+                                send "set maintenancemode\r";
+                                send "show dns-accel-debug\r";
+                                set login 2
+                                exp_continue;
+                        } else {
+                                send "exit\r";
+                        }
+                }
+}                

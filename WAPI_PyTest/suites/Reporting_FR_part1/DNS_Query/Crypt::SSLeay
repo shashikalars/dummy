@@ -1,0 +1,2135 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+        <title>Crypt::SSLeay - OpenSSL support for LWP - metacpan.org</title>
+        <link rel="alternate" type="application/rss+xml" title="Recent CPAN Uploads of Crypt-SSLeay - MetaCPAN" href="/feed/distribution/Crypt-SSLeay" />
+        <link href="/_assets/09a20e39bc03ec6c8fbc017562af3184c4c5b48e.css" rel="stylesheet" type="text/css">
+        <link rel="search" href="/static/opensearch.xml" type="application/opensearchdescription+xml" title="MetaCPAN">
+        <link rel="canonical" href="https://metacpan.org/pod/Crypt::SSLeay" />
+        <meta name="description" content="OpenSSL support for LWP" />
+        <link rel="shortcut icon" href="/static/icons/favicon.ico">
+        <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon.png">
+        <script src="/_assets/fd5168e65900c25667cf67492768981b6ae747ea.js" type="text/javascript" defer></script>
+        <link rel="preload" href="/static/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href="/static/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href="/static/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-27829474-1', {
+              siteSpeedSampleRate : 100
+          });
+          ga('send', 'pageview');
+        </script>
+        
+        <meta name="twitter:card"        content="summary" />
+<meta name="twitter:url"         content="https://metacpan.org/pod/Crypt::SSLeay" />
+<meta name="twitter:title"       content="Crypt::SSLeay" />
+<meta name="twitter:description" content="OpenSSL support for LWP" />
+<meta name="twitter:site"        content="metacpan" />
+
+        
+    </head>
+    <body>
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                <li class="visible-xs">
+                <a href="#" data-toggle="slidepanel" data-target=".slidepanel">
+                  <i class="fa fa-bars icon-slidepanel"></i>
+                </a>
+                </li>
+            
+                    <li class="">
+                        <a href="/"><img src="/static/icons/metacpan-icon.png"  alt="MetaCPAN icon"/>                            Home                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://grep.metacpan.org"><i class="fa fa-search"></i>                            grep::cpan                        </a>
+                    </li>
+                    <li class="">
+                        <a href="/recent"><i class="fa fa-history"></i>                            Recent                        </a>
+                    </li>
+                    <li class="hidden-xs">
+                        <a href="/about"><i class="fa fa-info"></i>                            About                        </a>
+                    </li>
+                    <li class="hidden-xs">
+                        <a href="/about/faq"><i class="fa fa-question"></i>                            FAQ                        </a>
+                    </li>
+                    <li class="hidden-xs">
+                        <a href="https://github.com/metacpan/metacpan-web/issues"><i class="fa fa-github-alt"></i>                            GitHub Issues                        </a>
+                    </li>
+                    <li class="hidden-xs">
+                        <a href="/news"><i class="fa fa-newspaper-o"></i>                            News                        </a>
+                    </li>
+                    <li class="hidden-xs">
+                        <a href="/tools"><i class="fa fa-wrench"></i>                            Tools                        </a>
+                    </li>
+                    <li class="hidden-xs">
+                        <a href="https://fastapi.metacpan.org"><i class="fa fa-database"></i>                            API                        </a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <form action="/account/logout" method="POST" id="metacpan-logout"></form>
+                    <li class="dropdown logged_in" style="display: none;">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Account
+                        <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/account/identities">Identities</a></li>
+                            <li><a href="/account/profile">Profile</a></li>
+                            <li><a href="/account/favorite/list">Favorites</a></li>
+                            <li>
+                                <a href="#" onclick="$('#metacpan-logout').submit(); return false">Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown logged_out" style="display: none;">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Sign in
+                        <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="https://fastapi.metacpan.org/oauth2/authorize?client_id=metacpan.org&amp;choice=github" onclick="return logInPAUSE(this)">
+                                <i class="fa fa-github fa-fw"></i>
+                                GitHub
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://fastapi.metacpan.org/oauth2/authorize?client_id=metacpan.org&amp;choice=twitter" onclick="return logInPAUSE(this)">
+                                <i class="fa fa-twitter fa-fw"></i>
+                                Twitter
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://fastapi.metacpan.org/oauth2/authorize?client_id=metacpan.org&amp;choice=google" onclick="return logInPAUSE(this)">
+                                <i class="fa fa-google fa-fw"></i>
+                                Google
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/login/openid">
+                                <i class="fa fa-openid fa-fw"></i>
+                                OpenID
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+
+        
+
+            
+            <div class="row hidden-phone">
+                <div class="head-small-logo col-md-3">
+                    <a href="/" class="small-logo"></a>
+                </div>
+                <div class="col-md-9">
+                    <form action="/search" class="search-form form-horizontal">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" name="q" size="41" id="search-input" class="form-control" value="">
+                                <span class="input-group-btn">
+                                    <button class="btn search-btn" type="submit">Search</button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+
+            <div class="row">
+                <div class="main-content col-md-12">
+                    
+
+
+
+
+<div itemscope itemtype="http://schema.org/SoftwareApplication">
+  
+
+
+<div class="breadcrumbs">
+  <span itemprop="author" itemscope itemtype="http://schema.org/Person" >
+    <a itemprop="url"  data-keyboard-shortcut="g a" rel="author" href="/author/NANIS" title="A. Sinan Unur" class="author-name"><span itemprop="name" >A. Sinan Ünür</span></a>
+  </span>
+  <span>&nbsp;/&nbsp;</span>
+  <div class="release status-latest maturity-released">
+    <span class="dropdown"><b class="caret"></b></span>
+    <select class="" onchange="document.location.href=this.value">
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.73_06/SSLeay.pm">
+    0.73_06 DEV
+      (NANIS on 2017-04-03)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.73_04/SSLeay.pm">
+    0.73_04 DEV
+      (NANIS on 2014-10-27)
+      
+  </option>
+
+  <option selected value="/module/NANIS/Crypt-SSLeay-0.72/SSLeay.pm">
+    0.72
+      (NANIS on 2014-04-24)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.64/SSLeay.pm">
+    0.64
+      (NANIS on 2012-08-06)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.57_01/SSLeay.pm">
+    0.57_01 DEV
+      (DLAND on 2008-02-18)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.57/SSLeay.pm">
+    0.57
+      (DLAND on 2007-09-17)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.56/SSLeay.pm">
+    0.56
+      (DLAND on 2007-07-10)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.55/SSLeay.pm">
+    0.55
+      (DLAND on 2007-06-01)
+      
+  </option>
+
+  <option  value="/module/GAAS/Crypt-SSLeay-0.07/SSLeay.pm">
+    0.07
+      (GAAS on 1998-10-13)
+      
+  </option>
+        <optgroup label="BackPAN">
+          
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.73_03/SSLeay.pm">
+    0.73_03 DEV
+      (NANIS on 2014-10-27)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.70/SSLeay.pm">
+    0.70
+      (NANIS on 2014-04-24)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.68/SSLeay.pm">
+    0.68
+      (NANIS on 2014-04-24)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.66/SSLeay.pm">
+    0.66
+      (NANIS on 2014-04-24)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_15/SSLeay.pm">
+    0.65_15 DEV
+      (NANIS on 2014-04-23)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_14/SSLeay.pm">
+    0.65_14 DEV
+      (NANIS on 2014-04-17)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_13/SSLeay.pm">
+    0.65_13 DEV
+      (NANIS on 2014-04-15)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_12/SSLeay.pm">
+    0.65_12 DEV
+      (NANIS on 2014-04-14)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_11/SSLeay.pm">
+    0.65_11 DEV
+      (NANIS on 2014-04-12)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_10/SSLeay.pm">
+    0.65_10 DEV
+      (NANIS on 2014-04-12)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_09/SSLeay.pm">
+    0.65_09 DEV
+      (NANIS on 2014-04-12)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_08/SSLeay.pm">
+    0.65_08 DEV
+      (NANIS on 2014-04-10)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_07/SSLeay.pm">
+    0.65_07 DEV
+      (NANIS on 2014-04-10)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_06/SSLeay.pm">
+    0.65_06 DEV
+      (NANIS on 2014-04-10)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_05/SSLeay.pm">
+    0.65_05 DEV
+      (NANIS on 2014-04-04)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_04/SSLeay.pm">
+    0.65_04 DEV
+      (NANIS on 2014-04-02)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_02/SSLeay.pm">
+    0.65_02 DEV
+      (NANIS on 2012-08-07)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.65_01/SSLeay.pm">
+    0.65_01 DEV
+      (NANIS on 2012-08-07)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.63/SSLeay.pm">
+    0.63
+      (NANIS on 2012-08-06)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.62_01/SSLeay.pm">
+    0.62_01 DEV
+      (NANIS on 2012-08-04)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.61_05/SSLeay.pm">
+    0.61_05 DEV
+      (NANIS on 2012-08-04)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.61_04/SSLeay.pm">
+    0.61_04 DEV
+      (NANIS on 2012-08-01)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.61_02/SSLeay.pm">
+    0.61_02 DEV
+      (NANIS on 2012-08-01)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.60_01/SSLeay.pm">
+    0.60_01 DEV
+      (NANIS on 2012-07-30)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.60/SSLeay.pm">
+    0.60
+      (NANIS on 2012-07-29)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.59_03/SSLeay.pm">
+    0.59_03 DEV
+      (NANIS on 2012-03-11)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.59_02/SSLeay.pm">
+    0.59_02 DEV
+      (NANIS on 2012-03-08)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.59_01/SSLeay.pm">
+    0.59_01 DEV
+      (NANIS on 2012-03-07)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.58_01/SSLeay.pm">
+    0.58_01 DEV
+      (NANIS on 2010-09-08)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.58/SSLeay.pm">
+    0.58
+      (NANIS on 2010-08-25)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.57_05/SSLeay.pm">
+    0.57_05 DEV
+      (NANIS on 2010-08-15)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.57_04/SSLeay.pm">
+    0.57_04 DEV
+      (NANIS on 2010-08-12)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.57_03/SSLeay.pm">
+    0.57_03 DEV
+      (NANIS on 2010-08-09)
+      
+  </option>
+
+  <option  value="/module/NANIS/Crypt-SSLeay-0.57_02/SSLeay.pm">
+    0.57_02 DEV
+      (NANIS on 2010-08-08)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.56_01/SSLeay.pm">
+    0.56_01 DEV
+      (DLAND on 2007-08-09)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.54/SSLeay.pm">
+    0.54
+      (DLAND on 2007-04-12)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.53_05/SSLeay.pm">
+    0.53_05 DEV
+      (DLAND on 2007-03-28)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.53_04/SSLeay.pm">
+    0.53_04 DEV
+      (DLAND on 2007-03-06)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.53_03/SSLeay.pm">
+    0.53_03 DEV
+      (DLAND on 2007-03-04)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.53_02/SSLeay.pm">
+    0.53_02 DEV
+      (DLAND on 2007-01-29)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.53_01/SSLeay.pm">
+    0.53_01 DEV
+      (DLAND on 2007-01-24)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.53/SSLeay.pm">
+    0.53
+      (DLAND on 2006-12-26)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.52_02/SSLeay.pm">
+    0.52_02 DEV
+      (DLAND on 2006-12-20)
+      
+  </option>
+
+  <option  value="/module/DLAND/Crypt-SSLeay-0.52_01/SSLeay.pm">
+    0.52_01 DEV
+      (DLAND on 2006-12-17)
+      
+  </option>
+
+  <option  value="/module/TAKESAKO/Crypt-SSLeay-0.51/SSLeay.pm">
+    0.51
+      (TAKESAKO on 2003-06-11)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.51/SSLeay.pm">
+    0.51
+      (CHAMAS on 2003-06-11)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.49/SSLeay.pm">
+    0.49
+      (CHAMAS on 2003-01-30)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.47/SSLeay.pm">
+    0.47
+      (CHAMAS on 2003-01-30)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.45/SSLeay.pm">
+    0.45
+      (CHAMAS on 2002-08-02)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.43/SSLeay.pm">
+    0.43
+      (CHAMAS on 2002-07-30)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.41/SSLeay.pm">
+    0.41
+      (CHAMAS on 2002-07-08)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.40/SSLeay.pm">
+    0.40
+      (CHAMAS on 2002-07-03)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.39/SSLeay.pm">
+    0.39
+      (CHAMAS on 2002-06-24)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.37/SSLeay.pm">
+    0.37
+      (CHAMAS on 2002-01-21)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.35/SSLeay.pm">
+    0.35
+      (CHAMAS on 2001-11-01)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.33/SSLeay.pm">
+    0.33
+      (CHAMAS on 2001-11-01)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.31/SSLeay.pm">
+    0.31
+      (CHAMAS on 2001-09-21)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.29/SSLeay.pm">
+    0.29
+      (CHAMAS on 2001-06-29)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.27/SSLeay.pm">
+    0.27
+      (CHAMAS on 2001-06-14)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.25/SSLeay.pm">
+    0.25
+      (CHAMAS on 2001-04-10)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.23/SSLeay.pm">
+    0.23
+      (CHAMAS on 2001-03-10)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.22/SSLeay.pm">
+    0.22
+      (CHAMAS on 2001-01-29)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.21/SSLeay.pm">
+    0.21
+      (CHAMAS on 2001-01-10)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.19/SSLeay.pm">
+    0.19
+      (CHAMAS on 2001-01-07)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.18/SSLeay.pm">
+    0.18
+      (CHAMAS on 2000-11-25)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.17/SSLeay.pm">
+    0.17
+      (CHAMAS on 2000-09-05)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.16/SSLeay.pm">
+    0.16
+      (CHAMAS on 2000-02-28)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.15/SSLeay.pm">
+    0.15
+      (CHAMAS on 1999-11-23)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.14/SSLeay.pm">
+    0.14
+      (CHAMAS on 1999-10-03)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.12/SSLeay.pm">
+    0.12
+      (CHAMAS on 1999-09-14)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.11/SSLeay.pm">
+    0.11
+      (CHAMAS on 1999-08-16)
+      
+  </option>
+
+  <option  value="/module/CHAMAS/Crypt-SSLeay-0.10/SSLeay.pm">
+    0.10
+      (CHAMAS on 1999-08-11)
+      
+  </option>
+
+  <option  value="/module/GAAS/Crypt-SSLeay-0.06/SSLeay.pm">
+    0.06
+      (GAAS on 1998-01-13)
+      
+  </option>
+
+  <option  value="/module/GAAS/Crypt-SSLeay-0.03/SSLeay.pm">
+    0.03
+      (GAAS on 1998-01-11)
+      
+  </option>
+
+  <option  value="/module/GAAS/Crypt-SSLeay-0.02/SSLeay.pm">
+    0.02
+      (GAAS on 1998-01-10)
+      
+  </option>
+
+  <option  value="/module/GAAS/Crypt-SSLeay-0.01/SSLeay.pm">
+    0.01
+      (GAAS on 1998-01-10)
+      
+  </option>
+        </optgroup>
+    
+</select>
+    
+    <a data-keyboard-shortcut="g d" class="release-name" href="/release/Crypt-SSLeay">Crypt-SSLeay-0.72</a>
+    
+    
+  </div>
+  <!--
+  Unlike an <img>, an <object> grafts the SVG document into the DOM, which
+  means browsers will display the <title> elements of the SVG.  Yay!
+-->
+<span class="river-gauge-gauge">
+
+  <svg width="24px"
+       height="15px"
+       version="1.1"
+       xmlns="http://www.w3.org/2000/svg"
+       xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <g>
+      <!--
+        There is some careful attention below to the resulting whitespace
+        after template interpolation, ensuring that the tooltip looks good on
+        both Chrome and Firefox. Please don't adjust it blithely, thanks!
+      -->
+      <title>River stage three &#10;• 103 direct dependents &#10;• 312 total dependents</title>
+
+      <!-- 5 bars, 4x15px, 1px apart, colored #e4e2e2 or #7ea3f2 -->
+      <rect x="0"  y="0" width="4" height="15" fill="#7ea3f2" />
+      <rect x="5"  y="0" width="4" height="15" fill="#7ea3f2" />
+      <rect x="10" y="0" width="4" height="15" fill="#7ea3f2" />
+      <rect x="15" y="0" width="4" height="15" fill="#e4e2e2" />
+      <rect x="20" y="0" width="4" height="15" fill="#e4e2e2" />
+    </g>
+  </svg>
+
+
+</span>
+<div id="Crypt-SSLeay-fav" class="logged_in">
+<form action="/account/favorite/add" style="display: inline" onsubmit="return favDistribution(this)">
+    <input type="hidden" name="remove" value="0">
+    <input type="hidden" name="release" value="Crypt-SSLeay-0.72">
+    <input type="hidden" name="author" value="NANIS">
+    <input type="hidden" name="distribution" value="Crypt-SSLeay">
+    <button type="submit" class="favorite highlight"><span>9</span> ++</button>
+</form>
+</div>
+<div class="logged_out">
+<a href="" onclick="alert('Please sign in to add favorites'); return false" class="favorite highlight">
+<span>9</span> ++</a>
+</div>
+
+  &nbsp;/&nbsp;<span itemprop="name" >Crypt::SSLeay</span>
+</div>
+
+  <ul class="nav-list slidepanel">
+    <li class="visible-xs">
+      <div>
+    <form action="/search">
+        <input type="search" class="form-control tool-bar-form" placeholder="Search" name="q">
+        <input type="submit" class="hidden">
+    </form>
+</div>
+
+    </li>
+    <li class="nav-header">      <time class="relatize" itemprop="dateModified" datetime="2014-04-24">24 Apr 2014 15:45:06 UTC</time>
+    </li>
+    
+    <li>
+      Distribution: Crypt-SSLeay</span>
+    </li>
+    
+    <li>
+      Module version: <span itemprop="softwareVersion">0.72</span>
+    </li>
+    
+        <li>
+      <a data-keyboard-shortcut="g s" href="/release/Crypt-SSLeay/source/SSLeay.pm"><i class="fa fa-fw fa-file-code-o black"></i>Source</a>
+      (<a href="/release/Crypt-SSLeay/source/SSLeay.pm?raw=1">raw</a>)
+    </li>
+    
+    <li>
+      <a data-keyboard-shortcut="g b" href="/release/Crypt-SSLeay/source/"><i class="fa fa-fw fa-folder-open black"></i>Browse</a>
+      (<a href="/release/Crypt-SSLeay/source/?raw=1">raw</a>)
+    </li>
+    <li>
+    <a data-keyboard-shortcut="g c" href="/changes/distribution/Crypt-SSLeay"><i class="fa fa-fw fa-cogs black"></i>Changes</a>
+</li>
+
+<li>
+    <a class="nopopup" href="/contributing-to/Crypt-SSLeay"><i class="fa fa-fw fa-plus-circle black"></i>How to Contribute</a>
+</li>
+
+<li>
+    
+    
+    <a rel="noopener nofollow" href="https://github.com/nanis/Crypt-SSLeay"><i class="fa fa-fw fa-code-fork black"></i>Clone  repository</a>
+    
+</li>
+
+<li>
+    <a rel="noopener nofollow" data-keyboard-shortcut="g i" href="https://rt.cpan.org/Public/Dist/Display.html?Name=Crypt-SSLeay"><i class="fa fa-fw fa-info-circle black"></i>Issues</a>
+    (18)
+</li>
+<li>
+    
+    <a rel="noopener nofollow" href="http://matrix.cpantesters.org/?dist=Crypt-SSLeay+0.72" title="Matrix"><i class="fa fa-fw fa-check-circle black"></i>Testers</a>
+    <span title="(pass / fail / na)">(<a rel="noopener nofollow" href="https://www.cpantesters.org/distro/C/Crypt-SSLeay.html?oncpan=1&amp;distmat=1&amp;version=0.72&amp;grade=2" style="color: #090">3017</a> / <a rel="noopener nofollow" href="https://www.cpantesters.org/distro/C/Crypt-SSLeay.html?oncpan=1&amp;distmat=1&amp;version=0.72&amp;grade=3" style="color: #900">1194</a> / <a rel="noopener nofollow" href="https://www.cpantesters.org/distro/C/Crypt-SSLeay.html?oncpan=1&amp;distmat=1&amp;version=0.72&amp;grade=4">7</a>)</span>
+</li>
+<li>
+    <a rel="noopener nofollow" href="http://cpants.cpanauthors.org/release/NANIS/Crypt-SSLeay-0.72"><i class="fa fa-fw fa-line-chart black"></i>Kwalitee</a>
+</li>
+
+  <li>
+    <i class="fa fa-fw fa-pie-chart black"></i><a rel="noopener nofollow" href="http://cpancover.com/latest/Crypt-SSLeay-0.72/index.html">31.60% Coverage </a>
+  </li>
+
+
+
+<li><i class="fa fa-fw fa-gavel black"></i>License: artistic_2</li>
+
+
+<li>
+  <i class="fa fa-fw fa-greater-than-equal black"></i>Perl: v5.6.0
+</li>
+
+
+
+
+    <li class="nav-header">Activity</li>
+    <li><div class="activity-graph">
+  <img src="/activity?res=month&amp;distribution=Crypt-SSLeay" width="170" height="22" />
+  <div align="right"><small class="comment">24 month</small></div>
+</div>
+</li>
+    <li class="nav-header">Tools</li>
+<li>
+    <a itemprop="downloadUrl" href="https://cpan.metacpan.org/authors/id/N/NA/NANIS/Crypt-SSLeay-0.72.tar.gz">
+    <i class="fa fa-download fa-fw black"></i>Download (<span itemprop="fileSize" >126.54Kb</span>)</a>
+    
+    <span class="invisible" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+      <span itemprop="price">0</span>
+    </span>
+    
+</li>
+<li>
+    <a href="https://explorer.metacpan.org/?url=/module/NANIS/Crypt-SSLeay-0.72/SSLeay.pm">
+    <i class="fa fa-list-alt fa-fw black"></i>MetaCPAN Explorer
+    </a>
+</li>
+<li>
+  <a href="/permission/distribution/Crypt-SSLeay">
+    <i class="fa fa-key fa-fw black"></i>Permissions
+  </a>
+</li>
+<li>
+    <a href="/feed/distribution/Crypt-SSLeay">
+    <i class="fa fa-rss-square fa-fw black"></i>Subscribe to distribution
+    </a>
+</li>
+<li>
+    <button class="btn btn-link" data-toggle="modal" data-target="#install-instructions-dialog">
+      <i class="fa fa-terminal fa-fw black"></i>Install Instructions
+    </button>
+</li>
+<li>
+    <form action="/search">
+        <input type="hidden" name="q" value="dist:Crypt-SSLeay">
+        <input type="search" name="q" placeholder="Search distribution" style="width: 153px" class="form-control tool-bar-form">
+        <input type="submit" style="display: none">
+    </form>
+</li>
+<li>
+    <form action="https://grep.metacpan.org/search">
+        <input type="hidden" name="qd" value="Crypt-SSLeay">
+        <input type="hidden" name="source" value="metacpan">
+         <input type="search" name="q" placeholder="grep distribution" style="width: 153px" class="form-control tool-bar-form">
+         <input type="submit" style="display: none">
+     </form>
+</li>
+<li>
+    <select onchange="document.location.href='/module/'+this.value" class="form-control tool-bar-form">
+        <option>Jump to version</option>
+    <option value="NANIS/Crypt-SSLeay-0.73_06/SSLeay.pm">0.73_06 DEV (NANIS on 2017-04-03)</option>
+
+    <option value="NANIS/Crypt-SSLeay-0.73_04/SSLeay.pm">0.73_04 DEV (NANIS on 2014-10-27)</option>
+
+    <option value="NANIS/Crypt-SSLeay-0.64/SSLeay.pm">0.64 (NANIS on 2012-08-06)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.57_01/SSLeay.pm">0.57_01 DEV (DLAND on 2008-02-18)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.57/SSLeay.pm">0.57 (DLAND on 2007-09-17)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.56/SSLeay.pm">0.56 (DLAND on 2007-07-10)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.55/SSLeay.pm">0.55 (DLAND on 2007-06-01)</option>
+
+    <option value="GAAS/Crypt-SSLeay-0.07/SSLeay.pm">0.07 (GAAS on 1998-10-13)</option>
+
+<optgroup label="BackPAN"></optgroup>
+
+    <option value="NANIS/Crypt-SSLeay-0.73_03/SSLeay.pm">0.73_03 DEV (NANIS on 2014-10-27)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.70/SSLeay.pm">0.70 (NANIS on 2014-04-24)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.68/SSLeay.pm">0.68 (NANIS on 2014-04-24)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.66/SSLeay.pm">0.66 (NANIS on 2014-04-24)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_15/SSLeay.pm">0.65_15 DEV (NANIS on 2014-04-23)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_14/SSLeay.pm">0.65_14 DEV (NANIS on 2014-04-17)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_13/SSLeay.pm">0.65_13 DEV (NANIS on 2014-04-15)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_12/SSLeay.pm">0.65_12 DEV (NANIS on 2014-04-14)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_11/SSLeay.pm">0.65_11 DEV (NANIS on 2014-04-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_10/SSLeay.pm">0.65_10 DEV (NANIS on 2014-04-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_09/SSLeay.pm">0.65_09 DEV (NANIS on 2014-04-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_08/SSLeay.pm">0.65_08 DEV (NANIS on 2014-04-10)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_07/SSLeay.pm">0.65_07 DEV (NANIS on 2014-04-10)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_06/SSLeay.pm">0.65_06 DEV (NANIS on 2014-04-10)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_05/SSLeay.pm">0.65_05 DEV (NANIS on 2014-04-04)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_04/SSLeay.pm">0.65_04 DEV (NANIS on 2014-04-02)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_02/SSLeay.pm">0.65_02 DEV (NANIS on 2012-08-07)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_01/SSLeay.pm">0.65_01 DEV (NANIS on 2012-08-07)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.63/SSLeay.pm">0.63 (NANIS on 2012-08-06)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.62_01/SSLeay.pm">0.62_01 DEV (NANIS on 2012-08-04)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.61_05/SSLeay.pm">0.61_05 DEV (NANIS on 2012-08-04)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.61_04/SSLeay.pm">0.61_04 DEV (NANIS on 2012-08-01)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.61_02/SSLeay.pm">0.61_02 DEV (NANIS on 2012-08-01)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.60_01/SSLeay.pm">0.60_01 DEV (NANIS on 2012-07-30)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.60/SSLeay.pm">0.60 (NANIS on 2012-07-29)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.59_03/SSLeay.pm">0.59_03 DEV (NANIS on 2012-03-11)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.59_02/SSLeay.pm">0.59_02 DEV (NANIS on 2012-03-08)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.59_01/SSLeay.pm">0.59_01 DEV (NANIS on 2012-03-07)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.58_01/SSLeay.pm">0.58_01 DEV (NANIS on 2010-09-08)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.58/SSLeay.pm">0.58 (NANIS on 2010-08-25)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_05/SSLeay.pm">0.57_05 DEV (NANIS on 2010-08-15)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_04/SSLeay.pm">0.57_04 DEV (NANIS on 2010-08-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_03/SSLeay.pm">0.57_03 DEV (NANIS on 2010-08-09)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_02/SSLeay.pm">0.57_02 DEV (NANIS on 2010-08-08)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.56_01/SSLeay.pm">0.56_01 DEV (DLAND on 2007-08-09)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.54/SSLeay.pm">0.54 (DLAND on 2007-04-12)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_05/SSLeay.pm">0.53_05 DEV (DLAND on 2007-03-28)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_04/SSLeay.pm">0.53_04 DEV (DLAND on 2007-03-06)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_03/SSLeay.pm">0.53_03 DEV (DLAND on 2007-03-04)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_02/SSLeay.pm">0.53_02 DEV (DLAND on 2007-01-29)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_01/SSLeay.pm">0.53_01 DEV (DLAND on 2007-01-24)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53/SSLeay.pm">0.53 (DLAND on 2006-12-26)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.52_02/SSLeay.pm">0.52_02 DEV (DLAND on 2006-12-20)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.52_01/SSLeay.pm">0.52_01 DEV (DLAND on 2006-12-17)
+    </option>
+
+    <option value="TAKESAKO/Crypt-SSLeay-0.51/SSLeay.pm">0.51 (TAKESAKO on 2003-06-11)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.51/SSLeay.pm">0.51 (CHAMAS on 2003-06-11)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.49/SSLeay.pm">0.49 (CHAMAS on 2003-01-30)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.47/SSLeay.pm">0.47 (CHAMAS on 2003-01-30)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.45/SSLeay.pm">0.45 (CHAMAS on 2002-08-02)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.43/SSLeay.pm">0.43 (CHAMAS on 2002-07-30)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.41/SSLeay.pm">0.41 (CHAMAS on 2002-07-08)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.40/SSLeay.pm">0.40 (CHAMAS on 2002-07-03)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.39/SSLeay.pm">0.39 (CHAMAS on 2002-06-24)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.37/SSLeay.pm">0.37 (CHAMAS on 2002-01-21)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.35/SSLeay.pm">0.35 (CHAMAS on 2001-11-01)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.33/SSLeay.pm">0.33 (CHAMAS on 2001-11-01)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.31/SSLeay.pm">0.31 (CHAMAS on 2001-09-21)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.29/SSLeay.pm">0.29 (CHAMAS on 2001-06-29)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.27/SSLeay.pm">0.27 (CHAMAS on 2001-06-14)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.25/SSLeay.pm">0.25 (CHAMAS on 2001-04-10)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.23/SSLeay.pm">0.23 (CHAMAS on 2001-03-10)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.22/SSLeay.pm">0.22 (CHAMAS on 2001-01-29)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.21/SSLeay.pm">0.21 (CHAMAS on 2001-01-10)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.19/SSLeay.pm">0.19 (CHAMAS on 2001-01-07)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.18/SSLeay.pm">0.18 (CHAMAS on 2000-11-25)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.17/SSLeay.pm">0.17 (CHAMAS on 2000-09-05)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.16/SSLeay.pm">0.16 (CHAMAS on 2000-02-28)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.15/SSLeay.pm">0.15 (CHAMAS on 1999-11-23)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.14/SSLeay.pm">0.14 (CHAMAS on 1999-10-03)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.12/SSLeay.pm">0.12 (CHAMAS on 1999-09-14)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.11/SSLeay.pm">0.11 (CHAMAS on 1999-08-16)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.10/SSLeay.pm">0.10 (CHAMAS on 1999-08-11)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.06/SSLeay.pm">0.06 (GAAS on 1998-01-13)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.03/SSLeay.pm">0.03 (GAAS on 1998-01-11)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.02/SSLeay.pm">0.02 (GAAS on 1998-01-10)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.01/SSLeay.pm">0.01 (GAAS on 1998-01-10)
+    </option>
+
+
+    </select>
+</li>
+<li>
+    <select name="release" onchange="document.location.href='/diff/file/?target=NANIS/Crypt-SSLeay-0.72/SSLeay.pm&amp;source=' + encodeURIComponent(this.value)" class="form-control tool-bar-form">
+        <option>Diff with version</option>
+    <option value="NANIS/Crypt-SSLeay-0.73_06/SSLeay.pm">0.73_06 DEV (NANIS on 2017-04-03)</option>
+
+    <option value="NANIS/Crypt-SSLeay-0.73_04/SSLeay.pm">0.73_04 DEV (NANIS on 2014-10-27)</option>
+
+    <option value="NANIS/Crypt-SSLeay-0.64/SSLeay.pm">0.64 (NANIS on 2012-08-06)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.57_01/SSLeay.pm">0.57_01 DEV (DLAND on 2008-02-18)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.57/SSLeay.pm">0.57 (DLAND on 2007-09-17)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.56/SSLeay.pm">0.56 (DLAND on 2007-07-10)</option>
+
+    <option value="DLAND/Crypt-SSLeay-0.55/SSLeay.pm">0.55 (DLAND on 2007-06-01)</option>
+
+    <option value="GAAS/Crypt-SSLeay-0.07/SSLeay.pm">0.07 (GAAS on 1998-10-13)</option>
+
+<optgroup label="BackPAN"></optgroup>
+
+    <option value="NANIS/Crypt-SSLeay-0.73_03/SSLeay.pm">0.73_03 DEV (NANIS on 2014-10-27)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.70/SSLeay.pm">0.70 (NANIS on 2014-04-24)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.68/SSLeay.pm">0.68 (NANIS on 2014-04-24)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.66/SSLeay.pm">0.66 (NANIS on 2014-04-24)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_15/SSLeay.pm">0.65_15 DEV (NANIS on 2014-04-23)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_14/SSLeay.pm">0.65_14 DEV (NANIS on 2014-04-17)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_13/SSLeay.pm">0.65_13 DEV (NANIS on 2014-04-15)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_12/SSLeay.pm">0.65_12 DEV (NANIS on 2014-04-14)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_11/SSLeay.pm">0.65_11 DEV (NANIS on 2014-04-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_10/SSLeay.pm">0.65_10 DEV (NANIS on 2014-04-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_09/SSLeay.pm">0.65_09 DEV (NANIS on 2014-04-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_08/SSLeay.pm">0.65_08 DEV (NANIS on 2014-04-10)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_07/SSLeay.pm">0.65_07 DEV (NANIS on 2014-04-10)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_06/SSLeay.pm">0.65_06 DEV (NANIS on 2014-04-10)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_05/SSLeay.pm">0.65_05 DEV (NANIS on 2014-04-04)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_04/SSLeay.pm">0.65_04 DEV (NANIS on 2014-04-02)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_02/SSLeay.pm">0.65_02 DEV (NANIS on 2012-08-07)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.65_01/SSLeay.pm">0.65_01 DEV (NANIS on 2012-08-07)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.63/SSLeay.pm">0.63 (NANIS on 2012-08-06)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.62_01/SSLeay.pm">0.62_01 DEV (NANIS on 2012-08-04)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.61_05/SSLeay.pm">0.61_05 DEV (NANIS on 2012-08-04)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.61_04/SSLeay.pm">0.61_04 DEV (NANIS on 2012-08-01)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.61_02/SSLeay.pm">0.61_02 DEV (NANIS on 2012-08-01)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.60_01/SSLeay.pm">0.60_01 DEV (NANIS on 2012-07-30)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.60/SSLeay.pm">0.60 (NANIS on 2012-07-29)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.59_03/SSLeay.pm">0.59_03 DEV (NANIS on 2012-03-11)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.59_02/SSLeay.pm">0.59_02 DEV (NANIS on 2012-03-08)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.59_01/SSLeay.pm">0.59_01 DEV (NANIS on 2012-03-07)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.58_01/SSLeay.pm">0.58_01 DEV (NANIS on 2010-09-08)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.58/SSLeay.pm">0.58 (NANIS on 2010-08-25)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_05/SSLeay.pm">0.57_05 DEV (NANIS on 2010-08-15)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_04/SSLeay.pm">0.57_04 DEV (NANIS on 2010-08-12)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_03/SSLeay.pm">0.57_03 DEV (NANIS on 2010-08-09)
+    </option>
+
+    <option value="NANIS/Crypt-SSLeay-0.57_02/SSLeay.pm">0.57_02 DEV (NANIS on 2010-08-08)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.56_01/SSLeay.pm">0.56_01 DEV (DLAND on 2007-08-09)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.54/SSLeay.pm">0.54 (DLAND on 2007-04-12)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_05/SSLeay.pm">0.53_05 DEV (DLAND on 2007-03-28)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_04/SSLeay.pm">0.53_04 DEV (DLAND on 2007-03-06)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_03/SSLeay.pm">0.53_03 DEV (DLAND on 2007-03-04)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_02/SSLeay.pm">0.53_02 DEV (DLAND on 2007-01-29)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53_01/SSLeay.pm">0.53_01 DEV (DLAND on 2007-01-24)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.53/SSLeay.pm">0.53 (DLAND on 2006-12-26)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.52_02/SSLeay.pm">0.52_02 DEV (DLAND on 2006-12-20)
+    </option>
+
+    <option value="DLAND/Crypt-SSLeay-0.52_01/SSLeay.pm">0.52_01 DEV (DLAND on 2006-12-17)
+    </option>
+
+    <option value="TAKESAKO/Crypt-SSLeay-0.51/SSLeay.pm">0.51 (TAKESAKO on 2003-06-11)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.51/SSLeay.pm">0.51 (CHAMAS on 2003-06-11)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.49/SSLeay.pm">0.49 (CHAMAS on 2003-01-30)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.47/SSLeay.pm">0.47 (CHAMAS on 2003-01-30)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.45/SSLeay.pm">0.45 (CHAMAS on 2002-08-02)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.43/SSLeay.pm">0.43 (CHAMAS on 2002-07-30)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.41/SSLeay.pm">0.41 (CHAMAS on 2002-07-08)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.40/SSLeay.pm">0.40 (CHAMAS on 2002-07-03)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.39/SSLeay.pm">0.39 (CHAMAS on 2002-06-24)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.37/SSLeay.pm">0.37 (CHAMAS on 2002-01-21)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.35/SSLeay.pm">0.35 (CHAMAS on 2001-11-01)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.33/SSLeay.pm">0.33 (CHAMAS on 2001-11-01)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.31/SSLeay.pm">0.31 (CHAMAS on 2001-09-21)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.29/SSLeay.pm">0.29 (CHAMAS on 2001-06-29)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.27/SSLeay.pm">0.27 (CHAMAS on 2001-06-14)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.25/SSLeay.pm">0.25 (CHAMAS on 2001-04-10)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.23/SSLeay.pm">0.23 (CHAMAS on 2001-03-10)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.22/SSLeay.pm">0.22 (CHAMAS on 2001-01-29)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.21/SSLeay.pm">0.21 (CHAMAS on 2001-01-10)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.19/SSLeay.pm">0.19 (CHAMAS on 2001-01-07)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.18/SSLeay.pm">0.18 (CHAMAS on 2000-11-25)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.17/SSLeay.pm">0.17 (CHAMAS on 2000-09-05)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.16/SSLeay.pm">0.16 (CHAMAS on 2000-02-28)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.15/SSLeay.pm">0.15 (CHAMAS on 1999-11-23)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.14/SSLeay.pm">0.14 (CHAMAS on 1999-10-03)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.12/SSLeay.pm">0.12 (CHAMAS on 1999-09-14)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.11/SSLeay.pm">0.11 (CHAMAS on 1999-08-16)
+    </option>
+
+    <option value="CHAMAS/Crypt-SSLeay-0.10/SSLeay.pm">0.10 (CHAMAS on 1999-08-11)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.06/SSLeay.pm">0.06 (GAAS on 1998-01-13)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.03/SSLeay.pm">0.03 (GAAS on 1998-01-11)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.02/SSLeay.pm">0.02 (GAAS on 1998-01-10)
+    </option>
+
+    <option value="GAAS/Crypt-SSLeay-0.01/SSLeay.pm">0.01 (GAAS on 1998-01-10)
+    </option>
+
+
+    </select>
+</li>
+
+<li class="nav-header">Permalinks</li>
+<li>
+    <a href="/pod/release/NANIS/Crypt-SSLeay-0.72/SSLeay.pm">This version</a>
+</li>
+<li>
+    <a itemprop="url" href="/pod/Crypt::SSLeay">Latest version</a>
+</li>
+
+  </ul>
+
+  <button id="right-panel-toggle" class="btn-link" onclick="togglePanel('right'); return false;"><span class="panel-hidden">Show</span><span class="panel-visible">Hide</span> Right Panel</button>
+  <div id="right-panel" class="pull-right">
+  <div class="box-right">
+  <!-- For plussers -->
+
+<div class="plussers hidden-phone">
+<div><b>++ed by:</b></div>
+
+
+
+
+<a class="display-all" href="/author/MICHIELB"><img src="https://www.gravatar.com/avatar/c35b97da3835376f2d804b022121f962?s=20&amp;d=identicon" title="MICHIELB" alt="MICHIELB"></a>
+
+
+
+<a class="display-all" href="/author/PINGAN"><img src="https://www.gravatar.com/avatar/a02222e5e0e4fd24d52fc29a08ac6bcb?s=20&amp;d=identicon" title="PINGAN" alt="PINGAN"></a>
+
+
+
+<a class="display-all" href="/author/KEEDI"><img src="https://www.gravatar.com/avatar/95f905a7a4ccc573c711e9d264c0fde8?s=20&amp;d=identicon" title="KEEDI" alt="KEEDI"></a>
+
+
+
+<a class="display-all" href="/author/FANY"><img src="https://www.gravatar.com/avatar/7bc0edaceda1cb0a5b56b844a5b406c2?s=20&amp;d=identicon" title="FANY" alt="FANY"></a>
+
+
+
+<a class="display-all" href="/author/MISHIN"><img src="https://www.gravatar.com/avatar/7aefe037fc617ef89780ad89de3deb87?s=20&amp;d=identicon" title="MISHIN" alt="MISHIN"></a>
+
+
+
+<!-- Display counts of plussers-->
+<p>
+
+<a href="/release/Crypt-SSLeay/plussers">7 PAUSE users</a><br>
+
+
+2 non-PAUSE users.
+
+</p>
+</div>
+
+
+<div class="author-pic">
+<a href="/author/NANIS">
+  <img src="https://www.gravatar.com/avatar/d8e59c4029694b9dd0ed7a37fed4d6ad?s=130&amp;d=identicon" alt="Author image">
+</a>
+<strong>
+  <a rel="author" href="/author/NANIS">NANIS</a>
+</strong>
+<span title="A. Sinan Unur">A. Sinan Ünür</span>
+</div>
+
+  
+
+<div id="contributors">
+    <div class="contributors-header">and 3 contributors</div>
+    <div align="right">
+        <button class="btn-link"
+            onclick="$(this).hide(); $('#contributors ul').slideDown(); return false;"
+        >show them</button>
+    </div>
+    <ul class="nav nav-list box-right" style="display: none">
+    
+        <li class="contributor">
+        David Landgren
+        
+        </li>
+    
+        <li class="contributor">
+        Joshua Chamas
+        
+        </li>
+    
+        <li class="contributor">
+        Gisle Aas
+        
+        </li>
+    
+    </ul>
+</div>
+
+
+
+  </div>
+  <ul class="nav-list box-right hidden-phone dependencies">
+    <li class="nav-header">Dependencies</li>
+    <li><a href="/pod/LWP::Protocol::https" title="LWP::Protocol::https" class="ellipsis">LWP::Protocol::https</a></li>
+    <li><a href="/pod/MIME::Base64" title="MIME::Base64" class="ellipsis">MIME::Base64</a></li>
+    <li><i class="ttip" title="dynamic_config enabled">and possibly others</i></li>
+    <li><hr /></li>
+    <li>
+        <a href="http://deps.cpantesters.org/?module=Crypt::SSLeay">
+        <i class="fa fa-retweet fa-fw black"></i>CPAN Testers List</a>
+    </li>
+    <li>        <a href="/requires/module/Crypt::SSLeay">        <i class="fa fa-share fa-fw black"></i>Reverse dependencies</a>
+    </li>
+    <li>
+        <a href="https://cpandeps.grinnz.com/?dist=Crypt-SSLeay">
+        <i class="fa fa-asterisk fa-fw black"></i>Dependency graph</a>
+    </li>
+</ul>
+
+  </div>
+  <a name="___pod"></a>
+  <div class="pod content anchors">
+
+  
+  <ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#HEARTBLEED-WARNING">HEARTBLEED WARNING</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#DO-YOU-NEED-Crypt::SSLeay?">DO YOU NEED Crypt::SSLeay?</a></li>
+  <li><a href="#ENVIRONMENT-VARIABLES">ENVIRONMENT VARIABLES</a></li>
+  <li><a href="#INSTALL">INSTALL</a>
+    <ul>
+      <li><a href="#OpenSSL">OpenSSL</a></li>
+      <li><a href="#Crypt::SSLeay-via-Makefile.PL">Crypt::SSLeay via Makefile.PL</a></li>
+      <li><a href="#Crypt::SSLeay">Crypt::SSLeay</a>
+        <ul>
+          <li><a href="#VMS">VMS</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#PROXY-SUPPORT">PROXY SUPPORT</a>
+    <ul>
+      <li><a href="#LWP::UserAgent-proxy-support">LWP::UserAgent proxy support</a></li>
+      <li><a href="#Crypt::SSLeay-proxy-support">Crypt::SSLeay proxy support</a></li>
+    </ul>
+  </li>
+  <li><a href="#CLIENT-CERTIFICATE-SUPPORT">CLIENT CERTIFICATE SUPPORT</a>
+    <ul>
+      <li><a href="#Creating-a-test-certificate">Creating a test certificate</a></li>
+      <li><a href="#PKCS12-support">PKCS12 support</a></li>
+    </ul>
+  </li>
+  <li><a href="#SSL-versions">SSL versions</a></li>
+  <li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#SUPPORT">SUPPORT</a></li>
+  <li><a href="#AUTHORS">AUTHORS</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+  <li><a href="#LICENSE">LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Crypt::SSLeay - OpenSSL support for LWP</p>
+
+<h1 id="HEARTBLEED-WARNING"><a id="HEARTBLEED"></a>HEARTBLEED WARNING</h1>
+
+<p><code>perl Makefile.PL</code> will display a warning if it thinks your OpenSSL might be vulnerable to the <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0160">Heartbleed Bug</a>. You can, of course, go ahead and install the module, but you should be aware that your system might be exposed to an extremely serious vulnerability. This is just a heuristic based on the version reported by OpenSSL. It is entirely possible that your distrbution actually pushed a patched library, so if you have concerns, you should investigate further.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    use Net::SSL;
+    use LWP::UserAgent;
+
+    my $ua  = LWP::UserAgent-&gt;new(
+        ssl_opts =&gt; { verify_hostname =&gt; 0 },
+    );
+
+    my $response = $ua-&gt;get(&#39;https://www.example.com/&#39;);
+    print $response-&gt;content, &quot;\n&quot;;</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This Perl module provides support for the HTTPS protocol under <a href="/pod/LWP">LWP</a>, to allow an <a href="/pod/LWP::UserAgent">LWP::UserAgent</a> object to perform GET, HEAD, and POST requests over encrypted socket connections. Please see <a href="/pod/LWP">LWP</a> for more information on POST requests.</p>
+
+<p>The <code>Crypt::SSLeay</code> package provides <code>Net::SSL</code>, which, if requested, is loaded by <code>LWP::Protocol::https</code> for https requests and provides the necessary SSL glue.</p>
+
+<p>This distribution also makes following deprecated modules available:</p>
+
+<pre><code>    Crypt::SSLeay::CTX
+    Crypt::SSLeay::Conn
+    Crypt::SSLeay::X509</code></pre>
+
+<h1 id="DO-YOU-NEED-Crypt::SSLeay?"><a id="DO"></a><a id="DO-YOU-NEED-Crypt::SSLeay"></a>DO YOU NEED Crypt::SSLeay?</h1>
+
+<p>Starting with version 6.02 of <a href="/pod/LWP">LWP</a>, <code>https</code> support was unbundled into <a href="/pod/LWP::Protocol::https">LWP::Protocol::https</a>. This module specifies as one of its prerequisites <a href="/pod/IO::Socket::SSL">IO::Socket::SSL</a> which is automatically used by <a href="/pod/LWP::UserAgent">LWP::UserAgent</a> unless this preference is overridden separately. <code>IO::Socket::SSL</code> is a more complete implementation, and, crucially, it allows hostname verification. <code>Crypt::SSLeay</code> does not support this. At this point, <code>Crypt::SSLeay</code> is maintained to support existing software that already depends on it. However, it is possible that your software does not really depend on <code>Crypt::SSLeay</code>, only on the ability of <code>LWP::UserAgent</code> class to communicate with sites over SSL/TLS.</p>
+
+<p>If are using version <code>LWP</code> 6.02 or later, and therefore have installed <code>LWP::Protocol::https</code> and its dependencies, and do not explicitly <code>use</code> <code>Net::SSL</code> before loading <code>LWP::UserAgent</code>, or override the default socket class, you are probably using <code>IO::Socket::SSL</code> and do not really need <code>Crypt::SSLeay</code>.</p>
+
+<p>If you have both <code>Crypt::SSLeay</code> and <code>IO::Socket::SSL</code> installed, and would like to force <code>LWP::UserAgent</code> to use <code>Crypt::SSLeay</code>, you can use:</p>
+
+<pre><code>    use Net::HTTPS;
+    $Net::HTTPS::SSL_SOCKET_CLASS = &#39;Net::SSL&#39;;
+    use LWP::UserAgent;</code></pre>
+
+<p>or</p>
+
+<pre><code>    local $ENV{PERL_NET_HTTPS_SSL_SOCKET_CLASS} = &#39;Net::SSL&#39;;
+    use LWP::UserAgent;</code></pre>
+
+<p>or</p>
+
+<pre><code>    use Net::SSL;
+    use LWP::UserAgent;</code></pre>
+
+<h1 id="ENVIRONMENT-VARIABLES"><a id="ENVIRONMENT"></a>ENVIRONMENT VARIABLES</h1>
+
+<dl>
+
+<dt id="Specify-SSL-Socket-Class"><a id="Specify"></a>Specify SSL Socket Class</dt>
+<dd>
+
+<p><code>$ENV{PERL_NET_HTTPS_SSL_SOCKET_CLASS}</code> can be used to instruct <code>LWP::UserAgent</code> to use <code>Net::SSL</code> for HTTPS support rather than <code>IO::Socket::SSL</code>.</p>
+
+</dd>
+<dt id="Proxy-Support"><a id="Proxy"></a>Proxy Support</dt>
+<dd>
+
+<pre><code>    $ENV{HTTPS_PROXY} = &#39;http://proxy_hostname_or_ip:port&#39;;</code></pre>
+
+</dd>
+<dt id="Proxy-Basic-Authentication"><a id="Proxy1"></a>Proxy Basic Authentication</dt>
+<dd>
+
+<pre><code>    $ENV{HTTPS_PROXY_USERNAME} = &#39;username&#39;;
+    $ENV{HTTPS_PROXY_PASSWORD} = &#39;password&#39;;</code></pre>
+
+</dd>
+<dt id="SSL-diagnostics-and-Debugging"><a id="SSL"></a>SSL diagnostics and Debugging</dt>
+<dd>
+
+<pre><code>    $ENV{HTTPS_DEBUG} = 1;</code></pre>
+
+</dd>
+<dt id="Default-SSL-Version"><a id="Default"></a>Default SSL Version</dt>
+<dd>
+
+<pre><code>    $ENV{HTTPS_VERSION} = &#39;3&#39;;</code></pre>
+
+</dd>
+<dt id="Client-Certificate-Support"><a id="Client"></a>Client Certificate Support</dt>
+<dd>
+
+<pre><code>    $ENV{HTTPS_CERT_FILE} = &#39;certs/notacacert.pem&#39;;
+    $ENV{HTTPS_KEY_FILE}  = &#39;certs/notacakeynopass.pem&#39;;</code></pre>
+
+</dd>
+<dt id="CA-cert-Peer-Verification"><a id="CA"></a>CA cert Peer Verification</dt>
+<dd>
+
+<pre><code>    $ENV{HTTPS_CA_FILE}   = &#39;certs/ca-bundle.crt&#39;;
+    $ENV{HTTPS_CA_DIR}    = &#39;certs/&#39;;</code></pre>
+
+</dd>
+<dt id="Client-PKCS12-cert-support"><a id="Client1"></a>Client PKCS12 cert support</dt>
+<dd>
+
+<pre><code>    $ENV{HTTPS_PKCS12_FILE}     = &#39;certs/pkcs12.pkcs12&#39;;
+    $ENV{HTTPS_PKCS12_PASSWORD} = &#39;PKCS12_PASSWORD&#39;;</code></pre>
+
+</dd>
+</dl>
+
+<h1 id="INSTALL">INSTALL</h1>
+
+<h2 id="OpenSSL">OpenSSL</h2>
+
+<p>You must have OpenSSL installed before compiling this module. You can get the latest OpenSSL package from <a href="https://www.openssl.org/source/">https://www.openssl.org/source/</a>. We no longer support pre-2000 versions of OpenSSL.</p>
+
+<p>If you are building OpenSSL from source, please follow the directions included in the source package.</p>
+
+<h2 id="Crypt::SSLeay-via-Makefile.PL"><a id="Crypt"></a>Crypt::SSLeay via Makefile.PL</h2>
+
+<p><code>Makefile.PL</code> accepts the following command line arguments:</p>
+
+<dl>
+
+<dt id="incpath"><code>incpath</code></dt>
+<dd>
+
+<p>Path to OpenSSL headers. Can also be specified via <code>$ENV{OPENSSL_INCLUDE}</code>. If the command line argument is provided, it overrides any value specified via the environment variable. Of course, you can ignore both the command line argument and the environment variable, and just add the path to your compiler specific environment variable such as <code>CPATH</code> or <code>INCLUDE</code> etc.</p>
+
+</dd>
+<dt id="libpath"><code>libpath</code></dt>
+<dd>
+
+<p>Path to OpenSSL libraries. Can also be specified via <code>$ENV{OPENSSL_LIB}</code>. If the command line argument is provided, it overrides any value specified by the environment variable. Of course, you can ignore both the command line argument and the environment variable and just add the path to your compiler specific environment variable such as <code>LIBRARY_PATH</code> or <code>LIB</code> etc.</p>
+
+</dd>
+<dt id="live-tests"><a id="live"></a><code>live-tests</code></dt>
+<dd>
+
+<p>Use <code>--live-tests</code> to request tests that try to connect to an external web site, and <code>--no-live_tests</code> to prevent such tests from running. If you run <code>Makefile.PL</code> interactively, and this argument is not specified on the command line, you will be prompted for a value.</p>
+
+<p>Default is false.</p>
+
+</dd>
+<dt id="static"><code>static</code></dt>
+<dd>
+
+<p>Boolean. Default is false. <b>TODO</b>: Does it work?</p>
+
+</dd>
+<dt id="verbose"><code>verbose</code></dt>
+<dd>
+
+<p>Boolean. Default is false. If you pass <code>--verbose</code> on the command line, both <code>Devel::CheckLib</code> and <code>ExtUtils::CBuilder</code> instances will be configured to echo what they are doing.</p>
+
+</dd>
+</dl>
+
+<p>If everything builds OK, but you get failures when during tests, ensure that <code>LD_LIBRARY_PATH</code> points to the location where the correct shared libraries are located.</p>
+
+<p>If you are using a custom OpenSSL build, please keep in mind that <code>Crypt::SSLeay</code> must be built using the same compiler and build tools used to build <code>perl</code> and OpenSSL. This can be more of an issue on Windows. If you are using Active State Perl, install the MinGW package distributed by them, and build OpenSSL using that before trying to build this module. If you have built your own Perl using Microsoft SDK tools or IDEs, make sure you build OpenSSL using the same tools.</p>
+
+<p>Depending on your OS, pre-built OpenSSL packages may be available. To get the require headers and import libraries, you may need to install a development version of your operating system&#39;s OpenSSL library package. The key is that <code>Crypt::SSLeay</code> makes calls to the OpenSSL library, and how to do so is specified in the C header files that come with the library. Some systems break out the header files into a separate package from that of the libraries. Once the program has been built, you don&#39;t need the headers any more.</p>
+
+<h2 id="Crypt::SSLeay"><a id="Crypt1"></a>Crypt::SSLeay</h2>
+
+<p>The latest Crypt::SSLeay can be found at your nearest CPAN mirror, as well as <a href="https://metacpan.org/pod/Crypt::SSLeay">https://metacpan.org/pod/Crypt::SSLeay</a>.</p>
+
+<p>Once you have downloaded it, <code>Crypt::SSLeay</code> installs easily using the standard build process:</p>
+
+<pre><code>    $ perl Makefile.PL
+    $ make
+    $ make test
+    $ make install</code></pre>
+
+<p>or</p>
+
+<pre><code>    $ cpanm Crypt::SSLeay</code></pre>
+
+<p>If you have OpenSSL headers and libraries in nonstandard locations, you can use</p>
+
+<pre><code>    $ perl Makefile.PL --incpath=... --libpath=...</code></pre>
+
+<p>If you would like to use <code>cpanm</code> with such custom locations, you can do</p>
+
+<pre><code>    $ OPENSSL_INCLUDE=... OPENSSL_LIB=... cpanm Crypt::SSLeay</code></pre>
+
+<p>or, on Windows,</p>
+
+<pre><code>    &gt; set OPENSSL_INCLUDE=...
+    &gt; set OPENSSL_LIB=...
+    &gt; cpanm Crypt::SSLeay</code></pre>
+
+<p>If you are on Windows, and using a MinGW distribution bundled with ActiveState Perl or Strawberry Perl, you would use <code>dmake</code> rather than <code>make</code>. If you are using Microsoft&#39;s build tools, you would use <code>nmake</code>.</p>
+
+<p>For unattended (batch) installations, to be absolutely certain that <i>Makefile.PL</i> does not prompt for questions on STDIN, set the environment variable <code>PERL_MM_USE_DEFAULT=1</code> as with any CPAN module built using <a href="/pod/ExtUtils::MakeMaker">ExtUtils::MakeMaker</a>.</p>
+
+<h3 id="VMS">VMS</h3>
+
+<p>I do not have any experience with VMS. If OpenSSL headers and libraries are not in standard locations searched by your build system by default, please set things up so that they are. If you have generic instructions on how to do it, please open a ticket on RT with the information so I can add it to this document.</p>
+
+<h1 id="PROXY-SUPPORT"><a id="PROXY"></a>PROXY SUPPORT</h1>
+
+<p><a href="/pod/LWP::UserAgent">LWP::UserAgent</a> and <a href="/pod/Crypt::SSLeay">Crypt::SSLeay</a> have their own versions of proxy support. Please read these sections to see which one is appropriate.</p>
+
+<h2 id="LWP::UserAgent-proxy-support"><a id="LWP"></a>LWP::UserAgent proxy support</h2>
+
+<p><code>LWP::UserAgent</code> has its own methods of proxying which may work for you and is likely to be incompatible with <code>Crypt::SSLeay</code> proxy support. To use <code>LWP::UserAgent</code> proxy support, try something like:</p>
+
+<pre><code>    my $ua = LWP::UserAgent-&gt;new;
+    $ua-&gt;proxy([qw( https http )], &quot;$proxy_ip:$proxy_port&quot;);</code></pre>
+
+<p>At the time of this writing, libwww v5.6 seems to proxy https requests fine with an Apache <i>mod_proxy</i> server. It sends a line like:</p>
+
+<pre><code>    GET https://www.example.com HTTP/1.1</code></pre>
+
+<p>to the proxy server, which is not the <code>CONNECT</code> request that some proxies would expect, so this may not work with other proxy servers than <i>mod_proxy</i>. The <code>CONNECT</code> method is used by <code>Crypt::SSLeay</code>&#39;s internal proxy support.</p>
+
+<h2 id="Crypt::SSLeay-proxy-support"><a id="Crypt2"></a>Crypt::SSLeay proxy support</h2>
+
+<p>For native <code>Crypt::SSLeay</code> proxy support of https requests, you need to set the environment variable <code>HTTPS_PROXY</code> to your proxy server and port, as in:</p>
+
+<pre><code>    # proxy support
+    $ENV{HTTPS_PROXY} = &#39;http://proxy_hostname_or_ip:port&#39;;
+    $ENV{HTTPS_PROXY} = &#39;127.0.0.1:8080&#39;;</code></pre>
+
+<p>Use of the <code>HTTPS_PROXY</code> environment variable in this way is similar to <code>LWP::UserAgent-</code>env_proxy()&gt; usage, but calling that method will likely override or break the <code>Crypt::SSLeay</code> support, so do not mix the two.</p>
+
+<p>Basic auth credentials to the proxy server can be provided this way:</p>
+
+<pre><code>    # proxy_basic_auth
+    $ENV{HTTPS_PROXY_USERNAME} = &#39;username&#39;;
+    $ENV{HTTPS_PROXY_PASSWORD} = &#39;password&#39;;</code></pre>
+
+<p>For an example of LWP scripting with <code>Crypt::SSLeay</code> native proxy support, please look at the <i>eg/lwp-ssl-test</i> script in the <code>Crypt::SSLeay</code> distribution.</p>
+
+<h1 id="CLIENT-CERTIFICATE-SUPPORT"><a id="CLIENT"></a>CLIENT CERTIFICATE SUPPORT</h1>
+
+<p>Client certificates are supported. PEM encoded certificate and private key files may be used like this:</p>
+
+<pre><code>    $ENV{HTTPS_CERT_FILE} = &#39;certs/notacacert.pem&#39;;
+    $ENV{HTTPS_KEY_FILE}  = &#39;certs/notacakeynopass.pem&#39;;</code></pre>
+
+<p>You may test your files with the <i>eg/net-ssl-test</i> program, bundled with the distribution, by issuing a command like:</p>
+
+<pre><code>    perl eg/net-ssl-test -cert=certs/notacacert.pem \
+        -key=certs/notacakeynopass.pem -d GET $HOST_NAME</code></pre>
+
+<p>Additionally, if you would like to tell the client where the CA file is, you may set these.</p>
+
+<pre><code>    $ENV{HTTPS_CA_FILE} = &quot;some_file&quot;;
+    $ENV{HTTPS_CA_DIR}  = &quot;some_dir&quot;;</code></pre>
+
+<p>Note that, if specified, <code>$ENV{HTTPS_CA_FILE}</code> must point to the actual certificate file. That is, <code>$ENV{HTTPS_CA_DIR}</code> is *not* the path were <code>$ENV{HTTPS_CA_FILE}</code> is located.</p>
+
+<p>For certificates in <code>$ENV{HTTPS_CA_DIR}</code> to be picked up, follow the instructions on <a href="http://www.openssl.org/docs/ssl/SSL_CTX_load_verify_locations.html">http://www.openssl.org/docs/ssl/SSL_CTX_load_verify_locations.html</a></p>
+
+<p>There is no sample CA cert file at this time for testing, but you may configure <i>eg/net-ssl-test</i> to use your CA cert with the -CAfile option.</p>
+
+<p>(TODO: then what is the <i>./certs</i> directory in the distribution?)</p>
+
+<h2 id="Creating-a-test-certificate"><a id="Creating"></a>Creating a test certificate</h2>
+
+<p>To create simple test certificates with OpenSSL, you may run the following command:</p>
+
+<pre><code>    openssl req -config /usr/local/openssl/openssl.cnf \
+        -new -days 365 -newkey rsa:1024 -x509 \
+        -keyout notacakey.pem -out notacacert.pem</code></pre>
+
+<p>To remove the pass phrase from the key file, run:</p>
+
+<pre><code>    openssl rsa -in notacakey.pem -out notacakeynopass.pem</code></pre>
+
+<h2 id="PKCS12-support"><a id="PKCS12"></a>PKCS12 support</h2>
+
+<p>The directives for enabling use of PKCS12 certificates is:</p>
+
+<pre><code>    $ENV{HTTPS_PKCS12_FILE}     = &#39;certs/pkcs12.pkcs12&#39;;
+    $ENV{HTTPS_PKCS12_PASSWORD} = &#39;PKCS12_PASSWORD&#39;;</code></pre>
+
+<p>Use of this type of certificate takes precedence over previous certificate settings described.</p>
+
+<p>(TODO: unclear? Meaning &quot;the presence of this type of certificate&quot;?)</p>
+
+<h1 id="SSL-versions"><a id="SSL1"></a>SSL versions</h1>
+
+<p><code>Crypt::SSLeay</code> tries very hard to connect to <i>any</i> SSL web server accommodating servers that are buggy, old or simply not standards-compliant. To this effect, this module will try SSL connections in this order:</p>
+
+<dl>
+
+<dt id="SSL-v23"><a id="SSL2"></a>SSL v23</dt>
+<dd>
+
+<p>should allow v2 and v3 servers to pick their best type</p>
+
+</dd>
+<dt id="SSL-v3"><a id="SSL3"></a>SSL v3</dt>
+<dd>
+
+<p>best connection type</p>
+
+</dd>
+<dt id="SSL-v2"><a id="SSL4"></a>SSL v2</dt>
+<dd>
+
+<p>old connection type</p>
+
+</dd>
+</dl>
+
+<p>Unfortunately, some servers seem not to handle a reconnect to SSL v3 after a failed connect of SSL v23 is tried, so you may set before using LWP or Net::SSL:</p>
+
+<pre><code>    $ENV{HTTPS_VERSION} = 3;</code></pre>
+
+<p>to force a version 3 SSL connection first. At this time only a version 2 SSL connection will be tried after this, as the connection attempt order remains unchanged by this setting.</p>
+
+<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</h1>
+
+<p>Many thanks to the following individuals who helped improve <code>Crypt-SSLeay</code>:</p>
+
+<p><i>Gisle Aas</i> for writing this module and many others including libwww, for perl. The web will never be the same :)</p>
+
+<p><i>Ben Laurie</i> deserves kudos for his excellent patches for better error handling, SSL information inspection, and random seeding.</p>
+
+<p><i>Dongqiang Bai</i> for host name resolution fix when using a proxy.</p>
+
+<p><i>Stuart Horner</i> of Core Communications, Inc. who found the need for building <code>--shared</code> OpenSSL libraries.</p>
+
+<p><i>Pavel Hlavnicka</i> for a patch for freeing memory when using a pkcs12 file, and for inspiring more robust <code>read()</code> behavior.</p>
+
+<p><i>James Woodyatt</i> is a champ for finding a ridiculous memory leak that has been the bane of many a Crypt::SSLeay user.</p>
+
+<p><i>Bryan Hart</i> for his patch adding proxy support, and thanks to <i>Tobias Manthey</i> for submitting another approach.</p>
+
+<p><i>Alex Rhomberg</i> for Alpha linux ccc patch.</p>
+
+<p><i>Tobias Manthey</i> for his patches for client certificate support.</p>
+
+<p><i>Daisuke Kuroda</i> for adding PKCS12 certificate support.</p>
+
+<p><i>Gamid Isayev</i> for CA cert support and insights into error messaging.</p>
+
+<p><i>Jeff Long</i> for working through a tricky CA cert SSLClientVerify issue.</p>
+
+<p><i>Chip Turner</i> for a patch to build under perl 5.8.0.</p>
+
+<p><i>Joshua Chamas</i> for the time he spent maintaining the module.</p>
+
+<p><i>Jeff Lavallee</i> for help with alarms on read failures (CPAN bug #12444).</p>
+
+<p><i>Guenter Knauf</i> for significant improvements in configuring things in Win32 and Netware lands and Jan Dubois for various suggestions for improvements.</p>
+
+<p>and <i>many others</i> who provided bug reports, suggestions, fixes and patches.</p>
+
+<p>If you have reported a bug or provided feedback, and you would like to be mentioned by name in this section, please file request on <a href="http://rt.cpan.org/NoAuth/Bugs.html?Dist=Crypt-SSLeay">rt.cpan.org</a>.</p>
+
+<h1 id="SEE-ALSO"><a id="SEE"></a>SEE ALSO</h1>
+
+<dl>
+
+<dt id="Net::SSL"><a id="Net"></a>Net::SSL</dt>
+<dd>
+
+<p>If you have downloaded this distribution as of a dependency of another distribution, it&#39;s probably due to this module (which is included in this distribution).</p>
+
+</dd>
+<dt id="Net::SSLeay"><a id="Net1"></a>Net::SSLeay</dt>
+<dd>
+
+<p><a href="/pod/Net::SSLeay">Net::SSLeay</a> provides access to the OpenSSL API directly from Perl. See <a href="https://metacpan.org/pod/Net::SSLeay/">https://metacpan.org/pod/Net::SSLeay/</a>.</p>
+
+</dd>
+<dt id="Building-OpenSSL-on-64-bit-Windows-8.1-Pro-using-SDK-tools"><a id="Building"></a>Building OpenSSL on 64-bit Windows 8.1 Pro using SDK tools</dt>
+<dd>
+
+<p>My blog post <a href="http://blog.nu42.com/2014/04/building-openssl-101g-on-64-bit-windows.html">http://blog.nu42.com/2014/04/building-openssl-101g-on-64-bit-windows.html</a> might be helpful.</p>
+
+</dd>
+</dl>
+
+<h1 id="SUPPORT">SUPPORT</h1>
+
+<p>For issues related to using of <code>Crypt::SSLeay</code> &amp; <code>Net::SSL</code> with Perl&#39;s <a href="/pod/LWP">LWP</a>, please send email to <code>libwww@perl.org</code>.</p>
+
+<p>For OpenSSL or general SSL support, including issues associated with building and installing OpenSSL on your system, please email the OpenSSL users mailing list at <code>openssl-users@openssl.org</code>. See <a href="http://www.openssl.org/support/community.html">http://www.openssl.org/support/community.html</a> for other mailing lists and archives.</p>
+
+<p>Please report all bugs using <a href="http://rt.cpan.org/NoAuth/Bugs.html?Dist=Crypt-SSLeay">rt.cpan.org</a>.</p>
+
+<h1 id="AUTHORS">AUTHORS</h1>
+
+<p>This module was originally written by Gisle Aas, and was subsequently maintained by Joshua Chamas, David Landgren, brian d foy and Sinan Unur.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>Copyright (c) 2010-2014 A. Sinan Unur</p>
+
+<p>Copyright (c) 2006-2007 David Landgren</p>
+
+<p>Copyright (c) 1999-2003 Joshua Chamas</p>
+
+<p>Copyright (c) 1998 Gisle Aas</p>
+
+<h1 id="LICENSE">LICENSE</h1>
+
+<p>This program is free software; you can redistribute it and/or modify it under the terms of Artistic License 2.0 (see <a href="http://www.perlfoundation.org/artistic_license_2_0">http://www.perlfoundation.org/artistic_license_2_0</a>).</p>
+  
+        <div id="install-instructions-dialog" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Module Install Instructions</h4>
+            </div>
+            <div class="modal-body">
+                <p>To install Crypt::SSLeay, copy and paste the appropriate command in to your terminal.</p>
+                <p><a href="/pod/distribution/App-cpanminus/bin/cpanm">cpanm</a></p>
+                <pre>
+                    cpanm Crypt::SSLeay
+                </pre>
+                <p><a href="/pod/CPAN">CPAN shell</a></p>
+                <pre>
+                    perl -MCPAN -e shell
+                    install Crypt::SSLeay
+                </pre>
+                <p>For more information on module installation, please visit <a href="https://www.cpan.org/modules/INSTALL.html">the detailed CPAN module installation guide</a>.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" data-dismiss="modal" class="btn">Close</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+</div>
+
+                </div>
+            </div>
+
+            <div class="row footer">
+                <div class="hidden-xs hidden-sm col-md-2">&nbsp;</div>
+                <div class="col-xs-2 col-sm-1 col-md-1" style="text-align: center">
+                    <a href="https://fastapi.metacpan.org">API</a>
+                </div>
+                <div class="col-xs-5 col-sm-3 col-md-2" style="text-align: center">
+                    <a href="/about">About MetaCPAN</a>
+                </div>
+                <div class="hidden-xs col-sm-2 col-md-2" style="text-align: center">
+                    <a href="/mirrors">CPAN Mirrors</a>
+                </div>
+                <div class="hidden-xs col-sm-3 col-md-2" style="text-align: center">
+                    <a href="https://github.com/metacpan/metacpan-web">Fork metacpan.org</a>
+                </div>
+                <div class="hidden-xs col-sm-1 col-md-1" style="text-align: center">
+                    <a href="https://www.perl.org/">Perl.org</a>
+                </div>
+            </div>
+
+            <div class="row" style="padding: 50px 15px 30px">
+              <div class="col-xs-9 col-md-3" style="padding:25px">
+                <a href="https://www.bytemark.co.uk/r/metacpan.org/" target="_blank" rel="noopener">
+                  <img width="170" src="/static/images/sponsors/bytemark_logo.png" alt="Bytemark logo">
+                </a>
+              </div>
+              <div class="col-xs-9 col-md-3" style="padding:15px">
+                <a target="_blank" href="https://www.liquidweb.com/" rel="noopener">
+                  <img width="170" src="/static/images/sponsors/liquidweb_color.png" alt="liquidweb logo">
+                </a>
+              </div>
+              <div class="col-xs-9 col-md-3" style="padding:15px">
+                <a target="_blank" href="https://www.yellowbot.com/" rel="noopener">
+                  <img width="170" src="/static/images/sponsors/yellowbot-small.png" alt="YellowBot logo">
+                </a>
+              </div>
+              <div class="col-xs-9 col-md-3" style="padding:15px">
+                <a href="https://www.fastly.com/" target="_blank" rel="noopener">
+                  <img src="/static/images/sponsors/fastly_logo.png" width=110 height=51 alt="Fastly logo">
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-18 col-xs-offset-3 col-md-6" style="padding-bottom: 20px">
+                As a valued partner and proud supporter of MetaCPAN, StickerYou is
+                happy to offer a 10% discount on all <a href="https://www.stickeryou.com/products/custom-stickers/335/" target="_blank" rel="noopener">Custom Stickers</a>,
+                <a href="https://www.stickeryou.com/products/business-labels/655" target="_blank" rel="noopener">Business Labels</a>, Roll Labels,
+                Vinyl Lettering or Custom Decals.  <a href="http://StickerYou.com" target="_blank" rel="noopener">StickerYou.com</a>
+                is your one-stop shop to make your business stick.
+                Use code <strong>METACPAN10</strong> at checkout to apply your discount.
+              </div>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="keyboard-shortcuts">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Keyboard Shortcuts</h4>
+              </div>
+              <div class="modal-body row">
+                <div class="col-md-6">
+  <table class="table keyboard-shortcuts">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Global</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="keys">
+          <kbd>s</kbd>
+        </td>
+        <td>Focus search bar</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>?</kbd>
+        </td>
+        <td>Bring up this help dialog</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table keyboard-shortcuts">
+    <thead>
+      <tr>
+        <th></th>
+        <th>GitHub</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>p</kbd>
+        </td>
+        <td>Go to pull requests</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>i</kbd>
+        </td>
+        <td>go to github issues (only if github is preferred repository)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="col-md-6">
+  <table class="table keyboard-shortcuts">
+    <thead>
+      <tr>
+        <th></th>
+        <th>POD</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>a</kbd>
+        </td>
+        <td>Go to author</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>c</kbd>
+        </td>
+        <td>Go to changes</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>i</kbd>
+        </td>
+        <td>Go to issues</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>d</kbd>
+        </td>
+        <td>Go to dist</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>r</kbd>
+        </td>
+        <td>Go to repository/SCM</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>s</kbd>
+        </td>
+        <td>Go to source</td>
+      </tr>
+      <tr>
+        <td class="keys">
+          <kbd>g</kbd> <kbd>b</kbd>
+        </td>
+        <td>Go to file browse</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+              </div>
+              <div class="modal-footer"></div>
+            </div>
+          </div>
+        </div>
+    </body>
+</html>

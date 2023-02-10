@@ -1,0 +1,5 @@
+0.0% | 0 scanned | 0 matched | 0 results100.0% | 1 scanned | 1 matched | 1 results
+"_bkt","_cd","_indextime","_raw","_serial","_si","_sourcetype","_time",host,index,linecount,source,sourcetype,"splunk_server"
+"main~0~CC15D4BA-09F4-4288-95F8-02ED7CE99B38","0:4",1455698092,"Hello, world!",0,"reporting.com-root
+main","sdk_test","2016-02-17T08:34:52.000+00:00","10.120.21.139",main,1,sdk,"sdk_test","reporting.com-root"
+

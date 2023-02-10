@@ -1,0 +1,2 @@
+header-vlanview,end_vlan_id*,_new_end_vlan_id,name*,_new_name,start_vlan_id*,_new_start_vlan_id,allow_range_overlapping,comment
+vlanview,4000,,csv_import,,3000,,FALSE,

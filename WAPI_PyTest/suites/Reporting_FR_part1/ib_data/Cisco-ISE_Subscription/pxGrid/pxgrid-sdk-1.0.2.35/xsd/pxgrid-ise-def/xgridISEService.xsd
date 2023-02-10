@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/ise" targetNamespace="http://www.cisco.com/pxgrid/ise" elementFormDefault="qualified" version="1.0">
+	<xs:simpleType name="Group">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="Administrator"/>
+			<xs:enumeration value="EPS"/>
+			<xs:enumeration value="Session"/>
+			<xs:enumeration value="Basic"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

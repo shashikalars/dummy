@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/identity" xmlns:xgrid="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid/identity" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<!-- ###############################################################################
+     Capability Definition
+     ############################################################################### -->
+	<xs:complexType name="EndpointProfileMetaDataCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TrustSecMetaDataCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="Operation">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="getEndpointProfileListRequest"/>
+			<xs:enumeration value="getSecurityGroupListRequest"/>
+		</xs:restriction>
+	</xs:simpleType>
+<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getEndpointProfileMetaData
+	Description: Get a list of Endpoint profiles meta data created in ISE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getEndpointProfileListRequest" type="GetEndpointProfileListRequest"/>
+	<xs:complexType name="GetEndpointProfileListRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getEndpointProfileListResponse
+	Description: Return the list of Endpoint profile meta data created in ISE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getEndpointProfileListResponse" type="GetEndpointProfileListResponse"/>
+	<xs:complexType name="GetEndpointProfileListResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="EndpointProfiles">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="EndpointProfile" type="EndpointProfile" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getSecurtyGroupsListRequest
+	Description: Get a list of TrustSec meta data created in ISE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSecurityGroupListRequest" type="GetSecurityGroupListRequest"/>
+	<xs:complexType name="GetSecurityGroupListRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: getSecurityGroupListResponse
+	Description: Return the list of Security Groups created in ISE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="getSecurityGroupListResponse" type="GetSecurityGroupListResponse"/>
+	<xs:complexType name="GetSecurityGroupListResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="SecurityGroups">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="SecurityGroup" type="SecurityGroup" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Type: EndpointProfile MetaData
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+        <xs:complexType name="EndpointProfile">
+                <xs:sequence>
+                        <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="fqname" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                </xs:sequence>
+        </xs:complexType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Type: SecurityGroup MetaData
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="SecurityGroup">
+                <xs:sequence>
+                        <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="tag" type="xs:int" minOccurs="1" maxOccurs="1"/>
+                </xs:sequence>
+        </xs:complexType>
+
+	<!-- ###############################################################################
+     	Notifications Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: endpointProfileChangeNotification
+	Description: Generated when the Endpoint profile meta data is changed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="endpointProfileChangedNotification" type="EndpointProfileChangedNotification"/>
+	<xs:complexType name="EndpointProfileChangedNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="changeType" type="xgrid:ChangeType" minOccurs="1" maxOccurs="1" />
+					<xs:element name="endpointProfile" type="EndpointProfile" minOccurs="1" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: SecurityGroupChangeNotification
+	Description: Generated when the security group meta data is changed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="securityGroupChangeNotification" type="SecurityGroupChangeNotification"/>
+	<xs:complexType name="SecurityGroupChangeNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="changeType" type="xgrid:ChangeType" minOccurs="1" maxOccurs="1" />
+					<xs:element name="securityGroup" type="SecurityGroup" minOccurs="1" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

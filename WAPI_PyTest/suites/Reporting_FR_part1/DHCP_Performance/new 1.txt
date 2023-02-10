@@ -1,0 +1,53 @@
+search sourcetype=ib:dns:reclamation index=ib_dns | bucket span=10m _time  | eval ZONE=zone_name+\" (\"+view+\")\" | stats sum(rr_reclaimed) as RRR by _time ZONE | timechart bins=1000 avg(RRR) by ZONE where max in top10 useother=f
+
+source=ib:dns:reclamation index=ib_dns | bucket span=10m _time  | eval ZONE=zone_name+" ("+view+")" | stats sum(rr_reclaimed) as RRR by _time ZONE | timechart bins=1000 avg(RRR) by ZONE where max in top10 useother=f
+
+source=ib:dns:reclamation index=ib_dns (view="view1") | bucket span=10m _time  | eval ZONE=zone_name+" ("+view+")" | stats sum(rr_reclaimed) as RRR by _time ZONE | timechart bins=1000 avg(RRR) by ZONE where max in top10 useother=f
+
+
+source=ib:dns:reclamation index=ib_dns (zone_name="23.in-addr.arpa") | bucket span=10m _time  | eval ZONE=zone_name+" ("+view+")" | stats sum(rr_reclaimed) as RRR by _time ZONE | timechart bins=1000 avg(RRR) by ZONE where max in top5 useother=f
+
+
+source=ib:dns:reclamation index=ib_dns | bucket span=10m _time  | eval ZONE=zone_name+" ("+view+")" | stats sum(rr_reclaimed) as RRR by _time ZONE | timechart bins=1000 avg(RRR) by ZONE where max in top5 useother=f | interpolate 1200
+
+
+sourcetype=ib:dhcp:message index=ib_dhcp | rex "^[^,]*,(?<PROTO>[46])(,(?<COUNT1>\d+))?(,(?<COUNT2>\d+))?(,(?<COUNT3>\d+))?(,(?<COUNT4>\d+))?(,(?<COUNT5>\d+))?(,(?<COUNT6>\d+))?(,(?<COUNT7>\d+))?(,(?<COUNT8>\d+))?(,(?<COUNT9>\d+))?(,(?<COUNT10>\d+))?(,(?<COUNT11>\d+))?(,(?<COUNT12>\d+))?(,(?<COUNT13>\d+))?(,(?<COUNT14>\d+))?(,(?<COUNT15>\d+))?" | eval Protocol=if(PROTO=="6","IPV6","IPV4") | bucket span=1m _time | stats sum(eval(if(PROTO=="4",COUNT1,0))) as v4discover, sum(eval(if(PROTO=="4",COUNT2,0))) as v4offer, sum(eval(if(PROTO=="4",COUNT3,0))) as v4request, sum(eval(if(PROTO=="4",COUNT5,0))) as v4ack by _time | timechart bins=1000 avg(v4discover) as DHCPDISCOVER, avg(v4offer) as DHCPOFFER, avg(v4request) as DHCPREQUEST, avg(v4ack) as DHCPACK
+
+
+
+sourcetype=ib:dhcp:message index=ib_dhcp | rex "^[^,]*,(?<PROTO>[46])(,(?<COUNT1>\d+))?(,(?<COUNT2>\d+))?(,(?<COUNT3>\d+))?(,(?<COUNT4>\d+))?(,(?<COUNT5>\d+))?(,(?<COUNT6>\d+))?(,(?<COUNT7>\d+))?(,(?<COUNT8>\d+))?(,(?<COUNT9>\d+))?(,(?<COUNT10>\d+))?(,(?<COUNT11>\d+))?(,(?<COUNT12>\d+))?(,(?<COUNT13>\d+))?(,(?<COUNT14>\d+))?(,(?<COUNT15>\d+))?" | eval Protocol=if(PROTO=="6","IPV6","IPV4") | bucket span=1m _time | stats sum(eval(if(PROTO=="4",COUNT1,0))) as v4discover, sum(eval(if(PROTO=="4",COUNT2,0))) as v4offer, sum(eval(if(PROTO=="4",COUNT3,0))) as v4request, sum(eval(if(PROTO=="4",COUNT5,0))) as v4ack by _time | timechart bins=1000 avg(v4offer) as DHCPOFFER
+
+
+sourcetype=ib:dhcp:message index=ib_dhcp | rex "^[^,]*,(?<PROTO>[46])(,(?<COUNT1>\d+))?(,(?<COUNT2>\d+))?(,(?<COUNT3>\d+))?(,(?<COUNT4>\d+))?(,(?<COUNT5>\d+))?(,(?<COUNT6>\d+))?(,(?<COUNT7>\d+))?(,(?<COUNT8>\d+))?(,(?<COUNT9>\d+))?(,(?<COUNT10>\d+))?(,(?<COUNT11>\d+))?(,(?<COUNT12>\d+))?(,(?<COUNT13>\d+))?(,(?<COUNT14>\d+))?(,(?<COUNT15>\d+))?" | eval Protocol=if(PROTO=="6","IPV6","IPV4") | bucket span=1m _time | stats sum(eval(if(PROTO=="4",COUNT1,0))) as v4discover, sum(eval(if(PROTO=="4",COUNT2,0))) as v4offer, sum(eval(if(PROTO=="4",COUNT3,0))) as v4request, sum(eval(if(PROTO=="4",COUNT5,0))) as v4ack, sum(eval(if(PROTO=="6",COUNT1,0))) as v6solicit, sum(eval(if(PROTO=="6",COUNT2,0))) as v6advertise, sum(eval(if(PROTO=="6",COUNT3,0))) as v6request, sum(eval(if(PROTO=="6",COUNT6,0))) as v6reply by _time | timechart bins=1000 avg(v4discover) as DHCPv4DISCOVER, avg(v4offer) as DHCPv4OFFER, avg(v4request) as DHCPv4REQUEST, avg(v4ack) as DHCPv4ACK, avg(v6solicit) as DHCPv6SOLICIT, avg(v6advertise) as DHCPv6ADVERTISE, avg(v6request) as DHCPv6REQUEST, avg(v6reply) as DHCPv6REPLY | interpolate 1200
+
+
+
+
+sourcetype=ib:dhcp:message index=ib_dhcp | rex \"^[^,]*,(?<PROTO>[46])(,(?<COUNT1>\d+))?(,(?<COUNT2>\d+))?(,(?<COUNT3>\d+))?(,(?<COUNT4>\d+))?(,(?<COUNT5>\d+))?(,(?<COUNT6>\d+))?(,(?<COUNT7>\d+))?(,(?<COUNT8>\d+))?(,(?<COUNT9>\d+))?(,(?<COUNT10>\d+))?(,(?<COUNT11>\d+))?(,(?<COUNT12>\d+))?(,(?<COUNT13>\d+))?(,(?<COUNT14>\d+))?(,(?<COUNT15>\d+))?\" | eval Protocol=if(PROTO==\"6\",\"IPV6\",\"IPV4\") | bucket span=1m _time | stats sum(eval(if(PROTO==\"4\",COUNT1,0))) as v4discover, sum(eval(if(PROTO==\"4\",COUNT2,0))) as v4offer, sum(eval(if(PROTO==\"4\",COUNT3,0))) as v4request, sum(eval(if(PROTO==\"4\",COUNT5,0))) as v4ack by _time | timechart bins=1000 avg(v4discover) as DHCPDISCOVER
+
+
+
+sourcetype=ib:dhcp:message index=ib_dhcp | rex "^[^,]*,(?<PROTO>[46])(,(?<COUNT1>\d+))?(,(?<COUNT2>\d+))?(,(?<COUNT3>\d+))?(,(?<COUNT4>\d+))?(,(?<COUNT5>\d+))?(,(?<COUNT6>\d+))?(,(?<COUNT7>\d+))?(,(?<COUNT8>\d+))?(,(?<COUNT9>\d+))?(,(?<COUNT10>\d+))?(,(?<COUNT11>\d+))?(,(?<COUNT12>\d+))?(,(?<COUNT13>\d+))?(,(?<COUNT14>\d+))?(,(?<COUNT15>\d+))?" | eval Protocol=if(PROTO=="6","IPV6","IPV4") | bucket span=1m _time | stats sum(eval(if(PROTO=="4",COUNT1,0))) as v4discover, sum(eval(if(PROTO=="4",COUNT2,0))) as v4offer, sum(eval(if(PROTO=="4",COUNT3,0))) as v4request, sum(eval(if(PROTO=="4",COUNT5,0))) as v4ack by _time | timechart bins=1000 avg(v4ack) as DHCPACK
+
+
+
+
+
+
+
+
+
+
+
+
+4:
+sourcetype=ib:dhcp:message index=ib_dhcp | rex \"^[^,]*,(?<PROTO>[46])(,(?<COUNT1>\d+))?(,(?<COUNT2>\d+))?(,(?<COUNT3>\d+))?(,(?<COUNT4>\d+))?(,(?<COUNT5>\d+))?(,(?<COUNT6>\d+))?(,(?<COUNT7>\d+))?(,(?<COUNT8>\d+))?(,(?<COUNT9>\d+))?(,(?<COUNT10>\d+))?(,(?<COUNT11>\d+))?(,(?<COUNT12>\d+))?(,(?<COUNT13>\d+))?(,(?<COUNT14>\d+))?(,(?<COUNT15>\d+))?\" | eval Protocol=if(PROTO==\"6\",\"IPV6\",\"IPV4\") | bucket span=1m _time | stats sum(eval(if(PROTO==\"4\",COUNT1,0))) as v4discover, sum(eval(if(PROTO==\"4\",COUNT2,0))) as v4offer, sum(eval(if(PROTO==\"4\",COUNT3,0))) as v4request, sum(eval(if(PROTO==\"4\",COUNT5,0))) as v4ack by _time | timechart bins=1000 avg(v4ack) as DHCPACK
+
+3:
+sourcetype=ib:dhcp:message index=ib_dhcp | rex \"^[^,]*,(?<PROTO>[46])(,(?<COUNT1>\d+))?(,(?<COUNT2>\d+))?(,(?<COUNT3>\d+))?(,(?<COUNT4>\d+))?(,(?<COUNT5>\d+))?(,(?<COUNT6>\d+))?(,(?<COUNT7>\d+))?(,(?<COUNT8>\d+))?(,(?<COUNT9>\d+))?(,(?<COUNT10>\d+))?(,(?<COUNT11>\d+))?(,(?<COUNT12>\d+))?(,(?<COUNT13>\d+))?(,(?<COUNT14>\d+))?(,(?<COUNT15>\d+))?\" | eval Protocol=if(PROTO==\"6\",\"IPV6\",\"IPV4\") | bucket span=1m _time | stats sum(eval(if(PROTO==\"4\",COUNT1,0))) as v4discover, sum(eval(if(PROTO==\"4\",COUNT2,0))) as v4offer, sum(eval(if(PROTO==\"4\",COUNT3,0))) as v4request, sum(eval(if(PROTO==\"4\",COUNT5,0))) as v4ack by _time | timechart bins=1000 avg(v4offer) as DHCPOFFER
+
+
+{u'DHCPDISCOVER': u'10', u'DHCPOFFER': u'10', u'DHCPREQUEST': u'10', u'DHCPACK': u'10'}
+
+{u'DHCPDISCOVER': u'0', u'DHCPREQUEST': u'0', u'_span': u'30', u'DHCPACK': u'0', u'_time': u'2021-02-04T11:17:00.000+00:00', u'DHCPOFFER': u'0'}
+{u'DHCPDISCOVER': u'10', u'DHCPREQUEST': u'0', u'_span': u'30', u'DHCPACK': u'0', u'_time': u'2021-02-04T09:42:00.000+00:00', u'DHCPOFFER': u'0'}

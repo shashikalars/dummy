@@ -1,0 +1,34 @@
+{
+    "version": "5.0",
+    "name": "DHCPLease_Event_version5",
+    "type": "PXGRID_EVENT",
+    "event_type": ["LEASE"],
+    "action_type": "Pxgrid Action",
+    "comment": "Pxgrid template",
+    "content_type": "application/json",
+    "vendor_identifier": "pxgrid",
+    "headers": {
+        "User-Agent": "Outbound API 0.1 rrtest"
+    },
+    "transport": {
+        "path": "/wapi/v2.9",
+        "content_type": "application/json",
+        "override_path": true
+    },
+    "steps":
+    [
+      {
+         "name": "log_data",
+         "operation": "NOP",
+         "body": "${XC:DEBUG:{E:}}"
+      },
+	  {
+	     "name": "DHCP_event",
+		 "operation": "PX_SEND_DHCP_LEASES"
+
+	  }
+    ]
+}
+
+
+ 

@@ -1,0 +1,2 @@
+header-responsepolicysrvrecord,fqdn*,_new_fqdn,port*,_new_port,priority*,_new_priority,target*,_new_target,weight*,_new_weight,comment,disabled,parent_zone,ttl,view
+responsepolicysrvrecord,_kerberos._sites.abc.zone.com,,100000,,10,,zone.com,,20,,,FALSE,com.zone,,default

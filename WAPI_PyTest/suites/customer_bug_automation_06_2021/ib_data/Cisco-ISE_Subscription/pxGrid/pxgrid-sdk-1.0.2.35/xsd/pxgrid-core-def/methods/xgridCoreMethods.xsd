@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="../model/xgridPubSubModel.xsd"/>
+	<xs:include schemaLocation="../model/xgridEventModel.xsd"/>
+	<xs:complexType name="CoreCapability">
+		<xs:complexContent>
+			<xs:extension base="BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="RegisteredCapability">
+		<xs:complexContent>
+			<xs:extension base="Capability">
+				<xs:sequence />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="CapabilityChangeType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="created"/>
+			<xs:enumeration value="createPending"/>
+			<xs:enumeration value="enabled"/>
+			<xs:enumeration value="updated"/>
+			<xs:enumeration value="updatePending"/>
+			<xs:enumeration value="deleted"/>
+			<xs:enumeration value="disabled"/>
+			<xs:enumeration value="denied"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="RegisteredCapabilityStatus">
+		<xs:sequence>
+			<xs:element name="status" type="CapabilityChangeType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="capability" type="RegisteredCapability" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RegisteredAndPendingStatus">
+		<xs:sequence>
+			<xs:element name="pendingStatus" type="RegisteredCapabilityStatus" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="topicStatus" type="RegisteredCapabilityStatus" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CapabilityPublisherInfo">
+		<xs:sequence>
+			<xs:element name="capabilityRef" type="CapabilityReference" />
+			<xs:element name="publisherJID" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="getRegisteredCapabilitiesRequest" type="GetRegisteredCapabilitiesRequest"/>
+	<xs:complexType name="GetRegisteredCapabilitiesRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence minOccurs="1" maxOccurs="1"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="getRegisteredCapabilitiesResponse" type="GetRegisteredCapabilitiesResponse"/>
+	<xs:complexType name="GetRegisteredCapabilitiesResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="capability" type="RegisteredCapability" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="registeredCapabilityUpdateNotification" type="RegisteredCapabilityUpdateNotification"/>
+	<xs:complexType name="RegisteredCapabilityUpdateNotification">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="change" type="CapabilityChangeType" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="capability" type="RegisteredCapability" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="getCapabilityStatusRequest" type="GetCapabilityStatusRequest"/>
+	<xs:complexType name="GetCapabilityStatusRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="version" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="getCapabilityStatusResponse" type="GetCapabilityStatusResponse"/>
+	<xs:complexType name="GetCapabilityStatusResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="status" type="RegisteredAndPendingStatus" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+    <!-- -anto:2015MAR19- adding a query for a list of all publishers for all capabilities -->
+	<xs:element name="getAllPublishersRequest" type="GetAllPublishersRequest" />
+	<xs:complexType name="GetAllPublishersRequest">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="getAllPublishersResponse" type="GetAllPublishersResponse" />
+	<xs:complexType name="GetAllPublishersResponse">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="publisherInfo" type="CapabilityPublisherInfo"
+						minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

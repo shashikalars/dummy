@@ -1,0 +1,105 @@
+"""
+ Copyright (c) Infoblox Inc., 2016
+ ReportName          : DNS Query Rate by Server (Detailed)
+ ReportCategory      : DNS Query 
+ Number of Test cases: 1
+ Execution time      : 700 ~ 900 seconds
+ Execution Group     : Minute Group (MG)
+ Description         : 'DNS Query Rate by Server report will be updated every 10 min. 
+
+ Author : Raghavendra MN
+ History: 06/03/2016 (Created)
+ Reviewer : Raghavendra MN
+"""
+import config
+import json
+import os
+import pytest
+import pexpect
+import re
+import sys
+import subprocess
+import unittest
+import time
+import ib_utils.ib_NIOS as ib_NIOS
+import ib_utils.ib_get as ib_get
+from logger import logger
+from ib_utils.ib_system import search_dump as search_dump
+from ib_utils.ib_validaiton import compare_results as compare_results
+
+"""
+TEST Steps:
+      1.  Input/Preparation  : Generating Query for Servers say Master:6000(10 QPS)  Member1:3000(5 QPS)  Member2:1800 (3 QPS)
+      2.  Search             : Performing Search operaion with default/custom filter
+      3.  Validation         : Comparing Search results against inputdata.
+      Note: This Suite may fail due to influance of other suites if failes then please uncomment time.sleep(600) in 'setup_class' method. 
+"""
+
+#Preparation
+class dns_query_rate_by_seraver(unittest.TestCase):
+    @classmethod
+    def setup_class(cls):
+        #time.sleep(600)
+        #Add zones and RR's through CSV
+        logger.info('-'*15+"START:DNS Query Rate by Server"+'-'*15)
+
+        epoc=ib_get.indexer_epoch_time(config.indexer_ip)
+        minute=int(time.strftime('%M',time.gmtime(int(epoc))))
+        t=minute%10
+        wait_time = (10-t)*60
+        new_epoc = int(epoc)+wait_time 
+        new_min =int(time.strftime('%M',time.gmtime(new_epoc)))
+        ts = time.strftime('%Y-%m-%dT%H', time.gmtime(new_epoc))
+        ms = (new_min) - ((new_min)%10)
+        new_minute= '0'+str(ms) if ms <=9 else str(ms)
+
+        logger.info("Waiting for %d sec., for triggering Queryperf",wait_time) 
+        time.sleep(wait_time)
+
+        logger.info('Executing Queryperf Master:6000(10 QPS)  Member1:3000(5 QPS)  Member2:1800 (3 QPS)')
+        fin=os.popen("/usr/bin/queryperf -s "+config.grid_vip+" -d ib_data/DNS_Query/DNS_Query_Rate_By_Server/master.txt")
+        logger.info(''.join(fin.readlines()))
+        fin=os.popen("/usr/bin/queryperf -s "+config.grid_member1_vip+" -d ib_data/DNS_Query/DNS_Query_Rate_By_Server/member_1.txt")
+        logger.info(''.join(fin.readlines()))
+        fin=os.popen("/usr/bin/queryperf -s "+config.grid_member2_vip+" -d ib_data/DNS_Query/DNS_Query_Rate_By_Server/member_2.txt")
+        logger.info(''.join(fin.readlines()))
+
+        cls.test1=[]
+        temp={}
+        temp["_time"]=ts+":"+new_minute+":00.000+00:00"
+        temp[config.grid_fqdn] = "10"
+        temp[config.grid_member1_fqdn] = "5"
+        temp[config.grid_member2_fqdn] = "3"
+        cls.test1.append(temp)
+        logger.info ("Input Json for validation")
+        logger.info(json.dumps(cls.test1, sort_keys=True, indent=4, separators=(',', ': ')))
+        logger.info ("Waiting for 12 min for updating reports")
+        time.sleep(900) #wait till reports gets udpated
+
+    def test_1_dns_query_rate_by_server_default_filter(self):
+        logger.info("TestCase:test_1_Default_Filter_validate_DNS_Replies_Trend")
+        search_str=r"search sourcetype=ib:dns:query:by_member index=ib_dns | lookup dns_viewkey_displayname_lookup VIEW output display_name | bucket span=10m _time | stats sum(QCOUNT) as QPM by _time host | timechart bins=1000 eval(avg(QPM)/600) by host where max in top5 useother=f"
+        cmd = config.search_py + " \"" + search_str + "\" --output_mode=json"
+        logger.info (cmd)
+        os.system(cmd)
+        try:
+            retrived_data=open(config.json_file).read()
+        except Exception, e:
+            logger.error('search operation failed due to %s',e)
+            raise Exception("Looks like reporting service not started please check the GRID")
+        output_data = json.loads(retrived_data)
+        results_list = output_data['results']
+        results_dist= results_list[-240::1]
+        search_dump(sys._getframe().f_code.co_name+"_search_output.txt",self.test1,results_dist)  
+	logger.info("compare_resutls with 'delta' value as 0.8")
+        result = compare_results(self.test1,results_list,0.8)
+        if result == 0:
+            logger.info("Search validation result: %s (PASS)",result)
+        else:
+            logger.error("Search validation result: %s (FAIL)",result)
+        msg = 'Validation is not matching for object which is retrieved from DB %s', result
+        assert result == 0, msg
+
+    @classmethod
+    def teardown_class(cls):
+        logger.info('-'*15+"END:DNS Query Rate by Server"+'-'*15)

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid/anc" xmlns:xgrid="http://www.cisco.com/pxgrid" xmlns:xgridNet="http://www.cisco.com/pxgrid/net" targetNamespace="http://www.cisco.com/pxgrid/anc" elementFormDefault="qualified" version="1.0">
+	<xs:import namespace="http://www.cisco.com/pxgrid" schemaLocation="../../../target/pxgrid-core-def/xgrid.xsd"/>
+	<!-- ###############################################################################
+     Capability Definition
+     ############################################################################### -->
+	<xs:complexType name="AdaptiveNetworkControlCapability">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseEventsCapability"/>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ANCResult">
+		<xs:sequence>
+			<xs:element name="ancStatus" type="ANCStatus"/>
+			<xs:element name="ancFailure" type="ANCFailure"/>
+			<xs:element name="failureDescription" type="xs:string"/>
+			<xs:element name="ancEndpoint" type="ANCEndpoint" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ancpolicy" type="ANCPolicy" minOccurs="0" maxOccurs="unbounded"/>
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="ANCStatus">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="success"/>
+			<xs:enumeration value="failure"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ANCFailure">
+		<xs:restriction base="xs:token">
+		    <xs:enumeration value="no_failure"/>
+			<xs:enumeration value="invalid_policy"/>
+			<xs:enumeration value="invalid_mac_address"/>
+			<xs:enumeration value="radius_failure"/>
+			<xs:enumeration value="operation_unsupported"/>
+			<xs:enumeration value="operation_unknown"/>
+			<xs:enumeration value="license_invalid"/>
+			<xs:enumeration value="ANC_disabled"/>
+			<xs:enumeration value="session_lookup_failure"/>
+			<xs:enumeration value="SDN_failure"/>
+			<xs:enumeration value="Authorization_failure"/>
+			<xs:enumeration value="duplicate_association"/>
+			<xs:enumeration value="no_existing_association"/>
+			<xs:enumeration value="unknown_failure"/>
+			<xs:enumeration value="invalid_ip_address"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ANCOperation">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="applyEndpointPolicyByMAC"/>
+			<xs:enumeration value="clearEndpointPolicyByMAC"/>
+			<xs:enumeration value="applyEndpointPolicyByIP"/>
+			<xs:enumeration value="clearEndpointPolicyByIP"/>
+			<xs:enumeration value="getEndpointByIP"/>
+			<xs:enumeration value="getEndpointByMAC"/>
+			<xs:enumeration value="getAllEndpoints"/>
+			<xs:enumeration value="createPolicy"/>
+			<xs:enumeration value="updatePolicy"/>
+			<xs:enumeration value="deletePolicy"/>
+			<xs:enumeration value="retrievePolicyByName"/>
+			<xs:enumeration value="retrieveAllPolicies"/>
+			<xs:enumeration value="getEndpointByPolicy"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="ANCEndpoint">
+		<xs:sequence>
+			<xs:element name="policyName" type="xs:string"/>
+			<xs:element name="macAddress" type="xs:string"/>
+			<xs:element name="ipAddress" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="ANCAction">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="Quarantine"/>
+			<xs:enumeration value="Remediate"/>
+			<xs:enumeration value="Provisioning"/>
+			<xs:enumeration value="ShutDown"/>
+			<xs:enumeration value="PortBounce"/>		
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="ANCPolicy">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="action" type="ANCAction" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- ###############################################################################
+     Methods Schema
+     ############################################################################### -->
+	
+	<xs:complexType name="BasePolicyRequest">  
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="policyName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: applyEndpointPolicyByMACRequest
+	Description: sends a request to apply policy to a device identified by MAC Address
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="applyEndpointPolicyByMACRequest" type="ApplyEndpointPolicyByMACRequest"/>
+	<xs:complexType name="ApplyEndpointPolicyByMACRequest">
+		<xs:complexContent>
+			<xs:extension base="BasePolicyRequest">
+				<xs:sequence>
+					<xs:element name="macAddress" type="xgrid:MACAddress" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>	
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: ANCResponse
+		Description: Response to the apply policy request with status of request. Returned for all applyPolicyRequest methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ANCResponse" type="ANCResponse"/>
+	<xs:complexType name="ANCResponse">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ancResult" type="ANCResult" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- 
+	Method: ClearEndpointPolicyByMACRequest
+	Description:Request to delete the policy-MAC association in ANC -->
+	<xs:element name="clearEndpointPolicyByMACRequest" type="ClearEndpointPolicyByMACRequest"/>
+	<xs:complexType name="ClearEndpointPolicyByMACRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="macAddress" type="xgrid:MACAddress" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	Method: applyEndpointPolicyByIPRequest
+	Description: sends a request to apply policy to a device identified by IP Address
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="applyEndpointPolicyByIPRequest" type="ApplyEndpointPolicyByIPRequest"/>
+	<xs:complexType name="ApplyEndpointPolicyByIPRequest">
+		<xs:complexContent>
+			<xs:extension base="BasePolicyRequest">
+				<xs:sequence>
+					<xs:element name="ipIdentifier" type="xgrid:IPInterfaceIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>	
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- 
+	Method: clearEndpointPolicyByIPRequest
+	Description:Request to delete the policy-IP association in ANC -->
+	<xs:element name="clearEndpointPolicyByIPRequest" type="ClearEndpointPolicyByIPRequest"/>
+	<xs:complexType name="ClearEndpointPolicyByIPRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ipIdentifier" type="xgrid:IPInterfaceIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="getEndpointByIPRequest" type="GetEndPointByIPRequest"/>
+	<xs:complexType name="GetEndPointByIPRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ipIdentifier" type="xgrid:IPInterfaceIdentifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- 
+	Method: createPolicy
+	Description:Create an ANC policy with appropriate ANC actions  -->
+	<xs:element name="createPolicyRequest" type="createPolicyRequest"/>
+	<xs:complexType name="createPolicyRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="policy" type="ANCPolicy" minOccurs="1" maxOccurs="1"/>			
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- 
+	Method: deletePolicy
+	Description:Delete an ANC policy -->
+	<xs:element name="deletePolicyRequest" type="deletePolicyRequest"/>
+	<xs:complexType name="deletePolicyRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- 
+	Method: update Policy
+	Description:Update an ANC policy -->
+	<xs:element name="updatePolicyRequest" type="updatePolicyRequest"/>
+	<xs:complexType name="updatePolicyRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="policy" type="ANCPolicy" minOccurs="1" maxOccurs="1"/>							
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	
+	<!-- 
+	Method: getEndpointByMACRequest
+	Description:Retrieve an Endpoint By MAC -->
+	<xs:element name="getEndpointByMACRequest" type="getEndpointByMACRequest"/>
+	<xs:complexType name="getEndpointByMACRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="macAddress" type="xgrid:MACAddress" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- 
+	Method: retrieve policy by Policy Name
+	Description:Retrieve an ANC policy  By policyName -->
+	<xs:element name="getPolicyByNameRequest" type="getPolicyByNameRequest"/>
+	<xs:complexType name="getPolicyByNameRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+  <!--  
+	Method: getAllEndpoints
+	Description:GetAllEndpoints -->
+	<xs:element name="getAllEndpointsRequest" type="getAllEndpointsRequest"/>
+    <xs:complexType name="getAllEndpointsRequest">
+	<xs:complexContent>
+			<xs:extension base="xgrid:BaseMsg">
+		
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- 
+	
+	Method: retrieve endpoint by Policy Name
+	Description:Retrieve an ANC policy  By policyName -->
+	<xs:element name="getEndpointByPolicyRequest" type="getEndpointByPolicyRequest"/>
+	<xs:complexType name="getEndpointByPolicyRequest">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+  
+	
+	
+	<!--  
+	Method: getAllPolicies
+	Description:GetAllPolicies -->
+	<xs:element name="getAllPoliciesRequest" type="getAllPoliciesRequest"/>
+    <xs:complexType name="getAllPoliciesRequest">
+	<xs:complexContent>
+			<xs:extension base="xgrid:BaseMsg">
+		
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<!-- ###############################################################################
+     Notifications Schema
+     ############################################################################### -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: ApplyEndpointPolicyNotification
+		Description: Includes the ANCEndpoint in which the policy is being
+		applied to
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="applyEndpointPolicyNotification" type="ApplyEndpointPolicyNotification"/>
+	<xs:complexType name="ApplyEndpointPolicyNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ancEndpoint" type="ANCEndpoint" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: ClearEndpointPolicyNotification
+		Description: Includes the ANCEndpoint in which the policy is being
+		cleared
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="clearEndpointPolicyNotification" type="ClearEndpointPolicyNotification"/>
+	<xs:complexType name="ClearEndpointPolicyNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ancEndpoint" type="ANCEndpoint" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: CreatePolicyNotification
+		Description: Includes the ANCPolicy being created
+		cleared
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="createPolicyNotification" type="CreatePolicyNotification"/>
+	<xs:complexType name="CreatePolicyNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ancPolicy" type="ANCPolicy" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: DeletePolicyNotification
+		Description: Includes the ANCPolicy being deleted
+		cleared
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="deletePolicyNotification" type="DeletePolicyNotification"/>
+	<xs:complexType name="DeletePolicyNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ancPolicy" type="ANCPolicy" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+				<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Notification: UpdatePolicyNotification
+		Description: Includes the ANCPolicy being updated
+		cleared
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="updatePolicyNotification" type="UpdatePolicyNotification"/>
+	<xs:complexType name="UpdatePolicyNotification">
+		<xs:complexContent>
+			<xs:extension base="xgrid:BaseObjectMsg">
+				<xs:sequence>
+					<xs:element name="ancOldPolicy" type="ANCPolicy" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="ancNewPolicy" type="ANCPolicy" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

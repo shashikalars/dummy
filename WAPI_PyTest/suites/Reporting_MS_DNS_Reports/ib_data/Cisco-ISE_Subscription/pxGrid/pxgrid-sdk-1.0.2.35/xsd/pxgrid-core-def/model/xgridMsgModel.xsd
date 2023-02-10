@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.cisco.com/pxgrid" targetNamespace="http://www.cisco.com/pxgrid" elementFormDefault="qualified" version="1.0">
+	<xs:include schemaLocation="xgridCmnModel.xsd"/>
+	<xs:include schemaLocation="xgridFilterModel.xsd"/>
+	<xs:include schemaLocation="xgridNodeModel.xsd"/>
+	<xs:complexType name="BaseError">
+		<xs:sequence>
+			<xs:element name="code" type="xs:unsignedLong" maxOccurs="1"/>
+			<xs:element name="description" type="xs:string" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BaseMsg" abstract="true">
+		<xs:sequence>
+			<!-- SAML mapping: consider making the protVersion and schemaVersion numbers -->
+			<xs:element name="protVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="schemaVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="reqId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="error" type="BaseError" minOccurs="0" maxOccurs="1"/>
+			<!-- this identifies the zone being requested, the server would look up this URL and map it to a memberOfZones hex value -->
+			<xs:element name="iid" type="IID" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="gridSessionID" type="GISessionID" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="sender" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<!-- -anto:2014NOV14- Generic attributes related -->
+			<xs:element name="extraAttributes" type="GenericAttributeList" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- this request/response allows a client to filter the objects that are returned in the request -->
+	<xs:complexType name="BaseObjectMsg" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<!-- by default if no filter is specified then all elements are returned whether they are child or reference relations -->
+					<!-- if an objectFilter is specified all elements of the object class are returned unless explicitly filtered by objectFilter.matchElement = false -->
+					<!-- if an objectFilter specifies a reference-reln then the objectFilter.expandElement can cause the full objects to be returned, otherwise only the objectIdentifiers are returned -->
+					<!-- if an objectFilter.matchElement = true then that element is returned and if that element corresponds to a referenceREln then objectFilter.expandElement defines whether the full objects or just their object identifiers are returned -->
+					<!-- a named Object filter is one that is already agreed by both client/server and can be used instead of explicitly calling out the filter attributes in each request -->
+						<xs:choice minOccurs="0" maxOccurs="1">
+							<xs:element name="objectFilter" type="ObjectSchemaFilter"/>
+							<xs:element name="objectFilterName" type="NamedObjectSchemaFilter"/>
+						</xs:choice>
+					<!-- an optional timestamp of when this message was created on the sender of the message -->
+					<xs:element name="senderTime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- <xs:complexType name="BaseOperation" type="BaseMsgReference">
+	
+		<xs:sequence>
+			 if not defined then the schema location is defined at the registration level rather than the individual operation level 
+			<xs:element name="schema" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="input" type="BaseMsgReference" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="output" type="BaseMsgReference" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		
+	</xs:complexType>-->
+	<xs:complexType name="BaseOperationList">
+		<xs:sequence>
+			<xs:element name="operation" type="BaseMsgReference" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BaseNotificationList">
+		<xs:sequence>
+			<xs:element name="notification" type="BaseMsgReference" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="MethodPermissions">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="readOnly"/>
+			<xs:enumeration value="writeOnly"/>
+			<xs:enumeration value="readWrite"/>
+			<xs:enumeration value="notify"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="BaseMsgReference">
+		<xs:sequence>
+			<!-- if not defined then the schema location is defined at the registration level rather than the individual operation level -->
+			<xs:element name="schema" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="methodName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="methodType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="methodParameterName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="methodParameterType" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="methodPermissions" type="MethodPermissions" default="readOnly" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- -anto:2014DEC22- Generic message related -->
+	<xs:simpleType name="GenericMessageContentType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="raw" />
+			<xs:enumeration value="pxgrid-model" />
+			<xs:enumeration value="plain-text" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GenericMessageContentTag">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z]([a-zA-Z0-9\-]*[a-zA-Z0-9])*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GenericMessageContentTagList">
+		<xs:list itemType="GenericMessageContentTag" />
+	</xs:simpleType>
+	<xs:complexType name="GenericMessageContent">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attribute name="contentType" type="GenericMessageContentType"
+					default="raw" />
+				<xs:attribute name="contentTags" type="GenericMessageContentTagList"
+					use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="GenericMessageBody">
+		<xs:sequence>
+			<xs:element name="content" type="GenericMessageContent"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="GenericMessageType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="request" />
+			<xs:enumeration value="response" />
+			<xs:enumeration value="notification" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GenericMessage">
+		<xs:complexContent>
+			<xs:extension base="BaseMsg">
+				<xs:sequence>
+					<xs:element name="capabilityName" type="xs:string" />
+					<xs:element name="operationName" type="xs:string" />
+					<xs:element name="messageType" type="GenericMessageType"
+						default="notification" />
+					<xs:element name="body" type="GenericMessageBody" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="genericMessage" type="GenericMessage" />
+	<!-- end -anto:2014DEC22- Generic message related -->
+</xs:schema>

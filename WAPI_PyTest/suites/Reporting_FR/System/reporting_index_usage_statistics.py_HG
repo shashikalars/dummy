@@ -1,0 +1,101 @@
+"""
+ Copyright (c) Infoblox Inc., 2016                                   
+ ReportName          : Reporting Index Usage Statistics
+ ReportCategory      : System
+ Number of Test cases: 1
+ Execution time      : 302.61 seconds
+ Execution Group     : Hourly Group (HG)
+ Description         : 'Reporting Index Usage Statistics' will be udpated every one min. 
+
+ Author   : Raghavendra MN
+ History  : 06/06/2016 (Created)                                                                   
+ Reviewer : Raghavendra MN
+"""
+import config
+import json
+import os
+import pytest
+import pexpect
+import re
+import sys
+import subprocess
+from time import sleep
+import unittest
+import ib_utils.ib_NIOS as ib_NIOS
+import ib_utils.ib_get as ib_get
+from logger import logger
+from ib_utils.ib_system import search_dump as search_dump
+from ib_utils.ib_validaiton import compare_results as compare_results
+from ib_utils.ib_papi import check_clustering_mode
+
+""" 
+TEST Steps:
+      1.  Input/Preparaiton      : Created index List
+      2.  Search                 : Performing Search operaion with default/custom filter 
+      3.  Validation             : Comparing index List with Search output. 
+                                   Note:
+                                      1. New 'index' should be added in 'cls.index_list'(if it is introduced in new project).
+                                      2. Not using 'compare_results' for validaiton. 
+"""
+
+
+class ReportingIndexUsageStatistics(unittest.TestCase):
+    @classmethod
+    def setup_class(cls):
+        cls.test1=[]
+        logger.info('-'*15+"START:Reporting Index Usage Statistics"+'-'*15)
+        logger.info ("Preparation for Reporting Index Usage Statistics")
+        cls.index_list=['ib_audit','ib_cloud','ib_dhcp','ib_dhcp_lease_history','ib_dhcp_summary','ib_discovery','ib_dns','ib_dns_capture','ib_dns_summary','ib_dtc','ib_dtc_summary','ib_ecosystem_publish','ib_ecosystem_subscription','ib_ipam','ib_license','ib_security','ib_security_summary','ib_syslog','ib_system','ib_system_capacity','ib_system_summary']
+        if check_clustering_mode() == 'SINGLE_INDEXER':
+           cls.member="ib-"+'-'.join(config.indexer_ip.split('.'))+".infoblox.com"
+        else:
+           cls.member=get_search_head()
+        logger.info("Member:"+cls.member)
+        for i in cls.index_list:
+            cls.index={}
+            cls.index["Index"]=i
+            cls.index["Volume(MB)"]="1" 
+            cls.index["Max Volume(MB)"]="100"
+            cls.index["Reporting Member"]=cls.member
+            cls.test1.append(cls.index) 
+        logger.info ("Input Json for validation")
+        logger.info(json.dumps(cls.test1, sort_keys=True, indent=4, separators=(',', ': ')))
+        
+    def test_1_reporting_index_usage_statistics_validate_index_volumes(self):
+        logger.info("TestCase:"+sys._getframe().f_code.co_name)
+        search_str=r"rest /services/data/indexes | where like(title,\"ib_%\") | where NOT like(splunk_server, \"%searchhead-root\") | eval root_user = \"root\" | eval  splunk_server=substr(splunk_server, 1, len(splunk_server)-len(root_user)-1) | eval evaled_maxsize = if(maxTotalDataSizeMB == 0, 0.01, maxTotalDataSizeMB) | eval USAGE=round((currentDBSizeMB/evaled_maxsize*100),2) | eval title=title + \" (\" + USAGE + \"%)\" | rename title as \"Index\", USAGE as \"Usage(%)\", currentDBSizeMB as \"Volume(MB)\", maxTotalDataSizeMB as \"Max Volume(MB)\", splunk_server as \"Reporting Member\" | table \"Index\", \"Volume(MB)\", \"Max Volume(MB)\", \"Reporting Member\""
+        cmd = config.search_py + " \"" + search_str + "\" --output_mode=json"
+        logger.info (cmd)
+        os.system(cmd)
+        try:
+            retrived_data=open(config.json_file).read()
+        except Exception, e:
+            logger.error('search operation failed due to %s',e)
+            raise Exception("Search operaiton failed, Please check Grid Configuraion")
+        output_data = json.loads(retrived_data)
+        results_list = output_data['results']
+        search_dump(sys._getframe().f_code.co_name+"_search_output.txt",self.test1,results_list)
+        logger.info("dumping search results in '%s' 'dumps' directory",sys._getframe().f_code.co_name+"_search_output.txt")
+        fc=0
+        flag=False
+	msg=""
+        for I in self.index_list:
+            for D in results_list:
+                if re.search(I+"\s",D["Index"],flags=0) and self.member == D["Reporting Member"] and int(D["Max Volume(MB)"])>=10 and int(D["Volume(MB)"])>=1:
+                    fc+=1
+        if len(self.index_list) == fc:
+            logger.info("Search validation result: PASS")
+	    flag=True
+        else:
+            logger.info("Search validation result: FAIL")
+            msg="Search-Index vs Input-Index validation failed"
+
+        if len(self.index_list) != len(results_list):
+            logger.error("Number of search-index count is not matching with input-index : FAIL")
+            msg="Number of search-index count is not matching with input-index"
+	    flag=False
+        assert flag==True,msg
+        
+    @classmethod
+    def teardown_class(cls):
+        logger.info('-'*15+"END:Reporting Index Usage Statistics"+'-'*15)
